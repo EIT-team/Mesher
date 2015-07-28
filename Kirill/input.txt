@@ -1,0 +1,14 @@
+Segmented image file to read from:
+input.inr
+Facet angle:
+30
+facet size:
+2
+facet distance:
+3
+cell radius edge ratio:
+3
+cell fine size:
+2
+cell coarse size:
+10
