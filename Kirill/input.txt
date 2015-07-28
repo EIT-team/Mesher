@@ -5,10 +5,18 @@ Facet angle:
 facet size:
 2
 facet distance:
-3
+2
 cell radius edge ratio:
 3
 cell fine size:
 2
 cell coarse size:
 10
+Perform lloyd optimisation 0-no, 1-yes
+0
+Perform odt optimisation 0-no, 1-yes
+1
+Perform exude optimisation 0-no, 1-yes
+1
+time limit for all optimisations (sec) 0-no limit
+30
