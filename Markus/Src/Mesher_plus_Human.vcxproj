@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{DB97B2D1-D201-4564-8C28-EFECBFDD46F7}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>Mesher_plus_Human</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">mesh_3D_image.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">mesh_3D_image</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Mesher_plus.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">mesher_plus_human</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CGAL-4.0\examples\Mesh_3\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">mesh_3D_image.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">mesh_3D_image</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CGAL-4.0\examples\Mesh_3\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">mesh_3D_image.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">mesh_3D_image</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalOptions> /Zm1000 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>C:/Program Files/CGAL-4.0/include;C:\Users\markus\Desktop\CGAL\Src;C:/Program Files/CGAL-4.0/auxiliary/gmp/include;C:/Program Files/Boost/boost_1_49_0;C:/Program Files/zlib/zlib-1.2.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <FloatingPointModel>Strict</FloatingPointModel>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_DEBUG;CGAL_MESH_3_NO_DEPRECATED_SURFACE_INDEX;CGAL_MESH_3_NO_DEPRECATED_C3T3_ITERATORS;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;CGAL_USE_ZLIB;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>Debug</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>C:/Program Files/CGAL-4.0/examples/Mesh_3/Debug/mesh_3D_image.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_DEBUG;CGAL_MESH_3_NO_DEPRECATED_SURFACE_INDEX;CGAL_MESH_3_NO_DEPRECATED_C3T3_ITERATORS;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;CGAL_USE_ZLIB;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:/Program Files/CGAL-4.0/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../Triangulation_3/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../STL_Extension/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../AABB_tree/include;C:/Program Files/CGAL-4.0/examples/Mesh_3;C:/Program Files/CGAL-4.0/auxiliary/gmp/include;C:/Program Files/Boost/boost_1_49_0;C:/Program Files/zlib/zlib-1.2.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:/Program Files/CGAL-4.0/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../Triangulation_3/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../STL_Extension/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../AABB_tree/include;C:/Program Files/CGAL-4.0/examples/Mesh_3;C:/Program Files/CGAL-4.0/auxiliary/gmp/include;C:/Program Files/Boost/boost_1_49_0;C:/Program Files/zlib/zlib-1.2.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalOptions> /machine:x64 /debug %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\lib\Debug\CGAL_ImageIO-vc100-mt-gd-4.0.lib;..\..\auxiliary\gmp\lib\libmpfr-4.lib;..\..\auxiliary\gmp\lib\libgmp-10.lib;glu32.lib;opengl32.lib;C:\Program Files\zlib\zlib-1.2.7\Release\zlib.lib;..\..\auxiliary\gmp\lib\libmpfr-4.lib;..\..\auxiliary\gmp\lib\libgmp-10.lib;glu32.lib;opengl32.lib;C:\Program Files\zlib\zlib-1.2.7\Release\zlib.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Program Files/CGAL-4.0/lib;C:/Program Files/CGAL-4.0/lib/$(Configuration);C:/Program Files/CGAL-4.0/auxiliary/gmp/lib;C:/Program Files/CGAL-4.0/auxiliary/gmp/lib/$(Configuration);C:/Program Files/Boost;C:/Program Files/Boost/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>C:/Program Files/CGAL-4.0/examples/Mesh_3/Debug/mesh_3D_image.lib</ImportLibrary>
+      <LinkIncremental>true</LinkIncremental>
+      <ProgramDataBaseFile>C:/Program Files/CGAL-4.0/examples/Mesh_3/Debug/mesh_3D_image.pdb</ProgramDataBaseFile>
+      <StackReserveSize>10000000</StackReserveSize>
+      <SubSystem>Console</SubSystem>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalOptions> /Zm1000 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>C:/Program Files/CGAL-4.0/include;C:\Users\markus\Desktop\CGAL\Src;C:/Program Files/CGAL-4.0/auxiliary/gmp/include;C:/Program Files/Boost/boost_1_49_0;C:/Program Files/zlib/zlib-1.2.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <FloatingPointModel>Strict</FloatingPointModel>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>WIN64;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NDEBUG;CGAL_MESH_3_NO_DEPRECATED_SURFACE_INDEX;CGAL_MESH_3_NO_DEPRECATED_C3T3_ITERATORS;BOOST_ALL_DYN_LINK;CGAL_USE_ZLIB;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>Release</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>mesh_3D_image.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NDEBUG;CGAL_MESH_3_NO_DEPRECATED_SURFACE_INDEX;CGAL_MESH_3_NO_DEPRECATED_C3T3_ITERATORS;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;CGAL_USE_ZLIB;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:/Program Files/CGAL-4.0/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../Triangulation_3/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../STL_Extension/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../AABB_tree/include;C:/Program Files/CGAL-4.0/examples/Mesh_3;C:/Program Files/CGAL-4.0/auxiliary/gmp/include;C:/Program Files/Boost/boost_1_49_0;C:/Program Files/zlib/zlib-1.2.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:/Program Files/CGAL-4.0/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../Triangulation_3/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../STL_Extension/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../AABB_tree/include;C:/Program Files/CGAL-4.0/examples/Mesh_3;C:/Program Files/CGAL-4.0/auxiliary/gmp/include;C:/Program Files/Boost/boost_1_49_0;C:/Program Files/zlib/zlib-1.2.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;C:\Program Files\CGAL-4.0\lib\Release\CGAL_ImageIO-vc100-mt-4.0.lib;C:\Program Files\CGAL-4.0\auxiliary\gmp\lib\libmpfr-4.lib;C:\Program Files\CGAL-4.0\auxiliary\gmp\lib\libgmp-10.lib;glu32.lib;opengl32.lib;C:\Program Files\zlib\zlib-1.2.7\Release\zlib.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Program Files/CGAL-4.0/lib;C:/Program Files/CGAL-4.0/lib/$(Configuration);C:/Program Files/CGAL-4.0/auxiliary/gmp/lib;C:/Program Files/CGAL-4.0/auxiliary/gmp/lib/$(Configuration);C:/Program Files/Boost;C:/Program Files/Boost/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <ImportLibrary>mesh_3D_image.lib</ImportLibrary>
+      <ProgramDataBaseFile>mesh_3D_image.pdb</ProgramDataBaseFile>
+      <StackReserveSize>10000000</StackReserveSize>
+      <SubSystem>Console</SubSystem>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalOptions> /Zm1000 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>C:/Program Files/CGAL-4.0/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../Triangulation_3/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../STL_Extension/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../AABB_tree/include;C:/Program Files/CGAL-4.0/examples/Mesh_3;C:/Program Files/CGAL-4.0/auxiliary/gmp/include;C:/Program Files/Boost/boost_1_49_0;C:/Program Files/zlib/zlib-1.2.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <FloatingPointModel>Strict</FloatingPointModel>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NDEBUG;CGAL_MESH_3_NO_DEPRECATED_SURFACE_INDEX;CGAL_MESH_3_NO_DEPRECATED_C3T3_ITERATORS;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;CGAL_USE_ZLIB;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>MinSizeRel</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>C:/Program Files/CGAL-4.0/examples/Mesh_3/MinSizeRel/mesh_3D_image.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NDEBUG;CGAL_MESH_3_NO_DEPRECATED_SURFACE_INDEX;CGAL_MESH_3_NO_DEPRECATED_C3T3_ITERATORS;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;CGAL_USE_ZLIB;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:/Program Files/CGAL-4.0/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../Triangulation_3/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../STL_Extension/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../AABB_tree/include;C:/Program Files/CGAL-4.0/examples/Mesh_3;C:/Program Files/CGAL-4.0/auxiliary/gmp/include;C:/Program Files/Boost/boost_1_49_0;C:/Program Files/zlib/zlib-1.2.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:/Program Files/CGAL-4.0/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../Triangulation_3/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../STL_Extension/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../AABB_tree/include;C:/Program Files/CGAL-4.0/examples/Mesh_3;C:/Program Files/CGAL-4.0/auxiliary/gmp/include;C:/Program Files/Boost/boost_1_49_0;C:/Program Files/zlib/zlib-1.2.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\lib\MinSizeRel\CGAL_ImageIO-vc100-mt-4.0.lib;..\..\auxiliary\gmp\lib\libmpfr-4.lib;..\..\auxiliary\gmp\lib\libgmp-10.lib;glu32.lib;opengl32.lib;C:\Program Files\zlib\zlib-1.2.7\Release\zlib.lib;..\..\auxiliary\gmp\lib\libmpfr-4.lib;..\..\auxiliary\gmp\lib\libgmp-10.lib;glu32.lib;opengl32.lib;C:\Program Files\zlib\zlib-1.2.7\Release\zlib.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Program Files/CGAL-4.0/lib;C:/Program Files/CGAL-4.0/lib/$(Configuration);;C:/Program Files/CGAL-4.0/auxiliary/gmp/lib;C:/Program Files/CGAL-4.0/auxiliary/gmp/lib/$(Configuration);;C:/Program Files/Boost;C:/Program Files/Boost/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <ImportLibrary>C:/Program Files/CGAL-4.0/examples/Mesh_3/MinSizeRel/mesh_3D_image.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/Program Files/CGAL-4.0/examples/Mesh_3/MinSizeRel/mesh_3D_image.pdb</ProgramDataBaseFile>
+      <StackReserveSize>10000000</StackReserveSize>
+      <SubSystem>Console</SubSystem>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalOptions> /Zm1000 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>C:/Program Files/CGAL-4.0/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../Triangulation_3/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../STL_Extension/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../AABB_tree/include;C:/Program Files/CGAL-4.0/examples/Mesh_3;C:/Program Files/CGAL-4.0/auxiliary/gmp/include;C:/Program Files/Boost/boost_1_49_0;C:/Program Files/zlib/zlib-1.2.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <FloatingPointModel>Strict</FloatingPointModel>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NDEBUG;CGAL_MESH_3_NO_DEPRECATED_SURFACE_INDEX;CGAL_MESH_3_NO_DEPRECATED_C3T3_ITERATORS;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;CGAL_USE_ZLIB;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>RelWithDebInfo</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>C:/Program Files/CGAL-4.0/examples/Mesh_3/RelWithDebInfo/mesh_3D_image.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NDEBUG;CGAL_MESH_3_NO_DEPRECATED_SURFACE_INDEX;CGAL_MESH_3_NO_DEPRECATED_C3T3_ITERATORS;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;BOOST_ALL_DYN_LINK;CGAL_USE_ZLIB;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:/Program Files/CGAL-4.0/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../Triangulation_3/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../STL_Extension/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../AABB_tree/include;C:/Program Files/CGAL-4.0/examples/Mesh_3;C:/Program Files/CGAL-4.0/auxiliary/gmp/include;C:/Program Files/Boost/boost_1_49_0;C:/Program Files/zlib/zlib-1.2.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:/Program Files/CGAL-4.0/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../Triangulation_3/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../STL_Extension/include;C:/Program Files/CGAL-4.0/examples/Mesh_3/../../../AABB_tree/include;C:/Program Files/CGAL-4.0/examples/Mesh_3;C:/Program Files/CGAL-4.0/auxiliary/gmp/include;C:/Program Files/Boost/boost_1_49_0;C:/Program Files/zlib/zlib-1.2.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalOptions> /machine:x64 /debug %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\..\lib\RelWithDebInfo\CGAL_ImageIO-vc100-mt-4.0.lib;..\..\auxiliary\gmp\lib\libmpfr-4.lib;..\..\auxiliary\gmp\lib\libgmp-10.lib;glu32.lib;opengl32.lib;C:\Program Files\zlib\zlib-1.2.7\Release\zlib.lib;..\..\auxiliary\gmp\lib\libmpfr-4.lib;..\..\auxiliary\gmp\lib\libgmp-10.lib;glu32.lib;opengl32.lib;C:\Program Files\zlib\zlib-1.2.7\Release\zlib.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Program Files/CGAL-4.0/lib;C:/Program Files/CGAL-4.0/lib/$(Configuration);;C:/Program Files/CGAL-4.0/auxiliary/gmp/lib;C:/Program Files/CGAL-4.0/auxiliary/gmp/lib/$(Configuration);;C:/Program Files/Boost;C:/Program Files/Boost/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>C:/Program Files/CGAL-4.0/examples/Mesh_3/RelWithDebInfo/mesh_3D_image.lib</ImportLibrary>
+      <LinkIncremental>true</LinkIncremental>
+      <ProgramDataBaseFile>C:/Program Files/CGAL-4.0/examples/Mesh_3/RelWithDebInfo/mesh_3D_image.pdb</ProgramDataBaseFile>
+      <StackReserveSize>10000000</StackReserveSize>
+      <SubSystem>Console</SubSystem>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="input_parameters.h" />
+    <ClInclude Include="Sizing_fields.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Mesher_plus_Human.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,30 @@
+Segmented image file to read from:
+input.inr
+pixel scale (mm)
+1
+Facet angle (deg):
+30
+Facet distance (mm):
+2
+cell radius edge ratio:
+2
+cell fine size (mm):
+5
+cell coarse size (mm):
+5
+radius of the electrode(mm)
+3.5
+cell size within the electrode area (mm)
+1
+radial part of elements with the fine size, percentage from the border of the scull:
+5
+Perform lloyd optimisation 0-no, 1-yes
+1
+Perform odt optimisation 0-no, 1-yes
+1
+Perform exude optimisation 0-no, 1-yes
+1
+Perform perturb optimisation 0-no, 1-yes
+1
+time limit for all optimisations (sec) 0-no limit
+3600
