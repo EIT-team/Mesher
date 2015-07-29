@@ -59,11 +59,11 @@ int main()
   Mesh_domain domain(image);
   
   //Define Sizing field
-  Point or(image.vx () * image.xdim ()/2,
+  Point origin(image.vx () * image.xdim ()/2,
 		   image.vy () * image.ydim ()/2, 
 		   image.vz () * image.zdim ()/2); //origin
 
-  sizing_field_elliptic size_e (or);
+  sizing_field_elliptic size_e (origin);
   size_e.coarse_size=p.ccs;
   size_e.fine_size=p.cs;
   size_e.preserve=p.pres; //Elliptic
