@@ -11,9 +11,9 @@
 #include <CGAL/Image_3.h>
 
 //Sizing fields
-#include <Sizing_fields.h> 
+#include "Sizing_fields.h"
 //Input parameters
-#include <input_parameters.h>
+#include "input_parameters.h"
 
 // Domain
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
