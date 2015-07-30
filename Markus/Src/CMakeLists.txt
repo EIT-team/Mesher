@@ -1,4 +1,4 @@
-# Created by the script cgal_create_CMakeLists
+# Created by the script cgal_create_cmake_script_with_options
 # This is the CMake script for compiling a set of CGAL applications.
 
 project( Src )
@@ -23,6 +23,7 @@ endif()
 
 # CGAL and its components
 find_package( CGAL QUIET COMPONENTS Core )
+find_package( CGAL COMPONENTS ImageIO )
 
 if ( NOT CGAL_FOUND )
 
@@ -49,7 +50,6 @@ endif()
 # include for local directory
 
 # include for local package
-
 
 # Creating entries for all .cpp/.C files with "main" routine
 # ##########################################################
