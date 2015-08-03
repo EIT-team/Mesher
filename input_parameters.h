@@ -41,9 +41,9 @@ struct Input
 	 // pres=0; time_lim=0;
   }
 
-  void load_file_planar()
+  void load_file_planar(char* file_name_input)
   {
-	  FILE* F=fopen("input_planar.txt","r");
+	  FILE* F=fopen(file_name_input,"r");
 	  if (F == NULL) perror ("Error opening file");
 	  else {
 	  std::cout<<"\n Reading the input file: ";

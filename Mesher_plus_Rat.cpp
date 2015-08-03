@@ -45,22 +45,24 @@ typedef CGAL::Mesh_criteria_3<Tr> Mesh_criteria;
 using namespace CGAL::parameters;
 using namespace std;
 
-int main()
+int main(int argc, char* argv[])
 {
+ 
+  cout <<	" Input image file is: " << argv[1] 
+  <<		"\n Electrode position file is: " << argv[2] 
+  <<		"\n Input parameters file is: " << argv[3];
 
-
-  
   // Loads image
   CGAL::Image_3 image;
 
   // Read input file with parameters
   Input p;
-  p.load_file_planar();
+  p.load_file_planar(argv[3]);
   
 
   // Reading image file
   std::cout<<"\n Reading the Image file... ";
-  image.read("input.inr");
+  image.read(argv[1]);
   
   // Domain
   Mesh_domain domain(image);
@@ -79,7 +81,7 @@ int main()
   else {std::cout<<"wrong direction index, sizer will use constant fine size everywhere"; h=1;ub=1;}
 
   FILE *F;
-  try { F=fopen("electrodes.txt","r");}
+  try { F=fopen(argv[2],"r");}
   catch (exception& e) { cout << e.what() << endl;}
   
  
