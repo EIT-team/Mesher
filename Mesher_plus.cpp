@@ -14,7 +14,7 @@
 #include "Sizing_fields.h"
 //Input parameters
 #include "input_parameters.h"
-#include <Matlab_save.h>
+#include "Matlab_save.h"
 
 
 // Domain
@@ -75,43 +75,31 @@ int main(int argc, char* argv[])
 		   image.vy () * image.ydim ()/2, 
 		   image.vz () * image.zdim ()/2); //origin
 
-  
-
-  FT h, ub; 
-  if(p.options["planar_sizing_direction_XYZ"]==1) {h=p.height*image.vx (); ub=image.vx () * image.xdim ();}
-  else if(p.options["planar_sizing_direction_XYZ"]==2) {h=p.height*image.vy (); ub=image.vy () * image.ydim ();}
-  else if(p.options["planar_sizing_direction_XYZ"]==3) {h=p.height*image.vz (); ub=image.vz () * image.zdim ();}
-  else {std::cout<<"wrong direction index, sizer will use constant fine size everywhere"; h=1;ub=1;}
-
   FILE *F;
   try { F=fopen(argv[2],"r");}
   catch (exception& e) { cout << e.what() << endl;}
   
  
-  Mesh_domain::Index sub = domain.index_from_subdomain_index(2);
-  //sizing_field_jacobian size_p (h,p.direction,ub,F,p.options["pixel_scale_mm"], origin,sub);
-  sizing_field_elliptic_electrodes size_p (origin,F,1,1,1);
-  //sizing_field_jacobian size_p_coarse (h,p.direction,ub,F,p.unit, or,sub);
+  Mesh_domain::Index sub = domain.index_from_subdomain_index(2); //!!! I do not remember what this does, but it should be very useful ...
+  
+  //sizing_field_jacobian size_p_J (h,p.direction,ub,F,p.options["pixel_scale_mm"], origin,sub); // THIS uses SUB, need to remember to use it
+   
+  sizing_field_elliptic_electrodes size_p (origin,F,1/p.unit,1/p.unit,1/p.unit); //This is basic and working now for both rat and human
+  
   if (F!=NULL) fclose(F);
-  //sizing_field_planar_electrodes size_p (h,p.direction,ub);
+  //sizing_field_planar_electrodes size_p (h,p.direction,ub); // might not need it at all in future
 
   size_p.coarse_size=p.options["cell_coarse_size_mm"];
   size_p.fine_size=p.options["cell_fine_size_mm"];
   size_p.preserve=int(p.options["elements_with_fine_size_percentage"]);
-  size_p.e_R=3*p.options["electrode_radius_mm"]; //2* to secure fit of the electrode
+  size_p.e_R=2*p.options["electrode_radius_mm"]; //2* to secure fit of the electrode
   size_p.electrode_size=p.options["cell_size_electrodes_mm"];//Planar gradient with electrodes -- size of the mesh near electrodes
 
-  //For initial smoothing we mesh it with coasrser mesh:
-  //size_p_coarse.fine_size=5*p.cs;
-  //size_p_coarse.coarse_size=size_p_coarse.fine_size;
- // size_p_coarse.preserve=0;
- // size_p_coarse.e_R=0;
- // size_p_coarse.electrode_size=size_p_coarse.fine_size;
-     
+       
   // Mesh criteria: faces and cells
   Mesh_criteria criteria(facet_angle=p.options["facet_angle_deg"], facet_size=size_p, facet_distance=p.options["facet_distance_mm"],
                          cell_radius_edge_ratio=p.options["cell_radius_edge_ratio"], cell_size=size_p);
-  // For smoothing
+  // For smoothing// DOES NOT WORK LIKE THIS COS REMESHING CALLS BACK THE DOMAIN
  // Mesh_criteria criteria_coarse(facet_angle=p.fa, facet_size=size_p_coarse, facet_distance=p.fd,
     //                     cell_radius_edge_ratio=p.cre, cell_size=size_p_coarse);
   
@@ -119,20 +107,14 @@ int main(int argc, char* argv[])
   // Meshing
   std::cout<<"\n Meshing with initial mesh...";
   C3t3 c3t3;
-  	  //try { //Do not need this anymore in x64 version
+  	  //try { //Do not need this anymore in x64 version, however x86 need one, slows down everything
 		  
   c3t3= CGAL::make_mesh_3<C3t3>(domain, criteria, CGAL::parameters::features(domain), 
 						CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(), 
 						CGAL::parameters::no_perturb(),CGAL::parameters::no_exude()); 
 	  //}
   
- // std::cout<<"\n Smoothing and sizing the mesh...";
-
- // CGAL::refine_mesh_3<C3t3>(c3t3, domain, criteria, CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(), 
-//						CGAL::parameters::no_perturb(),CGAL::parameters::no_exude()); 
-	 
-
-		    
+  
 //Optimisation
   std::cout<<"\n Optimising: ";
   if (int(p.options["perturb_opt"])==1) {std::cout<<"\n Perturb... "; CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
@@ -145,8 +127,6 @@ int main(int argc, char* argv[])
   /*std::ofstream medit_file("out.mesh");
   c3t3.output_to_medit(medit_file);
   medit_file.close();*/
-  	
-  
   
   //matlab output
   std::cout<<"\n Saving the mesh into matlab file... ";
