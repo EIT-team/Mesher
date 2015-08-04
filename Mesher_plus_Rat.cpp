@@ -14,7 +14,7 @@
 #include "Sizing_fields.h"
 //Input parameters
 #include "input_parameters.h"
-//#include "Matlab_save.h"
+#include "Matlab_save.h"
 
 
 // Domain
@@ -66,7 +66,7 @@ int main()
   Mesh_domain domain(image);
   
   //Define Sizing field
-  Point or(image.vx () * image.xdim ()/2,
+  Point origin(image.vx () * image.xdim ()/2,
 		   image.vy () * image.ydim ()/2, 
 		   image.vz () * image.zdim ()/2); //origin
 
@@ -84,8 +84,8 @@ int main()
   
  
   Mesh_domain::Index sub = domain.index_from_subdomain_index(2);
-  sizing_field_jacobian size_p (h,p.direction,ub,F,p.unit, or,sub);
-  //sizing_field_jacobian size_p_coarse (h,p.direction,ub,F,p.unit, or,sub);
+  sizing_field_jacobian size_p (h,p.direction,ub,F,p.unit, origin,sub);
+  //sizing_field_jacobian size_p_coarse (h,p.direction,ub,F,p.unit, origin,sub);
   if (F!=NULL) fclose(F);
   //sizing_field_planar_electrodes size_p (h,p.direction,ub);
 
@@ -144,7 +144,7 @@ int main()
   
   //matlab output
   std::cout<<"\n Saving the mesh into matlab file... ";
-//  int save=save_matlab(c3t3,p);
+  int save=save_matlab(c3t3,p);
    
   //all done
   std::cout<<"\n ALL DONE, press any key! :)";
