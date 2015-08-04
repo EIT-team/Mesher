@@ -48,16 +48,19 @@ using namespace std;
 int main(int argc, char* argv[])
 {
  
-  cout <<	" Input image file is: " << argv[1] 
-  <<		"\n Electrode position file is: " << argv[2] 
-  <<		"\n Input parameters file is: " << argv[3];
+  
+
+
+  cout <<	" Input image file: " << argv[1] 
+  <<		"\n Electrode position file: " << argv[2] 
+  <<		"\n Input parameters file: " << argv[3] << "\n";
 
   // Loads image
   CGAL::Image_3 image;
 
   // Read input file with parameters
   Input p;
-  p.load_file_planar(argv[3]);
+  p.load_file_idx(argv[3]);
   
 
   // Reading image file
@@ -68,16 +71,16 @@ int main(int argc, char* argv[])
   Mesh_domain domain(image);
   
   //Define Sizing field
-  Point or(image.vx () * image.xdim ()/2,
+  Point origin(image.vx () * image.xdim ()/2,
 		   image.vy () * image.ydim ()/2, 
 		   image.vz () * image.zdim ()/2); //origin
 
   
 
   FT h, ub; 
-  if(p.direction==1) {h=p.height*image.vx (); ub=image.vx () * image.xdim ();}
-  else if(p.direction==2) {h=p.height*image.vy (); ub=image.vy () * image.ydim ();}
-  else if(p.direction==3) {h=p.height*image.vz (); ub=image.vz () * image.zdim ();}
+  if(p.options["planar_sizing_direction_XYZ"]==1) {h=p.height*image.vx (); ub=image.vx () * image.xdim ();}
+  else if(p.options["planar_sizing_direction_XYZ"]==2) {h=p.height*image.vy (); ub=image.vy () * image.ydim ();}
+  else if(p.options["planar_sizing_direction_XYZ"]==3) {h=p.height*image.vz (); ub=image.vz () * image.zdim ();}
   else {std::cout<<"wrong direction index, sizer will use constant fine size everywhere"; h=1;ub=1;}
 
   FILE *F;
@@ -86,16 +89,16 @@ int main(int argc, char* argv[])
   
  
   Mesh_domain::Index sub = domain.index_from_subdomain_index(2);
-  sizing_field_jacobian size_p (h,p.direction,ub,F,p.unit, or,sub);
+  sizing_field_jacobian size_p (h,p.direction,ub,F,p.options["pixel_scale_mm"], origin,sub);
   //sizing_field_jacobian size_p_coarse (h,p.direction,ub,F,p.unit, or,sub);
   if (F!=NULL) fclose(F);
   //sizing_field_planar_electrodes size_p (h,p.direction,ub);
 
-  size_p.coarse_size=p.ccs;
-  size_p.fine_size=p.cs;
-  size_p.preserve=p.pres;
-  size_p.e_R=3*p.e_R; //2* to secure fit of the electrode
-  size_p.electrode_size=p.e_size;//Planar gradient with electrodes -- size of the mesh near electrodes
+  size_p.coarse_size=p.options["cell_coarse_size_mm"];
+  size_p.fine_size=p.options["cell_fine_size_mm"];
+  size_p.preserve=int(p.options["elements_with_fine_size_percentage"]);
+  size_p.e_R=3*p.options["electrode_radius_mm"]; //2* to secure fit of the electrode
+  size_p.electrode_size=p.options["cell_size_electrodes_mm"];//Planar gradient with electrodes -- size of the mesh near electrodes
 
   //For initial smoothing we mesh it with coasrser mesh:
   //size_p_coarse.fine_size=5*p.cs;
@@ -131,10 +134,10 @@ int main(int argc, char* argv[])
 		    
 //Optimisation
   std::cout<<"\n Optimising: ";
-  if (p.if_perturb==1) {std::cout<<"\n Perturb... "; CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=p.time_lim);}
-  if (p.if_lloyd==1)  {std::cout<<"\n Lloyd... ";CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=p.time_lim);}
-  if (p.if_odt==1)  {std::cout<<"\n ODT... "; CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=p.time_lim);}
-  if (p.if_exude==1)  {std::cout<<"\n Exude... "; CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.time_lim);}
+  if (int(p.options["perturb_opt"])==1) {std::cout<<"\n Perturb... "; CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
+  if (int(p.options["lloyd_opt"])==1)  {std::cout<<"\n Lloyd... ";CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);}
+  if (int(p.options["odt_opt"])==1)  {std::cout<<"\n ODT... "; CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);}
+  if (int(p.options["exude_opt"])==1)  {std::cout<<"\n Exude... "; CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
  
   // Output
   
