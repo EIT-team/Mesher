@@ -221,7 +221,7 @@ struct sizing_field_jacobian
   FT el_min,el_max;
   Index subdom;
 
-  sizing_field_jacobian (FT& h, int& d, FT& b, FILE* F, FT sc, Point_3 or, Index& sub)
+  sizing_field_jacobian (FT& h, int& d, FT& b, FILE* F, FT sc, Point_3 orig, Index& sub)
   { 
 	 
 	  if (F == NULL) perror ("Error opening electrode file");
@@ -252,10 +252,10 @@ struct sizing_field_jacobian
 		 // std::cout<<el_min<<"         "<<el_max<<"\n";
 	  }
 	
-	  R=Point_3 (0.2*or.x(),0.3*or.y(),0.6*or.z());
+	  R=Point_3 (0.2*orig.x(),0.3*orig.y(),0.6*orig.z());
 	  height=h;
 	  ub=b;
-	  origin=or;
+	  origin=orig;
 	  direction=d;
 	  scale=sc;
 	  subdom=sub;

@@ -1,3 +1,6 @@
+is_human = 0
+elliptic_field = 1
+refine_electrodes = 1
 pixel_scale_mm = 0.1
 facet_angle_deg = 30
 facet_distance_mm = 0.2
