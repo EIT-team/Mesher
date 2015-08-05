@@ -50,7 +50,7 @@ set(CMAKE_CXX_FLAGS "-O3")
 
 include( CGAL_CreateSingleSourceCGALProgram )
 include_directories(${MATLAB_INCLUDE_DIR})
-add_executable(mesher_rat "Mesher_plus_Rat.cpp")
+add_executable(mesher_rat "Mesher_plus.cpp")
 target_link_libraries(mesher_rat ${MATLAB_LIBRARIES} mat)
 add_definitions(-DINPUTS_DIR="${CMAKE_SOURCE_DIR}/inputs")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lstdc++")
