@@ -57,10 +57,9 @@ Mesh_domain,
 
 void printusage(void)
 {
-    printf("Usage:\n");
-    printf("-i input image file\n");
-    printf("-e electrode position file\n");
-    printf("-p parameter file");
+    printf("Usage:  -i input image file\n");
+    printf("        -e electrode position file\n");
+    printf("        -p parameter file\n");
     exit(EXIT_FAILURE);
 }
 
