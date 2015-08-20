@@ -33,15 +33,7 @@ typedef std::vector<Point>        Polyline_3;
 typedef std::list<Polyline_3>       Polylines;
 
 // Triangulation
-#ifdef CGAL_CONCURRENT_MESH_3
-typedef CGAL::Mesh_triangulation_3<
-Mesh_domain,
-    CGAL::Kernel_traits<Mesh_domain>::Kernel, 
-    CGAL::Parallel_tag                        
-    >::type Tr;
-#else
-    typedef CGAL::Mesh_triangulation_3<Mesh_domain>::type Tr;
-#endif
+//#ifdef CGAL_CONCURRENT_MESH_3
 
     typedef CGAL::Mesh_complex_3_in_triangulation_3<Tr> C3t3;
 

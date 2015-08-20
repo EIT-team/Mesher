@@ -28,7 +28,17 @@ typedef K::Point_3 Point;
 typedef K::Vector_3 Vector;
 
 // Triangulation
-typedef CGAL::Mesh_triangulation_3<Mesh_domain>::type Tr;
+//typedef CGAL::Mesh_triangulation_3<Mesh_domain>::type Tr;
+#ifdef CGAL_LINKED_WITH_TBB
+typedef CGAL::Mesh_triangulation_3<Mesh_domain,
+    CGAL::Kernel_traits<Mesh_domain>::Kernel, 
+    CGAL::Parallel_tag                        
+    >::type Tr;
+#else
+    typedef CGAL::Mesh_triangulation_3<Mesh_domain>::type Tr;
+#endif
+
+
 typedef CGAL::Mesh_complex_3_in_triangulation_3<Tr> C3t3;
 
 // Iterators for Facets, Vertices and cells
