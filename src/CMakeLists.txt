@@ -63,8 +63,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lstdc++ -ltbb")
 set_target_properties(mesher_rat PROPERTIES 
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
-add_executable(test "test.cpp")
-target_link_libraries(test ${TBB_LIBRARIES})
 
 
 
