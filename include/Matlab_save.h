@@ -17,7 +17,6 @@
 
 #include <mat.h>
 //#include <input_parameters.h>
-
 // Domain
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 typedef CGAL::Labeled_image_mesh_domain_3<CGAL::Image_3,K> Mesh_domain;
@@ -28,15 +27,14 @@ typedef K::Point_3 Point;
 typedef K::Vector_3 Vector;
 
 // Triangulation
-//typedef CGAL::Mesh_triangulation_3<Mesh_domain>::type Tr;
-#ifdef CGAL_LINKED_WITH_TBB
-typedef CGAL::Mesh_triangulation_3<Mesh_domain,
-    CGAL::Kernel_traits<Mesh_domain>::Kernel, 
-    CGAL::Parallel_tag                        
-    >::type Tr;
-#else
+//#ifdef CGAL_LINKED_WITH_TBB
+//typedef CGAL::Mesh_triangulation_3<Mesh_domain,
+//    CGAL::Kernel_traits<Mesh_domain>::Kernel, 
+//    CGAL::Parallel_tag                        
+//    >::type Tr;
+//#else
     typedef CGAL::Mesh_triangulation_3<Mesh_domain>::type Tr;
-#endif
+//#endif
 
 
 typedef CGAL::Mesh_complex_3_in_triangulation_3<Tr> C3t3;
