@@ -138,7 +138,7 @@ struct sizing_field_elliptic_electrodes
 };
 
 
-//Sizing field: planar gradient in one direction with electrodes
+//! Sizing field: planar gradient in one direction with electrodes
 struct sizing_field_planar_electrodes
 {
   typedef ::FT FT;
@@ -146,11 +146,11 @@ struct sizing_field_planar_electrodes
   typedef Vector Vector_3;
   typedef Mesh_domain::Index Index;
   typedef std::vector<Point>  Points;
-  FT ub,height; //upper boundary, height of the plane
-  int direction; //direction of the plane
-  FT electrode_size; //element size near electrodes
-  FT e_R; //electrode radius
-  Points centres; //electrode centres
+  FT ub,height; //! upper boundary, height of the plane
+  int direction; //! direction of the plane
+  FT electrode_size; //! element size near electrodes
+  FT e_R; //! electrode radius
+  Points centres; //! electrode centres
   FT fine_size, coarse_size; 
   int preserve;
 
@@ -210,11 +210,11 @@ struct sizing_field_jacobian
   typedef Vector Vector_3;
   typedef Mesh_domain::Index Index;
   typedef std::vector<Point>  Points;
-  FT ub,height; //upper boundary, height of the plane
-  int direction; //direction of the plane, will not be used here
-  FT electrode_size; //element size near electrodes
-  FT e_R; //electrode radius, now it will be used for bound
-  Points centres; //electrode centres
+  FT ub,height; //! upper boundary, height of the plane
+  int direction; //! direction of the plane, will not be used here
+  FT electrode_size; //! element size near electrodes
+  FT e_R; //! electrode radius, now it will be used for bound
+  Points centres; //! electrode centres
   Point_3 origin,R;
   FT fine_size, coarse_size, scale; 
   int preserve;
