@@ -3,6 +3,8 @@
 * Download from GitHub
 ```
 git clone https://github.com/EIT-team/Mesher.git
+cd Mesher
+git checkout tidyup
 ```
 * Make build directory
 ```
