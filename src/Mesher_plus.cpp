@@ -58,7 +58,7 @@ void printusage(void)
 
 int main(int argc, char* argv[])
 {
-    if(argc < 7) printusage();
+    if(argc < 9) printusage();
     int opt;
     char *path_image, *path_electrode, *path_parameter, *output_file;
     while((opt = getopt(argc, argv, "i:e:p:o:"))!=-1)
