@@ -31,7 +31,7 @@ include( ${CGAL_USE_FILE} )
 
 # Boost and its components
 find_package( Boost REQUIRED )
-find_package( TBB REQUIRED )
+#find_package( TBB REQUIRED )
 
 if ( NOT Boost_FOUND )
 
