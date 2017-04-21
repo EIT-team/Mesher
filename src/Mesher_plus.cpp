@@ -10,6 +10,8 @@
 #include <CGAL/make_mesh_3.h>
 #include <CGAL/Image_3.h>
 
+//#include <CGAL/Surface_mesh_deformation.h>
+
 //Sizing fields
 #include "Sizing_fields.h"
 //Input parameters
@@ -18,10 +20,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+
 // Domain
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 typedef CGAL::Labeled_image_mesh_domain_3<CGAL::Image_3,K> Mesh_domain;
-
 
 //For inexact functions
 typedef K::FT FT;
@@ -47,6 +49,12 @@ typedef std::list<Polyline_3>       Polylines;
     using namespace CGAL::parameters;
     using namespace std;
 
+// Mesh deformation
+//typedef CGAL::Surface_mesh_deformation<Tr> Surface_mesh_deformation;
+
+
+#include <CGAL/config.h>
+
 void printusage(void)
 {
     printf("Usage:  -i input image file\n");
@@ -58,6 +66,12 @@ void printusage(void)
 
 int main(int argc, char* argv[])
 {
+
+// Print CGAL Version number
+std::cout << "CGAL Version " << CGAL_VERSION_NR << " (1MMmmb1000)" << std::endl;
+std::cout << "where MM is the major number lreeast, mm is the minor number release" << std::endl;
+
+
     if(argc < 9) printusage();
     int opt;
     char *path_image, *path_electrode, *path_parameter, *output_file;
