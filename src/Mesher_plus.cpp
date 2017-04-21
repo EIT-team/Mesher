@@ -52,6 +52,7 @@ void printusage(void)
     printf("Usage:  -i input image file\n");
     printf("        -e electrode position file\n");
     printf("        -p parameter file\n");
+    printf("        -o output file\n");
     exit(EXIT_FAILURE);
 }
 
@@ -59,8 +60,8 @@ int main(int argc, char* argv[])
 {
     if(argc < 7) printusage();
     int opt;
-    char *path_image, *path_electrode, *path_parameter;
-    while((opt = getopt(argc, argv, "i:e:p:"))!=-1)
+    char *path_image, *path_electrode, *path_parameter, *output_file;
+    while((opt = getopt(argc, argv, "i:e:p:o:"))!=-1)
     {
         switch(opt)
         {
@@ -70,6 +71,10 @@ int main(int argc, char* argv[])
                 path_electrode = optarg;
             case 'p':
                 path_parameter = optarg;
+
+            case 'o':
+                output_file = optarg;
+
         }
     }
     if(optind != argc) printusage();
@@ -144,7 +149,7 @@ int main(int argc, char* argv[])
 
     //matlab output
     std::cout<<"\n Saving the mesh into matlab file... ";
-    int save=save_matlab(c3t3,p);
+    int save=save_matlab(c3t3,p,output_file);
 
     //all done
     std::cout<<"\n ALL DONE, press any key! :)";

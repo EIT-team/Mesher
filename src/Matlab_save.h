@@ -48,7 +48,7 @@ typedef Generator::Vertex_pmap Vertex_pmap;
 
 
 //! save triangulation in matlab Superstructure Mesh (Mesh.Nodes, Mesh.Tria, Mesh.Tetra)
-int save_matlab (const C3t3& c3t3, Input st)
+int save_matlab (const C3t3& c3t3, Input st, char* output_file)
 {
 
   //! Doing some initial mapping
@@ -94,7 +94,7 @@ int save_matlab (const C3t3& c3t3, Input st)
   memcpy((void *)(mxGetPr(mVtx)), (void *)pVtx, int(tr.number_of_vertices()*4*sizeof(double)));
 
   //! Open the file and put the array in
-  pmat = matOpen("Mesh.mat", "w");
+  pmat = matOpen(output_file, "w");
   matPutVariable(pmat, "Nodes", mVtx);
 
   //! Cleanup
