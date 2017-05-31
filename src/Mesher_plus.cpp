@@ -182,8 +182,8 @@ std::cout << "where MM is the major number release, mm is the minor number relea
     int save=save_matlab(c3t3,p,output_file);
 
     //all done
-    std::cout<<"\n ALL DONE, press any key! :)";
-    getchar();
+    std::cout<<"\n ALL DONE! :)";
+
 
     return 0;
 }
