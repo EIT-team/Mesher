@@ -10,7 +10,8 @@
 #include <CGAL/make_mesh_3.h>
 #include <CGAL/Image_3.h>
 
-//#include <CGAL/Surface_mesh_deformation.h>
+// Using CGAL 4.9.1
+#include <CGAL/Surface_mesh_deformation.h>
 
 //Sizing fields
 #include "Sizing_fields.h"
@@ -26,7 +27,7 @@ typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 typedef CGAL::Labeled_image_mesh_domain_3<CGAL::Image_3,K> Mesh_domain;
 
 //For inexact functions
-typedef K::FT FT;
+typedef K::FT FT;   // Field type number
 typedef K::Point_3 Point;
 typedef K::Vector_3 Vector;
 
@@ -50,7 +51,7 @@ typedef std::list<Polyline_3>       Polylines;
     using namespace std;
 
 // Mesh deformation
-//typedef CGAL::Surface_mesh_deformation<Tr> Surface_mesh_deformation;
+typedef CGAL::Surface_mesh_deformation<C3t3> Surface_mesh_deformation;
 
 
 #include <CGAL/config.h>
@@ -69,8 +70,9 @@ int main(int argc, char* argv[])
 
 // Print CGAL Version number
 std::cout << "CGAL Version " << CGAL_VERSION_NR << " (1MMmmb1000)" << std::endl;
-std::cout << "where MM is the major number lreeast, mm is the minor number release" << std::endl;
+std::cout << "where MM is the major number release, mm is the minor number release" << std::endl;
 
+// Check input parameters
 
     if(argc < 9) printusage();
     int opt;
@@ -92,18 +94,31 @@ std::cout << "where MM is the major number lreeast, mm is the minor number relea
         }
     }
     if(optind != argc) printusage();
+
+    // Output file names for sanity check
+    std::cout "Input file: " 		<< path_image << "\n";
+    std::cout "Electrode file: " 	<< path_electrode << "\n";
+    std::cout "Parameter file: " 	<< path_parameter << "\n";
+    std::cout "Output file: " 		<< path_image << "\n";
+
     // Loads image
     CGAL::Image_3 image;
+
     // Read input file with parameters
     Input p;
     p.load_file_idx(path_parameter);
+
     // Reading image file
     std::cout<<"\n Reading the Image file... ";
     image.read(path_image);
+
+
     // Domain
     Mesh_domain domain(image);
 
     //Define Sizing field
+    // vx, vy and vz are the size of each voxel
+   // xdim, ydim and zdim are the number of voxels along each axis
     Point origin(image.vx () * image.xdim ()/2,
             image.vy () * image.ydim ()/2, 
             image.vz () * image.zdim ()/2); //origin
@@ -146,6 +161,7 @@ std::cout << "where MM is the major number lreeast, mm is the minor number relea
             CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(), 
             CGAL::parameters::no_perturb(),CGAL::parameters::no_exude()); 
     //}
+
 
 
     //Optimisation
