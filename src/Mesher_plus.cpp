@@ -1,42 +1,17 @@
-//Sizing fields
+
 #include "Sizing_fields.h"
-//Input parameters
 #include "input_parameters.h"
 #include "Matlab_save.h"
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 
+// include/defines used across all  statements
 #include "include.h"
 
-// Domain
-typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
-typedef CGAL::Labeled_image_mesh_domain_3<CGAL::Image_3,K> Mesh_domain;
-
-//For inexact functions
-typedef K::FT FT;   // Field type number
-typedef K::Point_3 Point;
-typedef K::Vector_3 Vector;
-
-// Polyline
-typedef std::vector<Point>        Polyline_3;
-typedef std::list<Polyline_3>       Polylines;
-
-// Triangulation
-//#ifdef CGAL_CONCURRENT_MESH_3
-
-    typedef CGAL::Mesh_complex_3_in_triangulation_3<Tr> C3t3;
-
-    // Criteria
-    typedef CGAL::Mesh_criteria_3<Tr> Mesh_criteria;
-    //typedef CGAL::Mesh_constant_domain_field_3<Mesh_domain::R,
-    //Mesh_domain::Index> Sizing_field;
-
-
-    // To avoid verbose function and named parameters call
-    using namespace CGAL::parameters;
-    using namespace std;
-
+// To avoid verbose function and named parameters call
+using namespace CGAL::parameters;
+using namespace std;
 
 #include <CGAL/config.h>
 

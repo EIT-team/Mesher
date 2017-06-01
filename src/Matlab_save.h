@@ -5,32 +5,6 @@
 #include <mat.h>
 #include "include.h"
 
-// Triangulation
-//#ifdef CGAL_LINKED_WITH_TBB
-//typedef CGAL::Mesh_triangulation_3<Mesh_domain,
-//    CGAL::Kernel_traits<Mesh_domain>::Kernel, 
-//    CGAL::Parallel_tag                        
-//    >::type Tr;
-//#else
-typedef CGAL::Mesh_triangulation_3<Mesh_domain>::type Tr;
-//#endif
-
-typedef CGAL::Mesh_complex_3_in_triangulation_3<Tr> C3t3;
-//! Iterators for Facets, Vertices and cells
-typedef C3t3::Facets_in_complex_iterator Facet_iterator;
-typedef C3t3::Cells_in_complex_iterator Cell_iterator;
-typedef Tr::Finite_vertices_iterator Finite_vertices_iterator;
-typedef Tr::Vertex_handle Vertex_handle;
-//! Point
-typedef Tr::Point Point_3;
-
-//! Map generators (connectivity and domains)
-typedef CGAL::Mesh_3::Medit_pmap_generator<C3t3,true,true> Generator;
-typedef  Generator::Cell_pmap Cell_pmap;
-typedef  Generator::Facet_pmap Facet_pmap;
-typedef  Generator::Facet_pmap_twice Facet_pmap_twice;
-typedef Generator::Vertex_pmap Vertex_pmap;
-
 
 //! save triangulation in matlab Superstructure Mesh (Mesh.Nodes, Mesh.Tria, Mesh.Tetra)
 int save_matlab (const C3t3& c3t3, Input st, char* output_file)
