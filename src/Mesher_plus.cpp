@@ -96,10 +96,10 @@ std::cout << "where MM is the major number release, mm is the minor number relea
     if(optind != argc) printusage();
 
     // Output file names for sanity check
-    std::cout "Input file: " 		<< path_image << "\n";
-    std::cout "Electrode file: " 	<< path_electrode << "\n";
-    std::cout "Parameter file: " 	<< path_parameter << "\n";
-    std::cout "Output file: " 		<< path_image << "\n";
+    std::cout << "Input file: " 		<< path_image << "\n";
+    std::cout << "Electrode file: " 	<< path_electrode << "\n";
+    std::cout << "Parameter file: " 	<< path_parameter << "\n";
+    std::cout << "Output file: " 		<< path_image << "\n";
 
     // Loads image
     CGAL::Image_3 image;
