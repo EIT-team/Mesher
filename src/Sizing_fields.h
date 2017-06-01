@@ -3,25 +3,7 @@
 // developed by Kirill Aristovich
 // Example change by James H
 //THIS CODE SUCKS!!!!!!!!
-#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
-
-#include <CGAL/Mesh_triangulation_3.h>
-#include <CGAL/Mesh_complex_3_in_triangulation_3.h>
-#include <CGAL/Mesh_criteria_3.h>
-
-#include <CGAL/Labeled_image_mesh_domain_3.h>
-#include <CGAL/Mesh_domain_with_polyline_features_3.h>
-
-#include <CGAL/make_mesh_3.h>
-#include <CGAL/Image_3.h>
-
-typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
-typedef CGAL::Labeled_image_mesh_domain_3<CGAL::Image_3,K> Mesh_domain;
-
-typedef K::FT FT;
-typedef K::Point_3 Point;
-typedef K::Vector_3 Vector;
-
+#include "include.h"
 
 //Sizing field: Elliptical with electrodes
 struct sizing_field_elliptic_electrodes

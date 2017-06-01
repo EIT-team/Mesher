@@ -1,18 +1,3 @@
-#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
-
-#include <CGAL/Mesh_triangulation_3.h>
-#include <CGAL/Mesh_complex_3_in_triangulation_3.h>
-#include <CGAL/Mesh_criteria_3.h>
-
-#include <CGAL/Labeled_image_mesh_domain_3.h>
-#include <CGAL/Mesh_domain_with_polyline_features_3.h>
-
-#include <CGAL/make_mesh_3.h>
-#include <CGAL/Image_3.h>
-
-// Using CGAL 4.9.1
-#include <CGAL/Surface_mesh_deformation.h>
-
 //Sizing fields
 #include "Sizing_fields.h"
 //Input parameters
@@ -21,6 +6,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "include.h"
 
 // Domain
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
@@ -49,9 +36,6 @@ typedef std::list<Polyline_3>       Polylines;
     // To avoid verbose function and named parameters call
     using namespace CGAL::parameters;
     using namespace std;
-
-// Mesh deformation
-typedef CGAL::Surface_mesh_deformation<C3t3> Surface_mesh_deformation;
 
 
 #include <CGAL/config.h>
@@ -130,12 +114,9 @@ std::cout << "where MM is the major number release, mm is the minor number relea
 
     Mesh_domain::Index sub = domain.index_from_subdomain_index(2); //!!! I do not remember what this does, but it should be very useful ...
 
-    //sizing_field_jacobian size_p_J (h,p.direction,ub,F,p.options["pixel_scale_mm"], origin,sub); // THIS uses SUB, need to remember to use it
-
     sizing_field_elliptic_electrodes size_p (origin,F,1/p.unit,1/p.unit,1/p.unit); //This is basic and working now for both rat and human
 
     if (F!=NULL) fclose(F);
-    //sizing_field_planar_electrodes size_p (h,p.direction,ub); // might not need it at all in future
 
     size_p.coarse_size=p.options["cell_coarse_size_mm"];
     size_p.fine_size=p.options["cell_fine_size_mm"];
@@ -147,9 +128,6 @@ std::cout << "where MM is the major number release, mm is the minor number relea
     // Mesh criteria: faces and cells
     Mesh_criteria criteria(facet_angle=p.options["facet_angle_deg"], facet_size=size_p, facet_distance=p.options["facet_distance_mm"],
             cell_radius_edge_ratio=p.options["cell_radius_edge_ratio"], cell_size=size_p);
-    // For smoothing// DOES NOT WORK LIKE THIS COS REMESHING CALLS BACK THE DOMAIN
-    // Mesh_criteria criteria_coarse(facet_angle=p.fa, facet_size=size_p_coarse, facet_distance=p.fd,
-    //                     cell_radius_edge_ratio=p.cre, cell_size=size_p_coarse);
 
 
     // Meshing
@@ -172,10 +150,6 @@ std::cout << "where MM is the major number release, mm is the minor number relea
     if (int(p.options["exude_opt"])==1)  {std::cout<<"\n Exude... "; CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
 
     // Output
-
-    /*std::ofstream medit_file("out.mesh");
-      c3t3.output_to_medit(medit_file);
-      medit_file.close();*/
 
     //matlab output
     std::cout<<"\n Saving the mesh into matlab file... ";
