@@ -15,6 +15,8 @@ using namespace std;
 
 #include <CGAL/config.h>
 
+#include "from_matlab.h"
+
 void printusage(void)
 {
     printf("Usage:  -i input image file\n");
@@ -23,6 +25,8 @@ void printusage(void)
     printf("        -o output file\n");
     exit(EXIT_FAILURE);
 }
+
+
 
 int main(int argc, char* argv[])
 {
@@ -115,7 +119,12 @@ std::cout << "where MM is the major number release, mm is the minor number relea
             CGAL::parameters::no_perturb(),CGAL::parameters::no_exude()); 
     //}
 
+    centre_of_mesh(c3t3,p);
+    Point test_closest(100,100,100);
+    test_closest_element(c3t3);
 
+
+    cout << "Done" <<endl;
 
     //Optimisation
     std::cout<<"\n Optimising: ";
@@ -131,8 +140,10 @@ std::cout << "where MM is the major number release, mm is the minor number relea
     int save=save_matlab(c3t3,p,output_file);
 
     //all done
-    std::cout<<"\n ALL DONE! :)";
+    std::cout<<"\n ALL DONE! :)" << endl;
 
 
     return 0;
 }
+
+
