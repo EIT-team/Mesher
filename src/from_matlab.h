@@ -38,7 +38,7 @@ Point closest_element(const C3t3& c3t3, Point target_p) {
   	Cell_pmap cell_pmap(c3t3);
 	Facet_pmap facet_pmap(c3t3,cell_pmap);
 
-	cout << "Finding closest surface element to " << target_p << endl;
+	//cout << "Finding closest surface element to " << target_p << endl;
 	//cout << "Number of facets in complex: " << c3t3.number_of_facets_in_complex() << endl
 ;
 	double min_dist = 1000000; //Large sentinel value
@@ -89,7 +89,7 @@ Point closest_element(const C3t3& c3t3, Point target_p) {
 		}
 	}
 	
-	cout << "Closest point is: " << centre_of_closest << endl;
+	cout << "Closest point to: " << target_p << " is: " << centre_of_closest << endl;
 	return centre_of_closest;
 
 }
@@ -116,5 +116,21 @@ bool test_closest_element(const C3t3& c3t3) {
 }
 
 
-	
+std::vector<Point> load_electrode_locations(FILE *F, FT scale) {
+	vector<Point> electrode_locations;
+
+	  if (F == NULL) perror ("Error opening electrode file");
+	  else {
+		  while(!feof(F))
+		  {
+			  float x,y,z;
+			  fscanf(F,"%f,%f,%f\n",&x,&y,&z);
+			  Point pt(x*scale,y*scale,z*scale);
+			  electrode_locations.push_back(pt);	
+		  }
+	  }
+
+	return electrode_locations;
+
+  }
 

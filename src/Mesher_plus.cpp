@@ -2,6 +2,7 @@
 #include "Sizing_fields.h"
 #include "input_parameters.h"
 #include "Matlab_save.h"
+#include "save_dgf.h"
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
@@ -90,27 +91,26 @@ std::cout << "where MM is the major number release, mm is the minor number relea
     try { F=fopen(path_electrode,"r");}
     catch (exception& e) { cout << e.what() << endl;}
 
-
     Mesh_domain::Index sub = domain.index_from_subdomain_index(2); //!!! I do not remember what this does, but it should be very useful ...
 
-    sizing_field_elliptic_electrodes size_p (origin,F,1/p.unit,1/p.unit,1/p.unit); //This is basic and working now for both rat and human
+    sizing_field_elliptic_electrodes sizing_field (origin,F,1/p.unit,1/p.unit,1/p.unit); //This is basic and working now for both rat and human
 
     if (F!=NULL) fclose(F);
 
-    size_p.coarse_size=p.options["cell_coarse_size_mm"];
-    size_p.fine_size=p.options["cell_fine_size_mm"];
-    size_p.preserve=int(p.options["elements_with_fine_size_percentage"]);
-    size_p.e_R=2*p.options["electrode_radius_mm"]; //2* to secure fit of the electrode
-    size_p.electrode_size=p.options["cell_size_electrodes_mm"];//Planar gradient with electrodes -- size of the mesh near electrodes
+    sizing_field.coarse_size=p.options["cell_coarse_size_mm"];
+    sizing_field.fine_size=p.options["cell_fine_size_mm"];
+    sizing_field.preserve=int(p.options["elements_with_fine_sizing_fieldercentage"]);
+    sizing_field.e_R=2*p.options["electrode_radius_mm"]; //2* to secure fit of the electrode
+    sizing_field.electrode_size=p.options["cell_size_electrodes_mm"];//Planar gradient with electrodes -- size of the mesh near electrodes
 
 
     // Mesh criteria: faces and cells
-    Mesh_criteria criteria(facet_angle=p.options["facet_angle_deg"], facet_size=size_p, facet_distance=p.options["facet_distance_mm"],
-            cell_radius_edge_ratio=p.options["cell_radius_edge_ratio"], cell_size=size_p);
+    Mesh_criteria criteria(facet_angle=p.options["facet_angle_deg"], facet_size=sizing_field, facet_distance=p.options["facet_distance_mm"],
+            cell_radius_edge_ratio=p.options["cell_radius_edge_ratio"], cell_size=sizing_field);
 
 
     // Meshing
-    std::cout<<"\n Meshing with initial mesh...";
+    std::cout<<"\n Meshing with initial mesh..." << endl;
     C3t3 c3t3;
     //try { //Do not need this anymore in x64 version, however x86 need one, slows down everything
 
@@ -119,12 +119,15 @@ std::cout << "where MM is the major number release, mm is the minor number relea
             CGAL::parameters::no_perturb(),CGAL::parameters::no_exude()); 
     //}
 
-    centre_of_mesh(c3t3,p);
-    Point test_closest(100,100,100);
-    test_closest_element(c3t3);
+    //centre_of_mesh(c3t3,p);
+    //Point test_closest(100,100,100);
+    //test_closest_element(c3t3);
+    cout << "Moving electrodes to closest facets: " << endl;    
+    for(int i = 0; i < sizing_field.centres.size(); ++i) {
+	sizing_field.centres[i] = closest_element(c3t3, sizing_field.centres[i]);
+	}
+    cout << "Finished moving electrodes" << endl;
 
-
-    cout << "Done" <<endl;
 
     //Optimisation
     std::cout<<"\n Optimising: ";
@@ -134,10 +137,10 @@ std::cout << "where MM is the major number release, mm is the minor number relea
     if (int(p.options["exude_opt"])==1)  {std::cout<<"\n Exude... "; CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
 
     // Output
-
+	save_as_dgf(c3t3,p,output_file);
     //matlab output
-    std::cout<<"\n Saving the mesh into matlab file... ";
-    int save=save_matlab(c3t3,p,output_file);
+    //std::cout<<"\n Saving the mesh into matlab file... ";
+    //int save=save_matlab(c3t3,p,output_file);
 
     //all done
     std::cout<<"\n ALL DONE! :)" << endl;
