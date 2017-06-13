@@ -23,10 +23,10 @@ void printusage(void)
         printf("Usage:  -i input image file\n");
         printf("        -e electrode position file\n");
         printf("        -p parameter file\n");
-        printf("        -o output file\n");
+        printf("        -o output mesh name\n");
+        printf("        -d output directory\n");
         exit(EXIT_FAILURE);
 }
-
 
 
 int main(int argc, char* argv[])
@@ -38,10 +38,11 @@ int main(int argc, char* argv[])
 
 // Check input parameters
 
-        if(argc < 9) printusage();
+        if(argc < 10) printusage();
         int opt;
-        char *path_image, *path_electrode, *path_parameter, *output_file;
-        while((opt = getopt(argc, argv, "i:e:p:o:"))!=-1)
+        char *path_image, *path_electrode, *path_parameter;
+        std::string output_dir, mesh_name, output_file, electrode_file, param_file;
+        while((opt = getopt(argc, argv, "i:e:p:o:d:"))!=-1)
         {
                 switch(opt)
                 {
@@ -52,8 +53,10 @@ int main(int argc, char* argv[])
                 case 'p':
                         path_parameter = optarg;
 
+                case 'd':
+                        output_dir = optarg;
                 case 'o':
-                        output_file = optarg;
+                        mesh_name = optarg;
 
                 }
         }
@@ -63,7 +66,13 @@ int main(int argc, char* argv[])
         std::cout << "Input file: "     << path_image << "\n";
         std::cout << "Electrode file: "   << path_electrode << "\n";
         std::cout << "Parameter file: "   << path_parameter << "\n";
-        std::cout << "Output file: "    << path_image << "\n";
+        std::cout << "Output directory: "   << output_dir << "\n";
+        std::cout << "Output mesh name: "    << mesh_name << "\n\n";
+
+        // Build filenames for electrode positions and parameters
+        electrode_file = output_dir + "electrode_positions_" + mesh_name;
+        param_file = output_dir +"param_" + mesh_name;
+        output_file = output_dir + mesh_name + ".dgf";
 
         // Loads image
         CGAL::Image_3 image;
@@ -112,35 +121,43 @@ int main(int argc, char* argv[])
         // Meshing
         std::cout<<"\n Meshing with initial mesh..." << endl;
         C3t3 c3t3;
-        //try { //Do not need this anymore in x64 version, however x86 need one, slows down everything
-
         c3t3= CGAL::make_mesh_3<C3t3>(domain, criteria, CGAL::parameters::features(domain),
                                       CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
                                       CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
-        //}
 
-        //centre_of_mesh(c3t3,p);
-        //Point test_closest(100,100,100);
-        //test_closest_element(c3t3);
+        Point reference = reference_electrode(c3t3);
+        
         cout << "Moving electrodes to closest facets: " << endl;
         for(int i = 0; i < sizing_field.centres.size(); ++i) {
                 sizing_field.centres[i] = closest_element(c3t3, sizing_field.centres[i]);
         }
         cout << "Finished moving electrodes" << endl;
 
-
         //Optimisation
-        std::cout<<"\n Optimising: ";
+        std::cout<<"\n Optimising: " << endl;
         if (int(p.options["perturb_opt"])==1) {std::cout<<"\n Perturb... "; CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
         if (int(p.options["lloyd_opt"])==1)  {std::cout<<"\n Lloyd... "; CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);}
         if (int(p.options["odt_opt"])==1)  {std::cout<<"\n ODT... "; CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);}
         if (int(p.options["exude_opt"])==1)  {std::cout<<"\n Exude... "; CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
 
-        // Output
-        save_as_dgf(c3t3,p,output_file);
-        //matlab output
-        //std::cout<<"\n Saving the mesh into matlab file... ";
-        //int save=save_matlab(c3t3,p,output_file);
+        // Output dgf file and electrode_positions
+        save_as_dgf(c3t3, p, output_file);
+        save_electrodes(sizing_field.centres, electrode_file);
+
+        // Put together parameters
+        std::map<std::string, std::string> parameters;
+        parameters["fem.io.macroGrid"] = output_file;
+        parameters["electrode.use_node_assignment"] = string("false");
+        parameters["electrode.positions"] = electrode_file;
+        // I don't think the below two are needed
+        //parameters["electrode.nodes"]
+        //parameters["surface.coordinates"]
+        parameters["ground.hsquared"] = string("1.5e-5");
+        //parameters["groundposition.x"] =
+        //parameters["groundposition.y"] =
+        //parameters["groundposition.z"] =
+        // TODO: modify below depnding on whether integer values for conductivitry are given
+        parameters["fem.assign_conductivities"] = string("false");
 
         //all done
         std::cout<<"\n ALL DONE! :)" << endl;

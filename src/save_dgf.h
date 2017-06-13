@@ -3,123 +3,104 @@
 // Thomas Dowrick
 
 #include "include.h"
+// Write Mesh as DGF file, to replace matlab dune_exporter function
 
-
-void save_as_dgf (const C3t3& c3t3, Input st, char* output_file)
+//TODO: Write electrode and dune parameter file
+//TODO: Add ground/reference electrode locaion
+void save_as_dgf (const C3t3& c3t3, Input st, std::string output_file)
 {
 
-	//! Doing some initial mapping
-	Cell_pmap cell_pmap(c3t3);
-	Facet_pmap facet_pmap(c3t3,cell_pmap);
-	Facet_pmap_twice facet_pmap_twice(c3t3,cell_pmap);
-	Vertex_pmap vertex_pmap(c3t3,cell_pmap,facet_pmap);
-	
-	std::map<Vertex_handle, int> vertex_map; // This handles connectivity of vertex_handles to vertex number
+								std::cout << "Writing dgf file: " << output_file << '\n';
 
-	int n_node = 1;
-	int n_tetra = 1;
+								//! Doing some initial mapping
+								Cell_pmap cell_pmap(c3t3);
+								Facet_pmap facet_pmap(c3t3,cell_pmap);
+								Facet_pmap_twice facet_pmap_twice(c3t3,cell_pmap);
+								Vertex_pmap vertex_pmap(c3t3,cell_pmap,facet_pmap);
 
-	Point current_point;
-	double x,y,z;
-	int cell_nodes[4];
-	double cell_domain; // What domain/tissue type is the cell
+								std::map<Vertex_handle, int> vertex_map; // This handles connectivity of vertex_handles to vertex number
 
-	const Tr& triangulation = c3t3.triangulation();
+								int n_node = 1;
+								int n_tetra = 1;
 
-	Finite_vertices_iterator vertices_iterator;
-	Cell_iterator cell_iterator;
+								Point current_point;
+								double x,y,z;
+								int cell_nodes[4];
+								double cell_domain; // What domain/tissue type is the cell
 
-	FILE *dgf_file;
-	dgf_file = fopen(output_file, "w");
+								const Tr& triangulation = c3t3.triangulation();
 
-	// Write Nodes
-	fprintf(dgf_file, "DGF\n");
-	fprintf(dgf_file, "vertex\n");
-	fprintf(dgf_file, "firstindex 1\n");
+								Finite_vertices_iterator vertices_iterator;
+								Cell_iterator cell_iterator;
 
-	for (vertices_iterator = triangulation.finite_vertices_begin(); vertices_iterator != triangulation.finite_vertices_end() ; ++vertices_iterator) {
+								FILE *dgf_file;
+								dgf_file = fopen(output_file.c_str(), "w"); // Convert str to char* for fopen command
 
-		// Store vertex info in vertex_handle to vertex map
-		vertex_map[vertices_iterator] = n_tetra++;
+								// Write Nodes
+								fprintf(dgf_file, "DGF\n");
+								fprintf(dgf_file, "vertex\n");
+								fprintf(dgf_file, "firstindex 1\n");
 
-		current_point = vertices_iterator->point();
-	
-		x = CGAL::to_double(current_point.x()*st.unit);
-		y = CGAL::to_double(current_point.y()*st.unit);
-		z = CGAL::to_double(current_point.z()*st.unit);
+								for (vertices_iterator = triangulation.finite_vertices_begin(); vertices_iterator != triangulation.finite_vertices_end(); ++vertices_iterator) {
 
-		fprintf(dgf_file, "%6.18f %6.18f %6.18f # %d\n", x, y, z, n_node++);
-	}
+																// Store vertex info in vertex_handle to vertex map
+																vertex_map[vertices_iterator] = n_tetra++;
 
-	fprintf(dgf_file, "#\n");
-	
-	// Write Tetrahedron
-	fprintf(dgf_file, "Simplex\n");
-	fprintf(dgf_file, "parameters 2\n");
+																current_point = vertices_iterator->point();
 
-	n_tetra = 1; //reset
+																x = CGAL::to_double(current_point.x()*st.unit);
+																y = CGAL::to_double(current_point.y()*st.unit);
+																z = CGAL::to_double(current_point.z()*st.unit);
 
-	for (cell_iterator = c3t3.cells_in_complex_begin(); cell_iterator != c3t3.cells_in_complex_end(); ++cell_iterator) {
+																fprintf(dgf_file, "%6.18f %6.18f %6.18f # %d\n", x, y, z, n_node++);
+								}
 
-		for (int i = 0; i < 4; i++) {
-			// We want to store the number of the vertex, as stored in 'Nodes' rather than the vertex cordinates itself
-			cell_nodes[i] = int(vertex_map[ cell_iterator->vertex(i)]);
-		}
-	
-	// get the cell domain/tissue index
-	cell_domain = double(get(cell_pmap, cell_iterator));
+								fprintf(dgf_file, "#\n");
 
-	fprintf(dgf_file, "%d %d %d %d %f %d\n", cell_nodes[0], cell_nodes[1], cell_nodes[2], cell_nodes[3], cell_domain, n_tetra++);
-	}
+								// Write Tetrahedron
+								fprintf(dgf_file, "Simplex\n");
+								fprintf(dgf_file, "parameters 2\n");
 
-	fprintf(dgf_file, "#\n");
+								n_tetra = 1; //reset
 
-	fclose(dgf_file);
+								for (cell_iterator = c3t3.cells_in_complex_begin(); cell_iterator != c3t3.cells_in_complex_end(); ++cell_iterator) {
+
+																for (int i = 0; i < 4; i++) {
+																								// We want to store the number of the vertex, as stored in 'Nodes' rather than the vertex cordinates itself
+																								cell_nodes[i] = int(vertex_map[ cell_iterator->vertex(i)]);
+																}
+
+																// get the cell domain/tissue index
+																cell_domain = double(get(cell_pmap, cell_iterator));
+
+																fprintf(dgf_file, "%d %d %d %d %f %d\n", cell_nodes[0], cell_nodes[1], cell_nodes[2], cell_nodes[3], cell_domain, n_tetra++);
+								}
+
+								fprintf(dgf_file, "#\n");
+
+								fclose(dgf_file);
+								std::cout << "Finished writing" << '\n';
 }
-/*
-  
-  //!-------------------------------------------------------
-  //! Tetrahedra
-  //!-------------------------------------------------------
-
-  C3t3::size_type number_of_cells = c3t3.number_of_cells_in_complex();
-
-  //! Array to put in mat
-  int * Ttr = new int [number_of_cells*5];
-  void * pTtr=Ttr; // remember the beginning 
-
-  //! Copy cells in the Ttr
-  for( Cell_iterator cit = c3t3.cells_in_complex_begin() ;
-      cit != c3t3.cells_in_complex_end() ;
-      ++cit )
-  {
-    for (int i=0; i<4; i++)
-    { *(Ttr+i*number_of_cells) = int( V[cit->vertex(i)]) ;}
-
-    *(Ttr+4*number_of_cells) = int(get(cell_pmap, cit));
-    Ttr++;
-  }
-
-  //! Create the disgusting Matlab array and fill it with zeros, bastards Mathworks, 
-  //! let them handle type conversion till the end of their lifes!
-  mxArray * mTtr = mxCreateNumericMatrix(number_of_cells,5,mxINT32_CLASS,mxREAL);
-
-  //! And here is the most painful structure here. NOTE: if you have troubles with it, i am not responsible, Matlab does! 
-  memcpy((void *)(mxGetPr(mTtr)), (void *)pTtr, int (number_of_cells*5*sizeof(int)));
-
-  //! Put the stuff in mat and cleanup
-  matPutVariable(pmat, "Tetra", mTtr);
-  delete [] pTtr;
-  mxDestroyArray(mTtr);
 
 
-  ////-------------------------------------------------------
-  //// End
-  ////-------------------------------------------------------
+void save_electrodes(Points electrodes, std::string output_file)
+{
+							std::cout << "Writing electrode file: " << output_file << '\n';
 
-  //! cloas the file and return if we actually closed it. If it is not closed it is impossible to open afterwards in Matlab 
-  if (matClose(pmat)) return 1;
-  return 0;
+								FILE *electrode_file;
+								electrode_file  =fopen(output_file.c_str(), "w");
+
+								for (int i = 0; i < electrodes.size(); i++) {
+																fprintf(electrode_file, "%6.18f %6.18f %6.18f \n", electrodes[i].x(), electrodes[i].y(), electrodes[i].z());
+								}
+
+								fclose(electrode_file);
+								std::cout << "Finished writing" << '\n';
+
+}
+
+void save_parameters(const C3t3& c3t3, Input st, std::string output_file)
+{
 
 
-} */
+}
