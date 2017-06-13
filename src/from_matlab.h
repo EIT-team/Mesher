@@ -1,7 +1,9 @@
-void centre_of_mesh(const C3t3& c3t3, Input st);
+#include "include.h"
+
+Point centre_of_mesh(const C3t3& c3t3);
 
 //TODO: move definition to cpp file, need to look at CMAKE to get it to include the cpp file
-void centre_of_mesh(const C3t3& c3t3, Input st) {
+Point centre_of_mesh(const C3t3& c3t3) {
 
 								cout << "Calculating cetnre of mesh" << endl;
 
@@ -22,11 +24,14 @@ void centre_of_mesh(const C3t3& c3t3, Input st) {
 
 								}
 
-								std::cout << "x: " << mean_vtx[0]/n_vertex << endl
-																		<< "y: " << mean_vtx[1]/n_vertex << endl
-																		<< "z: " << mean_vtx[2]/n_vertex << endl;
+								Point centre_point(mean_vtx[0]/n_vertex, mean_vtx[1]/n_vertex, mean_vtx[2]/n_vertex);
+
+								std::cout << "x: " << centre_point.x() << endl
+																		<< "y: " << centre_point.y() << endl
+																		<< "z: " << centre_point.z() << endl;
 
 
+								return centre_point;
 }
 
 
@@ -116,6 +121,7 @@ bool test_closest_element(const C3t3& c3t3) {
 
 
 std::vector<Point> load_electrode_locations(FILE *F, FT scale) {
+	// Loads electrode positions from a file and returns a vector of points
 								vector<Point> electrode_locations;
 
 								if (F == NULL) perror ("Error opening electrode file");
@@ -131,4 +137,23 @@ std::vector<Point> load_electrode_locations(FILE *F, FT scale) {
 
 								return electrode_locations;
 
+}
+
+Point reference_electrode(const C3t3& c3t3)
+{
+					 // Add a sufficently large vector to the centre of the mesh,
+					 // should result in a point outside of the mesh.
+					 // This particular vector should come out of the front of the forehead
+					 // for human head
+
+					cout << "Generating reference electrode location\n" ;;
+
+					Vector far_away(0,-90,90);
+					Point outside_mesh = centre_of_mesh(c3t3) + far_away;
+					Point reference = closest_element( c3t3, outside_mesh);
+
+					cout << "Point outside mesh is: " << outside_mesh << endl;
+					cout << "Reference located at: " << reference << endl << endl;
+
+					return reference;
 }
