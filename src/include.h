@@ -58,8 +58,8 @@ typedef  Generator::Facet_pmap_twice Facet_pmap_twice;
 typedef Generator::Vertex_pmap Vertex_pmap;
 
 //For Sizing field
-  typedef Mesh_domain::Index Index;
-  typedef std::vector<Point>  Points;
+typedef Mesh_domain::Index Index;
+typedef std::vector<Point>  Points;
 
 
 #endif
