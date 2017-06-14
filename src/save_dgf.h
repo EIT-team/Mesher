@@ -82,7 +82,7 @@ void save_as_dgf (const C3t3& c3t3, Input st, string output_file)
 								fprintf(dgf_file, "#\n");
 
 								fclose(dgf_file);
-								cout << "Finished writing" << '\n\n';
+								cout << "Finished writing" << "\n\n";
 }
 
 
@@ -98,9 +98,10 @@ void save_electrodes(Points electrodes, string output_file)
 								}
 
 								fclose(electrode_file);
-								cout << "Finished writing" << '\n\n';
+								cout << "Finished writing" << "\n\n";
 
 }
+
 
 void save_parameters(map<string, string> parameters, string output_file)
 {
@@ -120,4 +121,28 @@ void save_parameters(map<string, string> parameters, string output_file)
 								parameter_file.close();
 								cout << "Finished writing \n\n";
 
+}
+
+
+void save_protocol(vector<int> full_prt, string output_file)
+{
+	// Take output protocol as a vector of ints.
+	// Each sequence of four ints represents one protocol line
+	// e.g.  	inj_a inj_b meas gnd
+	cout << "writing full protocol to file: " << output_file << endl;
+	int n_prt = full_prt.size()/4;
+
+		FILE *protocol_file;
+		protocol_file = fopen(output_file.c_str(), "w");
+
+		int i; // Index of current vector element
+		for (int j = 0; j < n_prt; j++)
+		{
+			//Write protocol line - next four elements of vector
+			fprintf(protocol_file, "%d %d %d %d\n", full_prt[i++], full_prt[i++], full_prt[i++], full_prt[i++]);
+		}
+
+		fclose(protocol_file);
+
+		cout << "Finished writing\n";
 }

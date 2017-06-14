@@ -1,5 +1,7 @@
 #include "include.h"
 
+using namespace std;
+
 Point centre_of_mesh(const C3t3& c3t3);
 
 //TODO: move definition to cpp file, need to look at CMAKE to get it to include the cpp file
@@ -11,7 +13,7 @@ Point centre_of_mesh(const C3t3& c3t3) {
 								double n_vertex = tr.number_of_vertices();
 								double mean_vtx[3] = {0};
 
-								std::map<Vertex_handle, int> V;
+								map<Vertex_handle, int> V;
 								int inum = 1;
 								Point p;
 
@@ -26,7 +28,7 @@ Point centre_of_mesh(const C3t3& c3t3) {
 
 								Point centre_point(mean_vtx[0]/n_vertex, mean_vtx[1]/n_vertex, mean_vtx[2]/n_vertex);
 
-								std::cout << "x: " << centre_point.x() << endl
+								cout << "x: " << centre_point.x() << endl
 																		<< "y: " << centre_point.y() << endl
 																		<< "z: " << centre_point.z() << endl;
 
@@ -34,9 +36,8 @@ Point centre_of_mesh(const C3t3& c3t3) {
 								return centre_point;
 }
 
-
 Point closest_element(const C3t3& c3t3, Point target_p) {
-// Find the closest element in the surface to a given point in space
+	// Find the closest element in the surface to a given point in space
 
 								// Facet property map - used for finding the domain (tissue type) of a facet or cell
 								Cell_pmap cell_pmap(c3t3);
@@ -48,7 +49,7 @@ Point closest_element(const C3t3& c3t3, Point target_p) {
 								double min_dist = 1000000; //Large sentinel value
 								double this_dist;
 								Point centre_of_closest(0,0,0);
-								std::vector<Point> facet_points;
+								vector<Point> facet_points;
 
 								// Only want to use facets that are in the outermost layer i.e. the skin
 								int skin_tissue_index = 7;
@@ -120,7 +121,7 @@ bool test_closest_element(const C3t3& c3t3) {
 }
 
 
-std::vector<Point> load_electrode_locations(FILE *F, FT scale) {
+vector<Point> load_electrode_locations(FILE *F, FT scale) {
 								// Loads electrode positions from a file and returns a vector of points
 								vector<Point> electrode_locations;
 
@@ -171,7 +172,7 @@ Point set_ground_electrode(const C3t3& c3t3)
 								double furthest = -1000; // Set to sentinel values
 								double current_y;
 
-//std::map<Vertex_handle, int> V;
+//map<Vertex_handle, int> V;
 								int inum = 1;
 //Point p;
 
@@ -193,4 +194,41 @@ Point set_ground_electrode(const C3t3& c3t3)
 								cout << "Ground electrode placed at: " << gnd_electrode << endl << endl;
 								return gnd_electrode;
 
+}
+
+vector<int> generate_full_protocol(vector<int> prt, int n_elecs)
+{
+								// Take input protocol as a vector of ints.
+								// Each pair of ints represents one injection pair.
+								// e.g.  [2 5 3 7] means injection between 2,5 and injeciton between 3,7
+								cout << "generating full protocol\n";
+								int n_prt = prt.size()/2;
+
+								int gnd_elec = n_elecs + 1;
+								int injection_a, injection_b;
+
+								vector<int> full_prt;
+
+								for (int i = 0; i < n_prt; i++)
+								{
+																injection_a = prt[2*i];
+																injection_b = prt[2*i +1];
+
+																cout << "Injection electrodes: " << injection_a << " " << injection_b << endl;
+
+																for (int elec_num = 1; elec_num <= n_elecs; elec_num++)
+																{
+																								// Don't include injection electrodes in measurements
+																								if (elec_num != injection_a && elec_num != injection_b)
+																								{
+																																// Add prt row - inj_a inj_b meas gnd
+																																full_prt.push_back(gnd_elec);
+																																full_prt.push_back(elec_num);
+																																full_prt.push_back(injection_b);
+																																full_prt.push_back(injection_a);
+
+																								}
+																}
+								}
+								return full_prt;
 }

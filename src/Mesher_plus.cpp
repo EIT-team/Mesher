@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
         if(argc < 10) printusage();
         int opt;
         char *path_image, *path_electrode, *path_parameter;
-        std::string output_dir, mesh_name, output_file, electrode_file, parameter_file;
+        std::string output_dir, mesh_name, output_file, electrode_file, parameter_file, protocol_file;
         while((opt = getopt(argc, argv, "i:e:p:o:d:"))!=-1)
         {
                 switch(opt)
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
         electrode_file = output_dir + "electrode_positions_" + mesh_name;
         parameter_file = output_dir +"param_" + mesh_name;
         output_file = output_dir + mesh_name + ".dgf";
-
+        protocol_file = output_dir + "protocol_" + mesh_name;
         // Loads image
         CGAL::Image_3 image;
 
@@ -125,6 +125,13 @@ int main(int argc, char* argv[])
                                       CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
                                       CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
 
+        //Optimisation
+        std::cout<<"\n Optimising: " << endl;
+        if (int(p.options["perturb_opt"])==1) {std::cout<<"\n Perturb... "; CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
+        if (int(p.options["lloyd_opt"])==1)  {std::cout<<"\n Lloyd... "; CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);}
+        if (int(p.options["odt_opt"])==1)  {std::cout<<"\n ODT... "; CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);}
+        if (int(p.options["exude_opt"])==1)  {std::cout<<"\n Exude... "; CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
+
         // Generate reference electrode location and append to elecrtode list
         Point reference_electrode = set_reference_electrode(c3t3);
         sizing_field.centres.push_back(reference_electrode);
@@ -137,12 +144,10 @@ int main(int argc, char* argv[])
         }
         cout << "Finished moving electrodes" << endl;
 
-        //Optimisation
-        std::cout<<"\n Optimising: " << endl;
-        if (int(p.options["perturb_opt"])==1) {std::cout<<"\n Perturb... "; CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
-        if (int(p.options["lloyd_opt"])==1)  {std::cout<<"\n Lloyd... "; CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);}
-        if (int(p.options["odt_opt"])==1)  {std::cout<<"\n ODT... "; CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);}
-        if (int(p.options["exude_opt"])==1)  {std::cout<<"\n Exude... "; CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
+        // TODO: Read in the prt from a file or something
+        static const int arr[] = {1,4,2,5,3,6,4,8};
+        vector<int> prt (arr, arr + sizeof(arr) / sizeof(arr[0]) );
+        vector<int> full_prt = generate_full_protocol(prt,32);
 
         // Put together parameters
         std::map<std::string, std::string> parameters;
@@ -175,5 +180,7 @@ int main(int argc, char* argv[])
         save_as_dgf(c3t3, p, output_file);
         save_electrodes(sizing_field.centres, electrode_file);
         save_parameters(parameters, parameter_file);
+        save_protocol(full_prt, protocol_file);
+
         return 0;
 }
