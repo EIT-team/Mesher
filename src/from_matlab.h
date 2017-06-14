@@ -121,7 +121,7 @@ bool test_closest_element(const C3t3& c3t3) {
 
 
 std::vector<Point> load_electrode_locations(FILE *F, FT scale) {
-	// Loads electrode positions from a file and returns a vector of points
+								// Loads electrode positions from a file and returns a vector of points
 								vector<Point> electrode_locations;
 
 								if (F == NULL) perror ("Error opening electrode file");
@@ -139,21 +139,58 @@ std::vector<Point> load_electrode_locations(FILE *F, FT scale) {
 
 }
 
-Point reference_electrode(const C3t3& c3t3)
+Point set_reference_electrode(const C3t3& c3t3)
 {
-					 // Add a sufficently large vector to the centre of the mesh,
-					 // should result in a point outside of the mesh.
-					 // This particular vector should come out of the front of the forehead
-					 // for human head
+								// Add a sufficently large vector to the centre of the mesh,
+								// should result in a point outside of the mesh.
+								// This particular vector should come out of the front of the forehead
+								// for human head
 
-					cout << "Generating reference electrode location\n" ;;
+								cout << "Generating reference electrode location\n";
 
-					Vector far_away(0,-90,90);
-					Point outside_mesh = centre_of_mesh(c3t3) + far_away;
-					Point reference = closest_element( c3t3, outside_mesh);
+								Vector far_away(0,-90,90);
+								Point outside_mesh = centre_of_mesh(c3t3) + far_away;
+								Point reference = closest_element( c3t3, outside_mesh);
 
-					cout << "Point outside mesh is: " << outside_mesh << endl;
-					cout << "Reference located at: " << reference << endl << endl;
+								cout << "Point outside mesh is: " << outside_mesh << endl;
+								cout << "Reference located at: " << reference << endl << endl;
 
-					return reference;
+								return reference;
+}
+
+Point set_ground_electrode(const C3t3& c3t3)
+{
+								// Place the ground location at the back of the head (For humans)
+
+								cout << "Placing ground elecrtode\n";
+
+
+								const Tr& tr = c3t3.triangulation();
+								double n_vertex = tr.number_of_vertices();
+								Point gnd_electrode, current_vertex;
+								double furthest = -1000; // Set to sentinel values
+								double current_y;
+
+//std::map<Vertex_handle, int> V;
+								int inum = 1;
+//Point p;
+
+// Find the largest y value by iterating through all vertices
+								for (Finite_vertices_iterator vit = tr.finite_vertices_begin(); vit != tr.finite_vertices_end(); ++vit)
+								{
+
+																current_vertex = vit->point();
+																current_y = CGAL::to_double(current_vertex.y());
+
+																// Check if current value is the largest and updtate if so
+																if (current_y > furthest) {
+																								furthest = current_y;
+																								gnd_electrode = current_vertex;
+																}
+
+								}
+
+								cout << "Ground electrode placed at: " << gnd_electrode << endl << endl;
+								return gnd_electrode;
+
 }

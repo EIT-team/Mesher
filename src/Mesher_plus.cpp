@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
         if(argc < 10) printusage();
         int opt;
         char *path_image, *path_electrode, *path_parameter;
-        std::string output_dir, mesh_name, output_file, electrode_file, param_file;
+        std::string output_dir, mesh_name, output_file, electrode_file, parameter_file;
         while((opt = getopt(argc, argv, "i:e:p:o:d:"))!=-1)
         {
                 switch(opt)
@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
 
         // Build filenames for electrode positions and parameters
         electrode_file = output_dir + "electrode_positions_" + mesh_name;
-        param_file = output_dir +"param_" + mesh_name;
+        parameter_file = output_dir +"param_" + mesh_name;
         output_file = output_dir + mesh_name + ".dgf";
 
         // Loads image
@@ -125,8 +125,12 @@ int main(int argc, char* argv[])
                                       CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
                                       CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
 
-        Point reference = reference_electrode(c3t3);
-        
+        // Generate reference electrode location and append to elecrtode list
+        Point reference_electrode = set_reference_electrode(c3t3);
+        sizing_field.centres.push_back(reference_electrode);
+
+        Point ground_electrode = set_ground_electrode(c3t3);
+
         cout << "Moving electrodes to closest facets: " << endl;
         for(int i = 0; i < sizing_field.centres.size(); ++i) {
                 sizing_field.centres[i] = closest_element(c3t3, sizing_field.centres[i]);
@@ -140,10 +144,6 @@ int main(int argc, char* argv[])
         if (int(p.options["odt_opt"])==1)  {std::cout<<"\n ODT... "; CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);}
         if (int(p.options["exude_opt"])==1)  {std::cout<<"\n Exude... "; CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
 
-        // Output dgf file and electrode_positions
-        save_as_dgf(c3t3, p, output_file);
-        save_electrodes(sizing_field.centres, electrode_file);
-
         // Put together parameters
         std::map<std::string, std::string> parameters;
         parameters["fem.io.macroGrid"] = output_file;
@@ -153,15 +153,27 @@ int main(int argc, char* argv[])
         //parameters["electrode.nodes"]
         //parameters["surface.coordinates"]
         parameters["ground.hsquared"] = string("1.5e-5");
-        //parameters["groundposition.x"] =
-        //parameters["groundposition.y"] =
-        //parameters["groundposition.z"] =
+
+        // Need to convert double to string before adding to parameter map
+        // using std::ostringstream to do this
+        std::ostringstream gndposx, gndposy, gndposz;
+        gndposx << CGAL::to_double(ground_electrode.x());
+        gndposy << CGAL::to_double(ground_electrode.y());
+        gndposz << CGAL::to_double(ground_electrode.z());
+
+        parameters["groundposition.x"] = gndposx.str();
+        parameters["groundposition.y"] = gndposy.str();
+        parameters["groundposition.z"] = gndposz.str();
+
         // TODO: modify below depnding on whether integer values for conductivitry are given
         parameters["fem.assign_conductivities"] = string("false");
 
         //all done
         std::cout<<"\n ALL DONE! :)" << endl;
 
-
+        // Output dgf file and electrode_positions
+        save_as_dgf(c3t3, p, output_file);
+        save_electrodes(sizing_field.centres, electrode_file);
+        save_parameters(parameters, parameter_file);
         return 0;
 }

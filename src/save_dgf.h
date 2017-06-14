@@ -3,14 +3,17 @@
 // Thomas Dowrick
 
 #include "include.h"
+
+using namespace std;
+
 // Write Mesh as DGF file, to replace matlab dune_exporter function
 
 //TODO: Write electrode and dune parameter file
 //TODO: Add ground/reference electrode locaion
-void save_as_dgf (const C3t3& c3t3, Input st, std::string output_file)
+void save_as_dgf (const C3t3& c3t3, Input st, string output_file)
 {
 
-								std::cout << "Writing dgf file: " << output_file << '\n';
+								cout << "Writing dgf file: " << output_file << '\n';
 
 								//! Doing some initial mapping
 								Cell_pmap cell_pmap(c3t3);
@@ -18,7 +21,7 @@ void save_as_dgf (const C3t3& c3t3, Input st, std::string output_file)
 								Facet_pmap_twice facet_pmap_twice(c3t3,cell_pmap);
 								Vertex_pmap vertex_pmap(c3t3,cell_pmap,facet_pmap);
 
-								std::map<Vertex_handle, int> vertex_map; // This handles connectivity of vertex_handles to vertex number
+								map<Vertex_handle, int> vertex_map; // This handles connectivity of vertex_handles to vertex number
 
 								int n_node = 1;
 								int n_tetra = 1;
@@ -79,13 +82,13 @@ void save_as_dgf (const C3t3& c3t3, Input st, std::string output_file)
 								fprintf(dgf_file, "#\n");
 
 								fclose(dgf_file);
-								std::cout << "Finished writing" << '\n';
+								cout << "Finished writing" << '\n\n';
 }
 
 
-void save_electrodes(Points electrodes, std::string output_file)
+void save_electrodes(Points electrodes, string output_file)
 {
-							std::cout << "Writing electrode file: " << output_file << '\n';
+								cout << "Writing electrode file: " << output_file << '\n';
 
 								FILE *electrode_file;
 								electrode_file  =fopen(output_file.c_str(), "w");
@@ -95,12 +98,26 @@ void save_electrodes(Points electrodes, std::string output_file)
 								}
 
 								fclose(electrode_file);
-								std::cout << "Finished writing" << '\n';
+								cout << "Finished writing" << '\n\n';
 
 }
 
-void save_parameters(const C3t3& c3t3, Input st, std::string output_file)
+void save_parameters(map<string, string> parameters, string output_file)
 {
+								cout << "Writing parameter file: " << output_file << '\n';
 
+								// Use stream for writing output file, easier to use with map data structure that fprintf
+								fstream parameter_file;
+								parameter_file.open(output_file.c_str(), fstream::out);
+
+								map<string, string>::iterator it;
+
+								for (it = parameters.begin(); it != parameters.end(); it++)
+								{
+																parameter_file << it->first << ": " << it->second << endl << endl;
+								}
+
+								parameter_file.close();
+								cout << "Finished writing \n\n";
 
 }
