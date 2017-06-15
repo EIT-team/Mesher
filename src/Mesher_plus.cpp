@@ -32,6 +32,8 @@ void printusage(void)
 int main(int argc, char* argv[])
 {
 
+//TODO: Generate or save sigma values
+//TODO: Look at mesh.pertubation section in PEITS model.hh file
 // Print CGAL Version number
         std::cout << "CGAL Version " << CGAL_VERSION_NR << " (1MMmmb1000)" << std::endl;
         std::cout << "where MM is the major number release, mm is the minor number release" << std::endl;
@@ -41,7 +43,8 @@ int main(int argc, char* argv[])
         if(argc < 10) printusage();
         int opt;
         char *path_image, *path_electrode, *path_parameter;
-        std::string output_dir, mesh_name, output_file, electrode_file, parameter_file, protocol_file;
+        string        output_dir, mesh_name, output_file, electrode_file,
+                      parameter_file, protocol_file, PEITS_output_dir;
         while((opt = getopt(argc, argv, "i:e:p:o:d:"))!=-1)
         {
                 switch(opt)
@@ -74,6 +77,7 @@ int main(int argc, char* argv[])
         parameter_file = output_dir +"param_" + mesh_name;
         output_file = output_dir + mesh_name + ".dgf";
         protocol_file = output_dir + "protocol_" + mesh_name;
+        PEITS_output_dir = output_dir + "/PEITS_output/";
         // Loads image
         CGAL::Image_3 image;
 
@@ -169,6 +173,10 @@ int main(int argc, char* argv[])
         parameters["groundposition.x"] = gndposx.str();
         parameters["groundposition.y"] = gndposy.str();
         parameters["groundposition.z"] = gndposz.str();
+
+        // TODO: Remove these from the relevant parameter files in PEITS
+        parameters["current.protocol"] = protocol_file;
+        //parameters["fem.io.outputpath"] = PEITS_output_dir;
 
         // TODO: modify below depnding on whether integer values for conductivitry are given
         parameters["fem.assign_conductivities"] = string("false");
