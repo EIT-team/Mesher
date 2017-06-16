@@ -94,7 +94,7 @@ void save_electrodes(Points electrodes, string output_file)
 								electrode_file  =fopen(output_file.c_str(), "w");
 
 								for (int i = 0; i < electrodes.size(); i++) {
-																fprintf(electrode_file, "%6.18f %6.18f %6.18f \n", electrodes[i].x(), electrodes[i].y(), electrodes[i].z());
+																fprintf(electrode_file, "%6.18f, %6.18f, %6.18f \n", electrodes[i].x(), electrodes[i].y(), electrodes[i].z());
 								}
 
 								fclose(electrode_file);
