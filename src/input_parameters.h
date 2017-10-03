@@ -24,7 +24,7 @@ struct Input
         void load_file_idx(char* file_name_input)
         {
                 std::ifstream cfgfile(file_name_input, std::ifstream::in); // = std::ifstream::open(file_name_input);
-                if (cfgfile == NULL) perror ("\n Error opening input parameters file");
+                if (!cfgfile) perror ("\n Error opening input parameters file");
 
                 std::string id, eq;
                 FT val;

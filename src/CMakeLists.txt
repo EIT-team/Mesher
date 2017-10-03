@@ -31,7 +31,7 @@ include( ${CGAL_USE_FILE} )
 
 # Boost and its components
 find_package( Boost REQUIRED )
-#find_package( TBB REQUIRED )
+find_package( TBB )
 
 if ( NOT Boost_FOUND )
 
@@ -48,18 +48,24 @@ set(CMAKE_CXX_FLAGS "-O3")
 if( TBB_FOUND )
     include(${TBB_USE_FILE})
     list(APPEND CGAL_3RD_PARTY_LIBRARIES ${TBB_LIBRARIES})
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ltbb")
 endif()
 
+if ( MATLAB_FOUND )
+    target_link_libraries(mesher_rat ${MATLAB_LIBRARIES} ${TBB_LIBRARIES} mat)
+    include_directories(${MATLAB_INCLUDE_DIR})
+endif()
 
 # Creating entries for all .cpp/.C files with "main" routine
 # ##########################################################
 
 include( CGAL_CreateSingleSourceCGALProgram )
-include_directories(${MATLAB_INCLUDE_DIR})
+
 add_executable(mesher_rat "Mesher_plus.cpp")
-target_link_libraries(mesher_rat ${MATLAB_LIBRARIES} ${TBB_LIBRARIES} mat)
+
 add_definitions(-DINPUTS_DIR="${CMAKE_SOURCE_DIR}/inputs")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lstdc++ -ltbb")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lstdc++")
+
 set_target_properties(mesher_rat PROPERTIES 
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
