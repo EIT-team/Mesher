@@ -1,3 +1,6 @@
+#ifndef INPUT_PARAMETERS_H
+#define INPUT_PARAMETERS_H
+
 #include "include.h"
 
 struct Input
@@ -53,3 +56,5 @@ struct Input
 
 
 };
+
+#endif

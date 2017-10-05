@@ -4,6 +4,7 @@
 // Example change by James H
 //THIS CODE SUCKS!!!!!!!!
 #include "include.h"
+#include "input_parameters.h"
 
 //Sizing field: Elliptical with electrodes
 struct sizing_field_elliptic_electrodes
@@ -21,19 +22,30 @@ struct sizing_field_elliptic_electrodes
 
         FT ub_x,ub_y,ub_z;
 
-        sizing_field_elliptic_electrodes(Point& p, FILE* F, FT scale_x, FT scale_y, FT scale_z)
+
+
+        sizing_field_elliptic_electrodes(Point& origin_in, FILE* F, Input params)
         {
-                if (F == NULL) perror ("Error opening electrode file");
+
+          FT scale_xyz = 1/params.unit;
+
+          coarse_size=params.options["cell_coarse_size_mm"];
+          fine_size=params.options["cell_fine_size_mm"];
+          preserve=int(params.options["elements_with_fine_sizing_fieldercentage"]);
+          e_R=2*params.options["electrode_radius_mm"]; //2* to secure fit of the electrode
+          electrode_size=params.options["cell_size_electrodes_mm"];//Planar gradient with electrodes -- size of the mesh near electrodes
+
+          if (F == NULL) perror ("Error opening electrode file");
                 else {
                         while(!feof(F))
                         {
                                 float x,y,z;
                                 fscanf(F,"%f,%f,%f\n",&x,&y,&z);
-                                Point pt(x*scale_x,y*scale_y,z*scale_z);
+                                Point pt(x*scale_xyz,y*scale_xyz,z*scale_xyz);
                                 centres.push_back(pt);
                         }
                 }
-                origin=p;
+                origin=origin_in;
                 ub_x=origin.x();
                 ub_y=origin.y();
                 ub_z=origin.z();

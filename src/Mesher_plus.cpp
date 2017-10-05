@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
 
         Mesh_domain::Index sub = domain.index_from_subdomain_index(2); //!!! I do not remember what this does, but it should be very useful ...
 
-        sizing_field_elliptic_electrodes sizing_field (origin,F,1/p.unit,1/p.unit,1/p.unit); //This is basic and working now for both rat and human
+        sizing_field_elliptic_electrodes sizing_field (origin,F,p); //This is basic and working now for both rat and human
 
         if (F!=NULL) fclose(F);
 
@@ -128,6 +128,9 @@ int main(int argc, char* argv[])
         c3t3= CGAL::make_mesh_3<C3t3>(domain, criteria, CGAL::parameters::features(domain),
                                       CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
                                       CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
+
+        // Save unoptimised mesh
+        save_as_dgf(c3t3, p, output_file + ".pre_optimise");
 
         //Optimisation
         std::cout<<"\n Optimising: " << endl;
