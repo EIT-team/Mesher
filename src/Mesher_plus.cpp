@@ -38,13 +38,14 @@ int main(int argc, char* argv[])
         std::cout << "CGAL Version " << CGAL_VERSION_NR << " (1MMmmb1000)" << std::endl;
         std::cout << "where MM is the major number release, mm is the minor number release" << std::endl;
 
-// Check input parameters
+// Process input parameters
 
         if(argc < 10) printusage();
         int opt;
         char *path_image, *path_electrode, *path_parameter;
         string        output_dir, mesh_name, output_file, electrode_file,
                       parameter_file, protocol_file, PEITS_output_dir;
+
         while((opt = getopt(argc, argv, "i:e:p:o:d:"))!=-1)
         {
                 switch(opt)
@@ -78,17 +79,17 @@ int main(int argc, char* argv[])
         output_file = output_dir + mesh_name + ".dgf";
         protocol_file = output_dir + "protocol_" + mesh_name;
         PEITS_output_dir = output_dir + "/PEITS_output/";
-        // Loads image
-        CGAL::Image_3 image;
 
         // Read input file with parameters
         Input p;
         p.load_file_idx(path_parameter);
 
+        // Loads image
+        CGAL::Image_3 image;
+
         // Reading image file
         std::cout<<"\n Reading the Image file... ";
         image.read(path_image);
-
 
         // Domain
         Mesh_domain domain(image);
@@ -104,17 +105,11 @@ int main(int argc, char* argv[])
         try { F=fopen(path_electrode,"r");}
         catch (exception& e) { cout << e.what() << endl;}
 
-        Mesh_domain::Index sub = domain.index_from_subdomain_index(2); //!!! I do not remember what this does, but it should be very useful ...
+        //Mesh_domain::Index sub = domain.index_from_subdomain_index(2); //!!! I do not remember what this does, but it should be very useful ...
 
         sizing_field_elliptic_electrodes sizing_field (origin,F,p); //This is basic and working now for both rat and human
 
         if (F!=NULL) fclose(F);
-
-        sizing_field.coarse_size=p.options["cell_coarse_size_mm"];
-        sizing_field.fine_size=p.options["cell_fine_size_mm"];
-        sizing_field.preserve=int(p.options["elements_with_fine_sizing_fieldercentage"]);
-        sizing_field.e_R=2*p.options["electrode_radius_mm"]; //2* to secure fit of the electrode
-        sizing_field.electrode_size=p.options["cell_size_electrodes_mm"];//Planar gradient with electrodes -- size of the mesh near electrodes
 
 
         // Mesh criteria: faces and cells
