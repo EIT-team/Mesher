@@ -6,6 +6,8 @@
 #include "include.h"
 #include "input_parameters.h"
 
+using namespace std;
+
 //Sizing field: Elliptical with electrodes
 struct sizing_field_elliptic_electrodes
 {
@@ -24,8 +26,12 @@ struct sizing_field_elliptic_electrodes
 
 
 
-        sizing_field_elliptic_electrodes(Point& origin_in, FILE* F, Input params)
+        sizing_field_elliptic_electrodes(Point& origin_in, string path_electrode, Input params)
         {
+
+          FILE *F;
+          try { F=fopen(path_electrode.c_str(),"r");}
+          catch (exception& e) { cout << e.what() << endl;}
 
           FT scale_xyz = 1/params.unit;
 
@@ -49,6 +55,9 @@ struct sizing_field_elliptic_electrodes
                 ub_x=origin.x();
                 ub_y=origin.y();
                 ub_z=origin.z();
+
+        if (F!=NULL) fclose(F);
+
         }
 
 

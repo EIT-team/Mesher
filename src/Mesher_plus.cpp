@@ -64,6 +64,7 @@ int main(int argc, char* argv[])
 
                 }
         }
+
         if(optind != argc) printusage();
 
         // Output file names for sanity check
@@ -86,10 +87,11 @@ int main(int argc, char* argv[])
 
         // Loads image
         CGAL::Image_3 image;
-
-        // Reading image file
         std::cout<<"\n Reading the Image file... ";
         image.read(path_image);
+        // TODO: Modify/stretch etc
+
+
 
         // Domain
         Mesh_domain domain(image);
@@ -101,16 +103,8 @@ int main(int argc, char* argv[])
                      image.vy () * image.ydim ()/2,
                      image.vz () * image.zdim ()/2); //origin
 
-        FILE *F;
-        try { F=fopen(path_electrode,"r");}
-        catch (exception& e) { cout << e.what() << endl;}
 
-        //Mesh_domain::Index sub = domain.index_from_subdomain_index(2); //!!! I do not remember what this does, but it should be very useful ...
-
-        sizing_field_elliptic_electrodes sizing_field (origin,F,p); //This is basic and working now for both rat and human
-
-        if (F!=NULL) fclose(F);
-
+        sizing_field_elliptic_electrodes sizing_field (origin,path_electrode,p); //This is basic and working now for both rat and human
 
         // Mesh criteria: faces and cells
         Mesh_criteria criteria(facet_angle=p.options["facet_angle_deg"], facet_size=sizing_field, facet_distance=p.options["facet_distance_mm"],
@@ -129,10 +123,26 @@ int main(int argc, char* argv[])
 
         //Optimisation
         std::cout<<"\n Optimising: " << endl;
-        if (int(p.options["perturb_opt"])==1) {std::cout<<"\n Perturb... "; CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
-        if (int(p.options["lloyd_opt"])==1)  {std::cout<<"\n Lloyd... "; CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);}
-        if (int(p.options["odt_opt"])==1)  {std::cout<<"\n ODT... "; CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);}
-        if (int(p.options["exude_opt"])==1)  {std::cout<<"\n Exude... "; CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);}
+        if (int(p.options["perturb_opt"])==1) {
+        std::cout<<"\n Perturb... ";
+         CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=p.options["time_limit_sec"]);
+       }
+
+        if (int(p.options["lloyd_opt"])==1) {
+          std::cout<<"\n Lloyd... ";
+          CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);
+        }
+
+        if (int(p.options["odt_opt"])==1) {
+          std::cout<<"\n ODT... ";
+          CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);
+        }
+
+        if (int(p.options["exude_opt"])==1)  {
+         std::cout<<"\n Exude... ";
+         CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);
+       }
+
 
         // Generate reference electrode location and append to elecrtode list
         Point reference_electrode = set_reference_electrode(c3t3);
