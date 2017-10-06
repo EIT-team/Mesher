@@ -11,6 +11,8 @@
 #include <CGAL/Labeled_image_mesh_domain_3.h>
 #include <CGAL/Mesh_domain_with_polyline_features_3.h>
 
+#include "write_c3t3_to_vtk_xml_file.h"
+
 #include <CGAL/make_mesh_3.h>
 #include <CGAL/Image_3.h>
 

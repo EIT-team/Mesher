@@ -28,7 +28,23 @@ void printusage(void)
         exit(EXIT_FAILURE);
 }
 
+void modify_image(CGAL::Image_3 image) {
+  //TODO: Check that input inr file actually has a domain/tissue type assigned.
+  // TODO: Do some actual stetching of mesh
+  cout << "Modifying image data" << endl;
 
+  cout << "Xdim: " << image.xdim() << "  Ydim: " << image.ydim() << "  Zdim: " << image.zdim() << endl;
+  cout << "vX: " << image.vx() << "  vY: " << image.vy() << " vZ: " << image.vz() << endl;
+
+  int * image_data = (int*)image.data();
+
+  cout << "Image data" << endl;
+
+  for (long i = 256 * 128 * 128; i < 256 * 128 * 128 + 2560 ; i++) {
+  cout << image_data[i] << " ";
+}
+
+}
 int main(int argc, char* argv[])
 {
 
@@ -89,8 +105,9 @@ int main(int argc, char* argv[])
         CGAL::Image_3 image;
         std::cout<<"\n Reading the Image file... ";
         image.read(path_image);
-        // TODO: Modify/stretch etc
 
+        // TODO: Modify/stretch etc
+        //modify_image(image);
 
 
         // Domain
@@ -120,6 +137,10 @@ int main(int argc, char* argv[])
 
         // Save unoptimised mesh
         save_as_dgf(c3t3, p, output_file + ".pre_optimise");
+
+        // Output the mesh for Paraview
+        string vtk_file_path = output_file + "pre_optimise.vtu";
+        bool vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
 
         //Optimisation
         std::cout<<"\n Optimising: " << endl;
@@ -197,6 +218,10 @@ int main(int argc, char* argv[])
         save_electrodes(sizing_field.centres, electrode_file);
         save_parameters(parameters, parameter_file);
         save_protocol(full_prt, protocol_file);
+
+        // Output the mesh for Paraview
+        vtk_file_path = output_file + ".vtu";
+        vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
 
         return 0;
 }
