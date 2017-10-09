@@ -12,7 +12,7 @@ endif()
 set( CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true )
 
 if ( COMMAND cmake_policy )
-    cmake_policy( SET CMP0003 NEW )  
+    cmake_policy( SET CMP0003 NEW )
 endif()
 
 # CGAL and its components
@@ -21,7 +21,7 @@ find_package( CGAL QUIET COMPONENTS ImageIO )
 if ( NOT CGAL_FOUND )
 
     message(STATUS "This project requires the CGAL library, and will not be compiled.")
-    return()  
+    return()
 
 endif()
 
@@ -37,7 +37,7 @@ if ( NOT Boost_FOUND )
 
     message(STATUS "This project requires the Boost library, and will not be compiled.")
 
-    return()  
+    return()
 
 endif()
 
@@ -61,16 +61,10 @@ endif()
 
 include( CGAL_CreateSingleSourceCGALProgram )
 
-add_executable(mesher_rat "Mesher_plus.cpp")
+add_executable(mesher_rat "Mesher_plus.cpp" "warp_mesh.cpp")
 
 add_definitions(-DINPUTS_DIR="${CMAKE_SOURCE_DIR}/inputs")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lstdc++")
 
-set_target_properties(mesher_rat PROPERTIES 
+set_target_properties(mesher_rat PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
-
-
-
-
-
-
