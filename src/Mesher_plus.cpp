@@ -8,7 +8,7 @@
 #include <string.h>
 
 // include/defines used across all  statements
-#include "include.h"
+#include "CGAL_include.h"
 
 // To avoid verbose function and named parameters call
 using namespace CGAL::parameters;

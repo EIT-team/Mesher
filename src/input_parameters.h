@@ -1,7 +1,7 @@
 #ifndef INPUT_PARAMETERS_H
 #define INPUT_PARAMETERS_H
 
-#include "include.h"
+#include "CGAL_include.h"
 
 struct Input
 {

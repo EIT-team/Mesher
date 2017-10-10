@@ -3,7 +3,7 @@
 // developed by Kirill Aristovich
 // Example change by James H
 //THIS CODE SUCKS!!!!!!!!
-#include "include.h"
+#include "CGAL_include.h"
 #include "input_parameters.h"
 
 using namespace std;

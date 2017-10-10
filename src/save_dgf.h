@@ -2,7 +2,7 @@
 // Refer to Matlab documentation for mat.h for help
 // Thomas Dowrick
 
-#include "include.h"
+#include "CGAL_include.h"
 
 using namespace std;
 

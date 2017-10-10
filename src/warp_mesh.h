@@ -6,6 +6,7 @@
 
 using namespace std;
 
+long get_array_index(int,int,int, int);
 void modify_image(unsigned char *) ;
 
 #endif
