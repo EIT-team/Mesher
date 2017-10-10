@@ -6,5 +6,10 @@
 #include <fstream>
 #include <stdexcept>
 #include <map>
+#include <vector>
+
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
 #endif

@@ -3,9 +3,7 @@
 #include "input_parameters.h"
 #include "Matlab_save.h"
 #include "save_dgf.h"
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
+
 
 // include/defines used across all  statements
 #include "CGAL_include.h"
@@ -96,12 +94,15 @@ int main(int argc, char* argv[])
         image.read(path_image);
 
 
+
         // TODO: Modify/stretch etc
         unsigned char * image_data = (unsigned char*)image.data();
-      modify_image(image_data);
+        modify_image(image_data);
 
 
+        int n_runs = 0;
         // Domain
+
         Mesh_domain domain(image);
 
         //Define Sizing field
@@ -133,6 +134,7 @@ int main(int argc, char* argv[])
         // Output the mesh for Paraview
         string vtk_file_path = output_file + "pre_optimise.vtu";
         bool vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
+
 
 
 /*
