@@ -13,7 +13,7 @@ long get_array_index(int x, int y, int z, int dims) {
 
   idx = (x * dims + y) * dims + z;
 
-  if (idx > dims*dims*dims) {
+  if (idx >= dims*dims*dims) {
     //std::cout << "Array index too big!" << std::endl;
     return -1;
   }
@@ -32,6 +32,8 @@ void dilate_layer(unsigned char * image_data, int layer_index, int n_pixels, int
   /* Expands one a particular layer/tissue by one voxel on all sides
   image_data: input array
   layer_index: the layer/tissue index to be dilated
+  n_pixels: how many pixels/voxels to dilate the layer by
+  dims: length of the x/y/z dimension in image_data
 
   */
  cout << "Dilating layer " + to_string(layer_index) + " by " + to_string(n_pixels) + " pixels" <<endl;
