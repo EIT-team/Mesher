@@ -141,12 +141,21 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
 
       */
 
-
+      cout << "Stretching array" << endl << "Point: " << point_to_move << " Distance: "
+      << distance_to_move << " Anchor: " << anchor << endl;
       // Check valid point is given
       if (point_to_move == anchor) {
         cout << "Point to move cannot be the same as the anchor point" << endl;
         return;
       }
+
+      // TODO: This won't catch the case where  point_to_move < anchor
+      // Check that the new point location(s) will be within the array bounds
+      if ((point_to_move + distance_to_move) > dims) {
+        cout << " Distance to move too great, new point outside bounds of array" << endl;
+        return;
+      }
+
 
       int start_iterate, end_iterate;
       int move_point_dist_from_anchor;
@@ -156,6 +165,7 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
       // /Is point to move to the left of anchor
       if (point_to_move < anchor) {
         start_iterate  = point_to_move - distance_to_move;
+        move_point_dist_from_anchor = point_to_move - distance_to_move - anchor;
         end_iterate = anchor - 1;
         stretch_scale = 1;
 
@@ -163,20 +173,29 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
 
       else {
         start_iterate = point_to_move + distance_to_move;
+        move_point_dist_from_anchor = point_to_move + distance_to_move - anchor;
         end_iterate = anchor + 1;
         stretch_scale = -1;
       }
 
       int i, j, k;
       int this_idx, vec_to_copy_from, idx_to_copy_from;
+      int distance_from_anchor;
+      double distance_anchor_ratio, stretch_ratio;
 
       for (i = start_iterate; i != end_iterate; i += stretch_scale) {
-        vec_to_copy_from = i + stretch_scale * distance_to_move;
 
         for (j = 0; j < dims; j++) {
           for (k = 0; k < dims; k++) {
-            this_idx = get_array_index( i, j, k, dims);
-            idx_to_copy_from  = get_array_index( vec_to_copy_from, j, k, dims);
+
+            distance_from_anchor = i - anchor;
+            distance_anchor_ratio = distance_from_anchor / (double)move_point_dist_from_anchor;
+            stretch_ratio = stretch_scale * distance_anchor_ratio * distance_anchor_ratio;
+
+            vec_to_copy_from = i + stretch_ratio * distance_to_move;
+
+            this_idx = get_array_index( i, k, j, dims);
+            idx_to_copy_from  = get_array_index(vec_to_copy_from, k, j, dims);
 
             image_data[this_idx] = image_data[idx_to_copy_from];
           }
@@ -193,30 +212,9 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
       //TODO: Check that input inr file actually has a domain/tissue type assigned.
       // TODO: Do some actual stetching of mesh
 
-      //stretch_array_1D( image_data, 225, 5, 128, 256);
-     dilate_layer(image_data, 5, 1, 256);
+      stretch_array_1D( image_data, 225, 25, 128, 256);
+     //dilate_layer(image_data, 5, 1, 256);
 
 
-      /*
-      //cout << "Xdim: " << image.xdim() << "  Ydim: " << image.ydim() << "  Zdim: " << image.zdim() << endl;
-      //cout << "vX: " << image.vx() << "  vY: " << image.vy() << " vZ: " << image.vz() << endl;
 
-      int x,y,z;
-      int dim = 256;
-
-      // Voxel data is stored as unsigned char by default
-      // Casting it to unsigned int is more useful/readable for processing
-      unsigned char this_voxel_char;
-      unsigned int this_voxel_int;
-
-      for (long i = 0; i < dim*dim*dim; i++) {
-      this_voxel_int = (unsigned int)image_data[i];
-
-      // Change anything that isnt't background (index 0) to the same index
-      if (this_voxel_int != 0) {
-      image_data[i] = (unsigned char)(7);
-    }
-
-  }
-  */
 }
