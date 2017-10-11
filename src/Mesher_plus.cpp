@@ -88,14 +88,16 @@ int main(int argc, char* argv[])
         Input p;
         p.load_file_idx(path_parameter);
 
+        // TODO: take command line arugment to generate n difrerent meshes
+        int n = 25;
+        while (n--) {
         // Loads image
         CGAL::Image_3 image;
         std::cout<<"\n Reading the Image file... ";
+
+
         image.read(path_image);
 
-
-
-        // TODO: Modify/stretch etc
         unsigned char * image_data = (unsigned char*)image.data();
         modify_image(image_data);
 
@@ -132,10 +134,10 @@ int main(int argc, char* argv[])
         save_as_dgf(c3t3, p, output_file + ".pre_optimise");
 
         // Output the mesh for Paraview
-        string vtk_file_path = output_file + "pre_optimise.vtu";
+        string vtk_file_path = output_file +  "pre_optimise" + to_string(n) + ".vtu";
         bool vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
 
-
+}
 
 /*
 

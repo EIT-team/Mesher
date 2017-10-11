@@ -130,7 +130,7 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
   }
 
   void stretch_array_1D( unsigned char * image_data,
-    int point_to_move, int distance_to_move, int anchor, int dims ) {
+    int point_to_move, int distance_to_move, int anchor, char direction, int dims ) {
 
       /*    'Stretch' array contents
 
@@ -138,12 +138,13 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
       point_to_move: array index of point to move
       distance_to_move: how many elemnts to move this point by
       anchor: fixed point, relative to which 'stretching' is calcualted
+      direction: axis along which to stretch (x,y,z)
 
       */
-      char direction = 'z';
+
 
       cout << "Stretching array" << endl << "Point: " << point_to_move << " Distance: "
-      << distance_to_move << " Anchor: " << anchor << "along dimension: " << direction << endl;
+      << distance_to_move << " Anchor: " << anchor << " along dimension: " << direction << endl;
       // Check valid point is given
       if (point_to_move == anchor) {
         cout << "Point to move cannot be the same as the anchor point" << endl;
@@ -224,10 +225,76 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
 
       //TODO: Check that input inr file actually has a domain/tissue type assigned.
       // TODO: Do some actual stetching of mesh
-
-      stretch_array_1D( image_data, 225, 25, 128, 256);
+      // TODO:  pass dims to this function
+      //stretch_array_1D( image_data, 60, 25, 128, 'x', 256);
      //dilate_layer(image_data, 5, 1, 256);
 
+     srand(time(NULL));
+
+     // TODO: write parameters of random deformations to some file
+     // Do at least one
+     random_stretch(image_data, 256);
+
+     while (rand() % 2) {
+     random_stretch(image_data, 256);
+}
+     //random_dilate(image_data, 256);
 
 
+
+}
+
+void random_stretch(unsigned char* image_data, int dims) {
+
+  char directions[3] = {'x', 'y', 'z'};
+  char rand_direction = directions [ rand() % 3 ];
+
+  // Try to generate 'reasonable' maniuplation points
+  int anchor = (dims / 4 ) + rand() % (dims / 4 ); // In middle
+
+  int lower_quarter = rand() % (dims/4); // 0 to 1/4
+  int upper_quarter = (3*dims/4) + lower_quarter; // 3/4 to endl
+  int stretch_point;
+
+  if (rand() %2) {
+  stretch_point = lower_quarter;
+}
+else {
+  stretch_point = upper_quarter;
+
+}
+
+  // Random distance, no bigger than max_stretch and remaining within the bounds of array
+  int max_stretch = 25;
+  int distance = rand() % (min (max_stretch, dims - stretch_point));
+
+  stretch_array_1D(image_data, stretch_point, distance, anchor, rand_direction, dims);
+}
+
+void random_dilate(unsigned char* image_data, int dims) {
+  // Dilate a random layer by a random amount (between  1 and 3 pixels)
+
+  int layer, dilate_amount;
+  int max_dilate = 1;
+
+  // Get list of layer indices and select one at random
+  vector<int> layers = get_layers(image_data, dims);
+  int random_index = rand() % layers.size();
+  layer = layers[random_index];
+
+  dilate_amount  =1 + rand() % max_dilate;
+
+dilate_layer(image_data, layer, dilate_amount, dims);
+
+}
+
+vector<int> get_layers(unsigned char* image_data, int dims) {
+// Placeholder for function to loop through array and return a vector of all the unique values
+  vector<int> layers;
+
+  for (int i = 1; i <= 7; i++) {
+    layers.push_back(i);
+  }
+
+  return layers;
 }

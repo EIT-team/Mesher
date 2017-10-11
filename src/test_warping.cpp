@@ -140,7 +140,6 @@ TEST_CASE ("Dilation") {
 
     SECTION ("Dilate central elment") {
 
-
       // Set centrla elemnt to 1
       test_input[central_element] = layer_1;
 
