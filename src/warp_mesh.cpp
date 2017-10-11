@@ -140,9 +140,10 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
       anchor: fixed point, relative to which 'stretching' is calcualted
 
       */
+      char direction = 'z';
 
       cout << "Stretching array" << endl << "Point: " << point_to_move << " Distance: "
-      << distance_to_move << " Anchor: " << anchor << endl;
+      << distance_to_move << " Anchor: " << anchor << "along dimension: " << direction << endl;
       // Check valid point is given
       if (point_to_move == anchor) {
         cout << "Point to move cannot be the same as the anchor point" << endl;
@@ -161,7 +162,7 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
       int move_point_dist_from_anchor;
       int stretch_scale;
 
-
+      // TODO: Better way to handle this?
       // /Is point to move to the left of anchor
       if (point_to_move < anchor) {
         start_iterate  = point_to_move - distance_to_move;
@@ -185,17 +186,29 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
 
       for (i = start_iterate; i != end_iterate; i += stretch_scale) {
 
+        distance_from_anchor = i - anchor;
+        distance_anchor_ratio = distance_from_anchor / (double)move_point_dist_from_anchor;
+        stretch_ratio = stretch_scale * distance_anchor_ratio * distance_anchor_ratio;
+        vec_to_copy_from = i + stretch_ratio * distance_to_move;
+
         for (j = 0; j < dims; j++) {
           for (k = 0; k < dims; k++) {
 
-            distance_from_anchor = i - anchor;
-            distance_anchor_ratio = distance_from_anchor / (double)move_point_dist_from_anchor;
-            stretch_ratio = stretch_scale * distance_anchor_ratio * distance_anchor_ratio;
+            // TODO: better way to handle different directions?
+            if (direction == 'y') {
+              this_idx = get_array_index( i, k, j, dims);
+              idx_to_copy_from  = get_array_index(vec_to_copy_from, k, j, dims);
+            }
 
-            vec_to_copy_from = i + stretch_ratio * distance_to_move;
+            if (direction == 'z') {
+              this_idx = get_array_index( k, i, j, dims);
+              idx_to_copy_from  = get_array_index(k, vec_to_copy_from, j, dims);
+            }
 
-            this_idx = get_array_index( i, k, j, dims);
-            idx_to_copy_from  = get_array_index(vec_to_copy_from, k, j, dims);
+            if (direction == 'x') {
+            this_idx = get_array_index( j, k, i, dims);
+            idx_to_copy_from  = get_array_index(j, k, vec_to_copy_from, dims);
+            }
 
             image_data[this_idx] = image_data[idx_to_copy_from];
           }
