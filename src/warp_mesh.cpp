@@ -74,27 +74,6 @@ void dilate_layer(unsigned char * image_data, int layer_index, int n_pixels, int
 
   }
 
-  /*void change_neighbours(unsigned char * image_data, long idx, int dims) {
-
-  unsigned char layer_index = image_data[idx];
-
-  // Get list of neighbouring elements
-  vector<long> neighbours = neighbouring_elements( idx, dims);
-
-  long vector_element;
-
-  // Do the dilation
-  // Go through the elements and change the layer type
-  while (!neighbours.empty()) {
-
-  vector_element = neighbours.back();
-  image_data[vector_element] = layer_index;
-  neighbours.pop_back();
-
-}
-}*/
-
-
 vector<long> neighbouring_elements (long voxel_index, int dims) {
   /* Calculate the indexes of elements neighbouring a partiuclar voxel in 3D array
   */
@@ -219,7 +198,7 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
 
     }
 
-    void modify_image(unsigned char * image_data) {
+    void modify_image(unsigned char * image_data, int dims) {
 
       std::cout << std::endl << "MODIFYING IMAGE DATA" << endl;
 
@@ -233,14 +212,17 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
 
      // TODO: write parameters of random deformations to some file
      // Do at least one
-     random_stretch(image_data, 256);
+     random_stretch(image_data, dims);
 
      while (rand() % 2) {
-     random_stretch(image_data, 256);
+     random_stretch(image_data, dims);
+
+
 }
-     //random_dilate(image_data, 256);
-
-
+    // 50% chance of dilation
+     if (rand() %2) {
+      ;// random_dilate(image_data, dims);
+     }
 
 }
 
@@ -252,8 +234,8 @@ void random_stretch(unsigned char* image_data, int dims) {
   // Try to generate 'reasonable' maniuplation points
   int anchor = (dims / 4 ) + rand() % (dims / 4 ); // In middle
 
-  int lower_quarter = rand() % (dims/4); // 0 to 1/4
-  int upper_quarter = (3*dims/4) + lower_quarter; // 3/4 to endl
+  int lower_quarter = rand() % (dims/6); // 0 to 1/4
+  int upper_quarter = (5*dims/6) + lower_quarter; // 3/4 to endl
   int stretch_point;
 
   if (rand() %2) {
@@ -266,7 +248,8 @@ else {
 
   // Random distance, no bigger than max_stretch and remaining within the bounds of array
   int max_stretch = 25;
-  int distance = rand() % (min (max_stretch, dims - stretch_point));
+  // TODO: doesn't account for
+  int distance = rand() % (min (max_stretch, min(stretch_point, dims - stretch_point)));
 
   stretch_array_1D(image_data, stretch_point, distance, anchor, rand_direction, dims);
 }

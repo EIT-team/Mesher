@@ -89,20 +89,20 @@ int main(int argc, char* argv[])
         p.load_file_idx(path_parameter);
 
         // TODO: take command line arugment to generate n difrerent meshes
-        int n = 25;
-        while (n--) {
+
+
         // Loads image
         CGAL::Image_3 image;
         std::cout<<"\n Reading the Image file... ";
 
 
         image.read(path_image);
+        cout << "Dimensions of image: " << image.xdim() << endl;
 
         unsigned char * image_data = (unsigned char*)image.data();
-        modify_image(image_data);
+        modify_image(image_data, image.xdim());
 
 
-        int n_runs = 0;
         // Domain
 
         Mesh_domain domain(image);
@@ -134,12 +134,12 @@ int main(int argc, char* argv[])
         save_as_dgf(c3t3, p, output_file + ".pre_optimise");
 
         // Output the mesh for Paraview
-        string vtk_file_path = output_file +  "pre_optimise" + to_string(n) + ".vtu";
+        string vtk_file_path = output_file +  "pre_optimise.vtu";
         bool vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
 
-}
 
-/*
+
+
 
         //Optimisation
         std::cout<<"\n Optimising: " << endl;
@@ -221,6 +221,6 @@ int main(int argc, char* argv[])
         // Output the mesh for Paraview
         vtk_file_path = output_file + ".vtu";
         vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
-*/
+
         return 0;
 }
