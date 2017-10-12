@@ -1,4 +1,4 @@
-
+//
 #include "Sizing_fields.h"
 #include "input_parameters.h"
 #include "Matlab_save.h"
@@ -90,7 +90,9 @@ int main(int argc, char* argv[])
 
         // TODO: take command line arugment to generate n difrerent meshes
 
+        int n = 10;
 
+        while (n--) {
         // Loads image
         CGAL::Image_3 image;
         std::cout<<"\n Reading the Image file... ";
@@ -99,12 +101,11 @@ int main(int argc, char* argv[])
         image.read(path_image);
         cout << "Dimensions of image: " << image.xdim() << endl;
 
-        unsigned char * image_data = (unsigned char*)image.data();
-        modify_image(image_data, image.xdim());
+        //unsigned char * image_data = (unsigned char*)image.data();
+        Deform_Volume warper(image.data(), image.xdim());
+        warper.modify_image();
 
-
-        // Domain
-
+                // Domain
         Mesh_domain domain(image);
 
         //Define Sizing field
@@ -163,7 +164,7 @@ int main(int argc, char* argv[])
          CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);
        }
 
-
+/*
         // Generate reference electrode location and append to elecrtode list
         Point reference_electrode = set_reference_electrode(c3t3);
         sizing_field.centres.push_back(reference_electrode);
@@ -218,9 +219,11 @@ int main(int argc, char* argv[])
         save_parameters(parameters, parameter_file);
         save_protocol(full_prt, protocol_file);
 
-        // Output the mesh for Paraview
-        vtk_file_path = output_file + ".vtu";
-        vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
+*/
 
+        // Output the mesh for Paraview
+        vtk_file_path = output_file + to_string(n) + ".vtu";
+        vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
+}
         return 0;
 }

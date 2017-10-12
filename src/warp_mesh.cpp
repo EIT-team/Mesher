@@ -1,7 +1,18 @@
 
 #include "warp_mesh.h"
 
-long get_array_index(int x, int y, int z, int dims) {
+Deform_Volume::Deform_Volume() {
+  ;
+}
+
+Deform_Volume::Deform_Volume(void * data, int image_dims) {
+
+  image_data = (unsigned char*)data;
+  dims = image_dims;
+  find_mesh_bounds();
+}
+
+long Deform_Volume::get_array_index(int x, int y, int z) {
   /* Image data is represented (to humans) as 3D voxel data e.g. array[x][y][z]. To CGAL,
   it is just a one dimensional array which contains all of the voxels.
 
@@ -10,7 +21,6 @@ long get_array_index(int x, int y, int z, int dims) {
   */
 
   long idx;
-
   idx = (x * dims + y) * dims + z;
 
   if (idx >= dims*dims*dims) {
@@ -28,7 +38,7 @@ long get_array_index(int x, int y, int z, int dims) {
 }
 
 
-void dilate_layer(unsigned char * image_data, int layer_index, int n_pixels, int dims) {
+void Deform_Volume::dilate_layer(int layer_index, int n_pixels) {
   /* Expands one a particular layer/tissue by one voxel on all sides
   image_data: input array
   layer_index: the layer/tissue index to be dilated
@@ -50,7 +60,7 @@ void dilate_layer(unsigned char * image_data, int layer_index, int n_pixels, int
     if (image_data[i] == layer_index_char) {
 
       // Get the neighbouring elements
-      neighbours = neighbouring_elements( i, dims);
+      neighbours = neighbouring_elements(i);
 
       // Add these to the list of elments to change
       elements_to_change.insert(
@@ -74,7 +84,7 @@ void dilate_layer(unsigned char * image_data, int layer_index, int n_pixels, int
 
   }
 
-vector<long> neighbouring_elements (long voxel_index, int dims) {
+vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
   /* Calculate the indexes of elements neighbouring a partiuclar voxel in 3D array
   */
 
@@ -93,7 +103,7 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
     for (j = y - 1; j <= y + 1; j++) {
       for (k = z - 1; k <= z + 1; k++) {
 
-        this_idx = get_array_index(i, j, k, dims);
+        this_idx = get_array_index(i, j, k);
 
         // Check that voxel is within bounds [0 NDIMS] and that it is not the original voxel
         if (i >= 0 && i < dims &&  j >= 0 && j < dims && k >= 0 && k < dims &&
@@ -108,8 +118,7 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
 
   }
 
-  void stretch_array_1D( unsigned char * image_data,
-    int point_to_move, int distance_to_move, int anchor, char direction, int dims ) {
+void Deform_Volume::stretch_array_1D(int point_to_move, int distance_to_move, int anchor, char direction) {
 
       /*    'Stretch' array contents
 
@@ -120,7 +129,6 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
       direction: axis along which to stretch (x,y,z)
 
       */
-
 
       cout << "Stretching array" << endl << "Point: " << point_to_move << " Distance: "
       << distance_to_move << " Anchor: " << anchor << " along dimension: " << direction << endl;
@@ -176,18 +184,18 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
 
             // TODO: better way to handle different directions?
             if (direction == 'y') {
-              this_idx = get_array_index( i, k, j, dims);
-              idx_to_copy_from  = get_array_index(vec_to_copy_from, k, j, dims);
+              this_idx = get_array_index( i, k, j);
+              idx_to_copy_from  = get_array_index(vec_to_copy_from, k, j);
             }
 
             if (direction == 'z') {
-              this_idx = get_array_index( k, i, j, dims);
-              idx_to_copy_from  = get_array_index(k, vec_to_copy_from, j, dims);
+              this_idx = get_array_index( k, i, j);
+              idx_to_copy_from  = get_array_index(k, vec_to_copy_from, j);
             }
 
             if (direction == 'x') {
-            this_idx = get_array_index( j, k, i, dims);
-            idx_to_copy_from  = get_array_index(j, k, vec_to_copy_from, dims);
+            this_idx = get_array_index( j, k, i);
+            idx_to_copy_from  = get_array_index(j, k, vec_to_copy_from);
             }
 
             image_data[this_idx] = image_data[idx_to_copy_from];
@@ -198,7 +206,7 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
 
     }
 
-    void modify_image(unsigned char * image_data, int dims) {
+void Deform_Volume::modify_image() {
 
       std::cout << std::endl << "MODIFYING IMAGE DATA" << endl;
 
@@ -212,10 +220,11 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
 
      // TODO: write parameters of random deformations to some file
      // Do at least one
-     random_stretch(image_data, dims);
+     random_stretch();
 
      while (rand() % 2) {
-     random_stretch(image_data, dims);
+       find_mesh_bounds(); //Update edges of object
+     random_stretch();
 
 
 }
@@ -226,58 +235,133 @@ vector<long> neighbouring_elements (long voxel_index, int dims) {
 
 }
 
-void random_stretch(unsigned char* image_data, int dims) {
+void Deform_Volume::random_stretch() {
+//TODO: return deformation parameters to allow for saving?
 
-  char directions[3] = {'x', 'y', 'z'};
+    char directions[3] = {'x', 'y', 'z'};
   char rand_direction = directions [ rand() % 3 ];
 
-  // Try to generate 'reasonable' maniuplation points
-  int anchor = (dims / 4 ) + rand() % (dims / 4 ); // In middle
+  int anchor, stretch_point;
 
-  int lower_quarter = rand() % (dims/6); // 0 to 1/4
-  int upper_quarter = (5*dims/6) + lower_quarter; // 3/4 to endl
-  int stretch_point;
+  //TODO: It seemsin some cases that the mesh is being stretched right to the edge of the cube
+  // Which looks odd. Try and fix this
+  int max_stretch = 25;
 
-  if (rand() %2) {
-  stretch_point = lower_quarter;
-}
-else {
-  stretch_point = upper_quarter;
+  // Want to pick an anchor point 'within' the object and a stretch point ouside
+  // TODO: Simple solution - can probably be made more concise
 
-}
+  if (rand_direction == 'x') {
+    stretch_point = random_stretch_point(xmin, xmax);
+    anchor = random_anchor_point(xmin, xmax);
+  }
+
+  if (rand_direction == 'y') {
+    stretch_point = random_stretch_point(ymin, ymax);
+    anchor = random_anchor_point(ymin, ymax);
+  }
+
+  if (rand_direction == 'z') {
+    stretch_point = random_stretch_point(zmin, zmax);
+    anchor = random_anchor_point(zmin, zmax);
+  }
 
   // Random distance, no bigger than max_stretch and remaining within the bounds of array
-  int max_stretch = 25;
-  // TODO: doesn't account for
   int distance = rand() % (min (max_stretch, min(stretch_point, dims - stretch_point)));
 
-  stretch_array_1D(image_data, stretch_point, distance, anchor, rand_direction, dims);
+  stretch_array_1D(stretch_point, distance, anchor, rand_direction);
 }
 
-void random_dilate(unsigned char* image_data, int dims) {
+
+int Deform_Volume::random_stretch_point(int idx_min, int idx_max) {
+// Return a stretch point that it < idx_min or > idx_max
+
+// > idx_max
+ int upper_rand = idx_max + ( rand() % (dims - idx_max));
+
+// If the minimum value is 0, we can't stretch further in this direciton so
+// only use the upper value
+// Even if min > 0, we want to pick at random between a value < idx_min and > idx_max
+int even_odd = rand() %2;
+if ( (idx_min == 0) || even_odd ) {
+  return upper_rand;
+}
+
+//  return value between 1 and idx_min
+int lower_rand = 1 + rand() % idx_min;
+return lower_rand;
+
+}
+
+int Deform_Volume::random_anchor_point(int idx_min, int idx_max) {
+  // Want to pick an anchor point  'within' the object
+  // i.e. >idx_min and < idx_max
+  return idx_min + rand() % ( idx_max - idx_min );
+
+}
+
+void Deform_Volume::random_dilate() {
   // Dilate a random layer by a random amount (between  1 and 3 pixels)
 
   int layer, dilate_amount;
   int max_dilate = 1;
 
   // Get list of layer indices and select one at random
-  vector<int> layers = get_layers(image_data, dims);
+  get_layers();
   int random_index = rand() % layers.size();
   layer = layers[random_index];
 
   dilate_amount  =1 + rand() % max_dilate;
 
-dilate_layer(image_data, layer, dilate_amount, dims);
+dilate_layer(layer, dilate_amount);
 
 }
 
-vector<int> get_layers(unsigned char* image_data, int dims) {
+
+void Deform_Volume::get_layers() {
 // Placeholder for function to loop through array and return a vector of all the unique values
-  vector<int> layers;
+// TODO: implment properly
 
   for (int i = 1; i <= 7; i++) {
     layers.push_back(i);
   }
 
-  return layers;
+}
+
+
+void Deform_Volume::find_mesh_bounds() {
+// Find the first/last non 0 element along each dimensional
+// by looping over all elments
+
+// reset bounds
+xmax = INT_MIN, ymax = INT_MIN, zmax = INT_MIN;
+xmin = INT_MAX, ymin = INT_MAX, zmin = INT_MAX;
+
+  int i,j,k;
+  long idx;
+
+  for (i = 0; i < dims; i++) {
+    for (j = 0; j < dims; j++) {
+      for (k = 0; k < dims; k++) {
+
+        idx = get_array_index(i, j, k);
+        // Is this element non 0 i.e. not background
+        // if so check if the min/max values should be updated
+        if (image_data[idx] != 0) {
+
+          if (i > xmax) xmax = i;
+          if (i < xmin) xmin = i;
+
+          if (j > ymax) ymax = j;
+          if (j < ymin) ymin = j;
+
+          if (k > zmax) zmax = k;
+          if (k < zmin) zmin = k;
+
+        }
+      }
+    }
+  }
+
+  //printf("Bounds of image are X: %d %d  Y: %d %d  Z: %d %dzn", xmin, xmax,
+    //      ymin, ymax, zmin, zmax);
 }
