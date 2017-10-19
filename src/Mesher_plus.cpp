@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
         if(argc < 10) printusage();
         int opt;
         char *path_image, *path_electrode, *path_parameter;
-        string        output_dir, mesh_name, output_base_file, PEITS_output_dir;
+        string        output_dir, mesh_name, output_base_file;
 
         while((opt = getopt(argc, argv, "i:e:p:o:d:"))!=-1)
         {
@@ -72,10 +72,6 @@ int main(int argc, char* argv[])
         std::cout << "Output directory: "   << output_dir << "\n";
         std::cout << "Output mesh name: "    << mesh_name << "\n\n";
 
-        // Build filenames for electrode positions and parameters
-        output_base_file = output_dir + mesh_name;
-        PEITS_output_dir = output_dir + "/PEITS_output/";
-
         // Read input file with parameters
         Input p;
         p.load_file_idx(path_parameter);
@@ -100,6 +96,10 @@ int main(int argc, char* argv[])
           unsigned char * image_data = (unsigned char*)image.data();
           Deform_Volume warper(image.data(), image.xdim());
           warper.modify_image();
+
+          // Append mesh_name with details of deformation
+          mesh_name += warper.deformation_info;
+          cout << "New mesh name: " << mesh_name << endl;
       }
 
         // Domain
@@ -111,7 +111,6 @@ int main(int argc, char* argv[])
         Point origin(image.vx () * image.xdim ()/2,
                      image.vy () * image.ydim ()/2,
                      image.vz () * image.zdim ()/2); //origin
-
 
         sizing_field_elliptic_electrodes sizing_field (origin,path_electrode,p); //This is basic and working now for both rat and human
 
@@ -126,16 +125,6 @@ int main(int argc, char* argv[])
         c3t3= CGAL::make_mesh_3<C3t3>(domain, criteria, CGAL::parameters::features(domain),
                                       CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
                                       CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
-
-
-        // Save unoptimised mesh
-        save_as_dgf(c3t3, p, output_base_file + ".pre_optimise");
-
-        // Output the mesh for Paraview
-        string vtk_file_path = output_base_file +  "pre_optimise.vtu";
-        bool vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
-
-
 
         //Optimisation
         std::cout<<"\n Optimising: " << endl;
@@ -209,6 +198,10 @@ int main(int argc, char* argv[])
         //all done
         std::cout<<"\n ALL DONE! :)" << endl;
 
+
+        // Base filenames for electrode positions and parameters
+        output_base_file = output_dir + mesh_name;
+
         // Output dgf file and electrode_positions
         save_as_dgf(c3t3, p, output_base_file);
         save_electrodes(sizing_field.centres, output_base_file);
@@ -217,10 +210,10 @@ int main(int argc, char* argv[])
         write_centres(c3t3, output_base_file);
 
         // Output the mesh for Paraview
-        vtk_file_path = output_base_file + to_string(n_deformations) + ".vtu";
-        vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
+        string vtk_file_path = output_base_file + ".vtu";
+        int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
 }
-while (n_deformations--);
+while (n_deformations-- > 1);
 
         return 0;
 }

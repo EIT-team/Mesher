@@ -88,7 +88,7 @@ void save_as_dgf (const C3t3& c3t3, Input st, string output_file)
 
 void save_electrodes(Points electrodes, string output_file)
 {
-								output_file += "_electrodes.txt";
+								output_file += "_electrodes";
 								cout << "Writing electrode file: " << output_file << '\n';
 
 								FILE *electrode_file;

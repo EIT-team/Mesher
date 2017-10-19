@@ -20,6 +20,9 @@ public:
 
   vector<int> layers;
 
+  // Store the parameters of the deformation
+  string deformation_info = "";
+
   Deform_Volume();
   Deform_Volume(void *, int);
 

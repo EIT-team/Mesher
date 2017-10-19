@@ -205,11 +205,21 @@ void Deform_Volume::stretch_array_1D(int point_to_move, int distance_to_move, in
 
       }
 
+      // Build string detailing stretch parameters
+      // Not doing all in one step, as there is an issue with 'direction'
+      // because it is a char. Using to_string(direction) gives an integer
+      deformation_info += "_s";
+      deformation_info += direction;
+      deformation_info +=  "_" + to_string(point_to_move) + "." + to_string(distance_to_move) +
+        "." + to_string(anchor);
+
     }
 
 void Deform_Volume::modify_image() {
 
       std::cout << std::endl << "MODIFYING IMAGE DATA" << endl;
+
+      string stretch_info = "";
 
       //TODO: Check that input inr file actually has a domain/tissue type assigned.
       // TODO: Do some actual stetching of mesh
@@ -225,8 +235,7 @@ void Deform_Volume::modify_image() {
 
      while (rand() % 2) {
        find_mesh_bounds(); //Update edges of object
-     random_stretch();
-
+       random_stretch();
 
 }
     // 50% chance of dilation
@@ -239,6 +248,7 @@ void Deform_Volume::modify_image() {
 void Deform_Volume::random_stretch() {
 //TODO: return deformation parameters to allow for saving?
 
+
     char directions[3] = {'x', 'y', 'z'};
   char rand_direction = directions [ rand() % 3 ];
 
@@ -247,7 +257,6 @@ void Deform_Volume::random_stretch() {
   //TODO: It seemsin some cases that the mesh is being stretched right to the edge of the cube
   // Which looks odd. Try and fix this
   int max_stretch = 25;
-
   // Want to pick an anchor point 'within' the object and a stretch point ouside
   // TODO: Simple solution - can probably be made more concise
 
@@ -270,6 +279,7 @@ void Deform_Volume::random_stretch() {
   int distance = rand() % (min (max_stretch, min(stretch_point, dims - stretch_point)));
 
   stretch_array_1D(stretch_point, distance, anchor, rand_direction);
+
 }
 
 
