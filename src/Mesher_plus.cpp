@@ -28,10 +28,6 @@ void printusage(void)
 }
 
 
-
-
-
-
 int main(int argc, char* argv[])
 {
 
@@ -46,8 +42,7 @@ int main(int argc, char* argv[])
         if(argc < 10) printusage();
         int opt;
         char *path_image, *path_electrode, *path_parameter;
-        string        output_dir, mesh_name, output_file, electrode_file,
-                      parameter_file, protocol_file, PEITS_output_dir;
+        string        output_dir, mesh_name, output_base_file, PEITS_output_dir;
 
         while((opt = getopt(argc, argv, "i:e:p:o:d:"))!=-1)
         {
@@ -78,34 +73,36 @@ int main(int argc, char* argv[])
         std::cout << "Output mesh name: "    << mesh_name << "\n\n";
 
         // Build filenames for electrode positions and parameters
-        electrode_file = output_dir + "electrode_positions_" + mesh_name;
-        parameter_file = output_dir +"param_" + mesh_name;
-        output_file = output_dir + mesh_name + ".dgf";
-        protocol_file = output_dir + "protocol_" + mesh_name;
+        output_base_file = output_dir + mesh_name;
         PEITS_output_dir = output_dir + "/PEITS_output/";
 
         // Read input file with parameters
         Input p;
         p.load_file_idx(path_parameter);
 
-        // TODO: take command line arugment to generate n difrerent meshes
+        // How many deformations to do (if any)
+        int n_deformations = p.options["num_deformations"];
+        bool do_deform = (n_deformations > 0); // True if > 0
 
-        int n = 10;
+        if (do_deform) {
+            cout << "Mesh deformation turned on. " <<  n_deformations << " meshes will be generated" << endl;
+        }
 
-        while (n--) {
+        do {
         // Loads image
         CGAL::Image_3 image;
         std::cout<<"\n Reading the Image file... ";
 
-
         image.read(path_image);
         cout << "Dimensions of image: " << image.xdim() << endl;
 
-        //unsigned char * image_data = (unsigned char*)image.data();
-        Deform_Volume warper(image.data(), image.xdim());
-        warper.modify_image();
+        if (do_deform) {
+          unsigned char * image_data = (unsigned char*)image.data();
+          Deform_Volume warper(image.data(), image.xdim());
+          warper.modify_image();
+      }
 
-                // Domain
+        // Domain
         Mesh_domain domain(image);
 
         //Define Sizing field
@@ -123,7 +120,6 @@ int main(int argc, char* argv[])
                                cell_radius_edge_ratio=p.options["cell_radius_edge_ratio"], cell_size=sizing_field);
 
 
-
         // Meshing
         std::cout<<"\n Meshing with initial mesh..." << endl;
         C3t3 c3t3;
@@ -131,14 +127,13 @@ int main(int argc, char* argv[])
                                       CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
                                       CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
 
+
         // Save unoptimised mesh
-        save_as_dgf(c3t3, p, output_file + ".pre_optimise");
+        save_as_dgf(c3t3, p, output_base_file + ".pre_optimise");
 
         // Output the mesh for Paraview
-        string vtk_file_path = output_file +  "pre_optimise.vtu";
+        string vtk_file_path = output_base_file +  "pre_optimise.vtu";
         bool vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
-
-
 
 
 
@@ -164,7 +159,7 @@ int main(int argc, char* argv[])
          CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);
        }
 
-/*
+
         // Generate reference electrode location and append to elecrtode list
         Point reference_electrode = set_reference_electrode(c3t3);
         sizing_field.centres.push_back(reference_electrode);
@@ -184,12 +179,13 @@ int main(int argc, char* argv[])
 
         // Put together parameters
         std::map<std::string, std::string> parameters;
-        parameters["fem.io.macroGrid"] = output_file;
+        //parameters["fem.io.macroGrid"] = output_file;
         parameters["electrode.use_node_assignment"] = string("false");
-        parameters["electrode.positions"] = electrode_file;
+        //parameters["electrode.positions"] = electrode_file;
         // I don't think the below two are needed
         //parameters["electrode.nodes"]
         //parameters["surface.coordinates"]
+
         parameters["ground.hsquared"] = string("1.5e-5");
 
         // Need to convert double to string before adding to parameter map
@@ -204,7 +200,7 @@ int main(int argc, char* argv[])
         parameters["groundposition.z"] = gndposz.str();
 
         // TODO: Remove these from the relevant parameter files in PEITS
-        parameters["current.protocol"] = protocol_file;
+        //parameters["current.protocol"] = protocol_file;
         //parameters["fem.io.outputpath"] = PEITS_output_dir;
 
         // TODO: modify below depnding on whether integer values for conductivitry are given
@@ -214,16 +210,17 @@ int main(int argc, char* argv[])
         std::cout<<"\n ALL DONE! :)" << endl;
 
         // Output dgf file and electrode_positions
-        save_as_dgf(c3t3, p, output_file);
-        save_electrodes(sizing_field.centres, electrode_file);
-        save_parameters(parameters, parameter_file);
-        save_protocol(full_prt, protocol_file);
-
-*/
+        save_as_dgf(c3t3, p, output_base_file);
+        save_electrodes(sizing_field.centres, output_base_file);
+        save_parameters(parameters, output_base_file);
+        save_protocol(full_prt, output_base_file);
+        write_centres(c3t3, output_base_file);
 
         // Output the mesh for Paraview
-        vtk_file_path = output_file + to_string(n) + ".vtu";
+        vtk_file_path = output_base_file + to_string(n_deformations) + ".vtu";
         vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
 }
+while (n_deformations--);
+
         return 0;
 }

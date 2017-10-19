@@ -61,7 +61,8 @@ struct sizing_field_elliptic_electrodes
         }
 
 
-        FT operator()(const Point& p, const int, const Index&) const
+      FT operator()(const Point& p, const int, const Index&) const
+
         {
 
                 FT out;

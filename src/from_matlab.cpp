@@ -18,11 +18,10 @@ void centre_of_mesh(const C3t3& c3t3, Input st) {
 		mean_vtx[0] += CGAL::to_double(p.x());
 		mean_vtx[1] += CGAL::to_double(p.y());
 		mean_vtx[2] += CGAL::to_double(p.z());
-		
+
 	}
 
 	std::cout << "x: " << mean_vtx[0] << endl;
 
-	
 
 }

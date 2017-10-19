@@ -1,6 +1,7 @@
 
 #include "warp_mesh.h"
 
+// Warper Class
 Deform_Volume::Deform_Volume() {
   ;
 }
@@ -273,7 +274,7 @@ void Deform_Volume::random_stretch() {
 
 
 int Deform_Volume::random_stretch_point(int idx_min, int idx_max) {
-// Return a stretch point that it < idx_min or > idx_max
+// Return a stretch point that is < idx_min or > idx_max
 
 // > idx_max
  int upper_rand = idx_max + ( rand() % (dims - idx_max));
@@ -362,6 +363,12 @@ xmin = INT_MAX, ymin = INT_MAX, zmin = INT_MAX;
     }
   }
 
-  //printf("Bounds of image are X: %d %d  Y: %d %d  Z: %d %dzn", xmin, xmax,
-    //      ymin, ymax, zmin, zmax);
+  printf("Bounds of image are X: %d %d  Y: %d %d  Z: %d %d\n", xmin, xmax,
+          ymin, ymax, zmin, zmax);
 }
+
+/*
+########################################################
+End of Warper class
+############################################################
+*/

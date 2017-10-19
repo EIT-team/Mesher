@@ -45,6 +45,7 @@ typedef C3t3::Facets_in_complex_iterator Facet_iterator;
 typedef C3t3::Cells_in_complex_iterator Cell_iterator;
 typedef Tr::Finite_vertices_iterator Finite_vertices_iterator;
 typedef Tr::Vertex_handle Vertex_handle;
+typedef Tr::Cell_handle Cell_handle;
 
 //! Point
 typedef Tr::Point Point_3;

@@ -52,6 +52,7 @@ Point closest_element(const C3t3& c3t3, Point target_p) {
 								vector<Point> facet_points;
 
 								// Only want to use facets that are in the outermost layer i.e. the skin
+								//TODO: Don't hardcode tihs value?
 								int skin_tissue_index = 7;
 
 
