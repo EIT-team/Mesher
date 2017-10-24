@@ -139,98 +139,138 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     return true;
 
   }
-  void Deform_Volume::stretch_array_1D(char direction) {
 
-    /*    'Stretch' array contents
+  // void Deform_Volume::stretch_array_1D(char direction) {
+  //
+  //   /*    'Stretch' array contents
+  //
+  //   image_data: input array
+  //   point_to_move: array index of point to move
+  //   distance_to_move: how many elemnts to move this point by
+  //   anchor: fixed point, relative to which 'stretching' is calcualted
+  //   direction: axis along which to stretch (x,y,z)
+  //
+  //   */
+  //
+  //   cout << "Stretching array" << endl << "Point: " << point_to_move << " Distance: "
+  //   << distance_to_move << " Anchor: " << anchor << " along dimension: " << direction << endl;
+  //   // Check valid point is given
+  //
+  //   if (!check_valid_points()) {
+  //     return;
+  //   }
+  //
+  //   int start_iterate, end_iterate;
+  //   int move_point_dist_from_anchor;
+  //   int stretch_scale;
+  //
+  //   // TODO: Better way to handle this?
+  //   // /Is point to move to the left of anchor
+  //   if (point_to_move < anchor) {
+  //     start_iterate  = point_to_move - distance_to_move;
+  //     move_point_dist_from_anchor = point_to_move - distance_to_move - anchor;
+  //     end_iterate = anchor - 1;
+  //     stretch_scale = 1;
+  //
+  //   }
+  //
+  //   else {
+  //     start_iterate = point_to_move + distance_to_move;
+  //     move_point_dist_from_anchor = point_to_move + distance_to_move - anchor;
+  //     end_iterate = anchor + 1;
+  //     stretch_scale = -1;
+  //   }
+  //
+  //   int i, j, k;
+  //   int this_idx, vec_to_copy_from, idx_to_copy_from;
+  //   int distance_from_anchor;
+  //   double distance_anchor_ratio, stretch_ratio;
+  //
+  //   for (i = start_iterate; i != end_iterate; i += stretch_scale) {
+  //
+  //     distance_from_anchor = i - anchor;
+  //     distance_anchor_ratio = distance_from_anchor / (double)move_point_dist_from_anchor;
+  //     stretch_ratio = stretch_scale * distance_anchor_ratio * distance_anchor_ratio;
+  //     vec_to_copy_from = i + stretch_ratio * distance_to_move;
+  //
+  //     for (j = 0; j < dims; j++) {
+  //       for (k = 0; k < dims; k++) {
+  //
+  //         // TODO: better way to handle different directions?
+  //         if (direction == 'y') {
+  //           this_idx = get_array_index( i, k, j);
+  //           idx_to_copy_from  = get_array_index(vec_to_copy_from, k, j);
+  //         }
+  //
+  //         if (direction == 'z') {
+  //           this_idx = get_array_index( k, i, j);
+  //           idx_to_copy_from  = get_array_index(k, vec_to_copy_from, j);
+  //         }
+  //
+  //         if (direction == 'x') {
+  //           this_idx = get_array_index( j, k, i);
+  //           idx_to_copy_from  = get_array_index(j, k, vec_to_copy_from);
+  //         }
+  //
+  //         image_data[this_idx] = image_data[idx_to_copy_from];
+  //       }
+  //     }
+  //
+  //   }
+  //
+  //   // Build string detailing stretch parameters
+  //   // Not doing all in one step, as there is an issue with 'direction'
+  //   // because it is a char. Using to_string(direction) gives an integer
+  //   deformation_info += "_s";
+  //   deformation_info += direction;
+  //   deformation_info +=  "_" + to_string(point_to_move) + "." + to_string(distance_to_move) +
+  //   "." + to_string(anchor);
+  //
+  // }
 
-    image_data: input array
-    point_to_move: array index of point to move
-    distance_to_move: how many elemnts to move this point by
-    anchor: fixed point, relative to which 'stretching' is calcualted
-    direction: axis along which to stretch (x,y,z)
+  void Deform_Volume::stretch_array() {
+    int x_info[3] = {480,30,256};
+    int y_info[3] = {480,20,256};
+    int z_info[3] = {480,10,256};
 
-    */
+    int this_idx, idx_to_copy_from;
+    int new_x, new_y, new_z;
 
-    cout << "Stretching array" << endl << "Point: " << point_to_move << " Distance: "
-    << distance_to_move << " Anchor: " << anchor << " along dimension: " << direction << endl;
-    // Check valid point is given
-
-    if (!check_valid_points()) {
-      return;
-    }
-
-
-    int start_iterate, end_iterate;
-    int move_point_dist_from_anchor;
-    int stretch_scale;
-
-    // TODO: Better way to handle this?
-    // /Is point to move to the left of anchor
-    if (point_to_move < anchor) {
-      start_iterate  = point_to_move - distance_to_move;
-      move_point_dist_from_anchor = point_to_move - distance_to_move - anchor;
-      end_iterate = anchor - 1;
-      stretch_scale = 1;
-
-    }
-
-    else {
-      start_iterate = point_to_move + distance_to_move;
-      move_point_dist_from_anchor = point_to_move + distance_to_move - anchor;
-      end_iterate = anchor + 1;
-      stretch_scale = -1;
-    }
+    Stretch_Info x(x_info[0],x_info[1],x_info[2]);
+    Stretch_Info y(y_info[0],y_info[1],y_info[2]);
+    Stretch_Info z(z_info[0],z_info[1],z_info[2]);
 
     int i, j, k;
-    int this_idx, vec_to_copy_from, idx_to_copy_from;
-    int distance_from_anchor;
-    double distance_anchor_ratio, stretch_ratio;
+    for (i = x.start_iterate; i != x.end_iterate; i += x.step) {
+      for (j = y.start_iterate; j != y.end_iterate; j += y.step) {
+        for (k = z.start_iterate; k != z.end_iterate; k += z.step) {
 
-    for (i = start_iterate; i != end_iterate; i += stretch_scale) {
+          this_idx = get_array_index(i,j,k);
 
-      distance_from_anchor = i - anchor;
-      distance_anchor_ratio = distance_from_anchor / (double)move_point_dist_from_anchor;
-      stretch_ratio = stretch_scale * distance_anchor_ratio * distance_anchor_ratio;
-      vec_to_copy_from = i + stretch_ratio * distance_to_move;
-
-      for (j = 0; j < dims; j++) {
-        for (k = 0; k < dims; k++) {
-
-          // TODO: better way to handle different directions?
-          if (direction == 'y') {
-            this_idx = get_array_index( i, k, j);
-            idx_to_copy_from  = get_array_index(vec_to_copy_from, k, j);
-          }
-
-          if (direction == 'z') {
-            this_idx = get_array_index( k, i, j);
-            idx_to_copy_from  = get_array_index(k, vec_to_copy_from, j);
-          }
-
-          if (direction == 'x') {
-            this_idx = get_array_index( j, k, i);
-            idx_to_copy_from  = get_array_index(j, k, vec_to_copy_from);
-          }
+          new_x = x.idx_to_copy_from(i);
+          new_y = y.idx_to_copy_from(j);
+          new_z = z.idx_to_copy_from(k);
+          idx_to_copy_from = get_array_index(new_x, new_y, new_z);
 
           image_data[this_idx] = image_data[idx_to_copy_from];
+
         }
       }
-
     }
 
-    // Build string detailing stretch parameters
-    // Not doing all in one step, as there is an issue with 'direction'
-    // because it is a char. Using to_string(direction) gives an integer
     deformation_info += "_s";
-    deformation_info += direction;
-    deformation_info +=  "_" + to_string(point_to_move) + "." + to_string(distance_to_move) +
-    "." + to_string(anchor);
+    deformation_info += x.stretch_description() + ".";
+    deformation_info += y.stretch_description() + ".";
+    deformation_info += z.stretch_description();
+
+
 
   }
-
   void Deform_Volume::modify_image() {
 
     std::cout << std::endl << "MODIFYING IMAGE DATA" << endl;
+    stretch_array();
+    return;
 
     string stretch_info = "";
 

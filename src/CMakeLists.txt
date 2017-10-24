@@ -56,7 +56,7 @@ endif()
 
 include( CGAL_CreateSingleSourceCGALProgram )
 
-add_executable(mesher_rat "Mesher_plus.cpp" "warp_mesh.cpp" "save_dgf.cpp" "input_parameters.cpp" "mesh_operations.cpp" "Sizing_fields.cpp")
+add_executable(mesher_rat "Mesher_plus.cpp" "warp_mesh.cpp" "stretch_info.cpp" "save_dgf.cpp" "input_parameters.cpp" "mesh_operations.cpp" "Sizing_fields.cpp")
 
 add_definitions(-DINPUTS_DIR="${CMAKE_SOURCE_DIR}/inputs")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lstdc++")

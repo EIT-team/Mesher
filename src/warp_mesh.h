@@ -4,6 +4,7 @@
 
 #include "include.h"
 #include "CGAL_include.h"
+#include "stretch_info.h"
 
 using namespace std;
 
@@ -21,7 +22,7 @@ public:
   vector<int> layers;
 
 // For stretching
-  int point_to_move, distance_to_move, anchor;
+int point_to_move, distance_to_move, anchor;
 
   // Store the parameters of the deformation
   string deformation_info;
@@ -32,6 +33,8 @@ public:
   //Deform_Volume(CGAL::Image_3);
   void dilate_layer( int, int);
   void stretch_array_1D(char);
+  void stretch_array();
+
   bool check_valid_points();
   void modify_image();
 
@@ -46,9 +49,8 @@ public:
   void get_layers();
   void find_mesh_bounds();
 
-  void generate_perturbations();
-
-
 };
+
+
 
 #endif
