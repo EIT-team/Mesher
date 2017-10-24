@@ -43,7 +43,7 @@ long Deform_Volume::get_array_index(int x, int y, int z) {
 
 void Deform_Volume::dilate_layer(int layer_index, int n_pixels) {
   /* Expands one a particular layer/tissue by one voxel on all sides
- layer_index: the layer/tissue index to be dilated
+  layer_index: the layer/tissue index to be dilated
   n_pixels: how many pixels/voxels to dilate the layer by
   */
   cout << "Dilating layer " + to_string(layer_index) + " by " + to_string(n_pixels) + " pixels" <<endl;
@@ -79,8 +79,8 @@ void Deform_Volume::dilate_layer(int layer_index, int n_pixels) {
     // Go through the elements and change the layer type
     unordered_set<long>::iterator itr;
     for (itr = elements_to_change.begin(); itr != elements_to_change.end(); itr++) {
-        image_data[*itr] = layer_index_char;
-      }
+      image_data[*itr] = layer_index_char;
+    }
 
   }
 
@@ -120,7 +120,26 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
   }
 
-  void Deform_Volume::stretch_array_1D(int point_to_move, int distance_to_move, int anchor, char direction) {
+  bool Deform_Volume::check_valid_points() {
+    // Check that points are avalid and that new point will be within the the bounds of the array
+
+    if (point_to_move == anchor) {
+      cout << "Point to move cannot be the same as the anchor point" << endl;
+      return false;
+    }
+
+    bool too_big = (point_to_move + distance_to_move) > dims;
+    bool too_small = (point_to_move - distance_to_move) < 0;
+
+    if (too_big || too_small) {
+      cout << " Distance to move too great, new point outside bounds of array" << endl;
+      return false;
+    }
+
+    return true;
+
+  }
+  void Deform_Volume::stretch_array_1D(char direction) {
 
     /*    'Stretch' array contents
 
@@ -135,15 +154,8 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     cout << "Stretching array" << endl << "Point: " << point_to_move << " Distance: "
     << distance_to_move << " Anchor: " << anchor << " along dimension: " << direction << endl;
     // Check valid point is given
-    if (point_to_move == anchor) {
-      cout << "Point to move cannot be the same as the anchor point" << endl;
-      return;
-    }
 
-    // TODO: This won't catch the case where  point_to_move < anchor
-    // Check that the new point location(s) will be within the array bounds
-    if ((point_to_move + distance_to_move) > dims) {
-      cout << " Distance to move too great, new point outside bounds of array" << endl;
+    if (!check_valid_points()) {
       return;
     }
 
@@ -220,22 +232,22 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
     std::cout << std::endl << "MODIFYING IMAGE DATA" << endl;
 
-          string stretch_info = "";
+    string stretch_info = "";
 
-         srand(time(NULL));
+    srand(time(NULL));
 
-         // Do at least one deformation
-         random_stretch();
+    // Do at least one deformation
+    random_stretch();
 
-         while (rand() % 2) {
-           find_mesh_bounds(); //Update edges of object
-           random_stretch();
+    while (rand() % 2) {
+      find_mesh_bounds(); //Update edges of object
+      random_stretch();
 
     }
-        // 1 in 5 % chance of dilation
-         if ((rand() %5) < 1) {
-        random_dilate();
-         }
+    // 1 in 5 % chance of dilation
+    if ((rand() %5) < 1) {
+      random_dilate();
+    }
 
   }
 
@@ -244,7 +256,6 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     char directions[3] = {'x', 'y', 'z'};
     char rand_direction = directions [ rand() % 3 ];
 
-    int anchor, stretch_point;
 
     //TODO: It seemsin some cases that the mesh is being stretched right to the edge of the cube
     // Which looks odd. Try and fix this
@@ -253,24 +264,24 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     // TODO: Simple solution - can probably be made more concise
 
     if (rand_direction == 'x') {
-      stretch_point = random_stretch_point(xmin, xmax);
+      point_to_move = random_stretch_point(xmin, xmax);
       anchor = random_anchor_point(xmin, xmax);
     }
 
     if (rand_direction == 'y') {
-      stretch_point = random_stretch_point(ymin, ymax);
+      point_to_move = random_stretch_point(ymin, ymax);
       anchor = random_anchor_point(ymin, ymax);
     }
 
     if (rand_direction == 'z') {
-      stretch_point = random_stretch_point(zmin, zmax);
+      point_to_move = random_stretch_point(zmin, zmax);
       anchor = random_anchor_point(zmin, zmax);
     }
 
     // Random distance, no bigger than max_stretch and remaining within the bounds of array
-    int distance = rand() % (min (max_stretch, min(stretch_point, dims - stretch_point)));
+    distance_to_move = rand() % (min (max_stretch, min(point_to_move, dims - point_to_move)));
 
-    stretch_array_1D(stretch_point, distance, anchor, rand_direction);
+    stretch_array_1D(rand_direction);
 
   }
 

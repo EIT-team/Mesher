@@ -20,6 +20,9 @@ public:
 
   vector<int> layers;
 
+// For stretching
+  int point_to_move, distance_to_move, anchor;
+
   // Store the parameters of the deformation
   string deformation_info;
 
@@ -27,8 +30,9 @@ public:
   Deform_Volume(void *, int);
 
   //Deform_Volume(CGAL::Image_3);
-  void dilate_layer( int layer, int n_pixels);
-  void stretch_array_1D( int point_to_move, int distance_to_move, int anchor, char direction);
+  void dilate_layer( int, int);
+  void stretch_array_1D(char);
+  bool check_valid_points();
   void modify_image();
 
   void random_stretch();
