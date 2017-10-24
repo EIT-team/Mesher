@@ -2,10 +2,10 @@
 #define CGAL_INCLUDE_H
 // Header for CGAL related stuff
 
-#include "include.h"
 
 //Input parameters that are read from the file
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/config.h>
 
 #include <CGAL/Mesh_triangulation_3.h>
 #include <CGAL/Mesh_complex_3_in_triangulation_3.h>
@@ -14,7 +14,6 @@
 #include <CGAL/Labeled_image_mesh_domain_3.h>
 #include <CGAL/Mesh_domain_with_polyline_features_3.h>
 
-#include "write_c3t3_to_vtk_xml_file.h"
 
 #include <CGAL/make_mesh_3.h>
 #include <CGAL/Image_3.h>

@@ -51,17 +51,12 @@ if( TBB_FOUND )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ltbb")
 endif()
 
-if ( MATLAB_FOUND )
-    target_link_libraries(mesher_rat ${MATLAB_LIBRARIES} ${TBB_LIBRARIES} mat)
-    include_directories(${MATLAB_INCLUDE_DIR})
-endif()
-
 # Creating entries for all .cpp/.C files with "main" routine
 # ##########################################################
 
 include( CGAL_CreateSingleSourceCGALProgram )
 
-add_executable(mesher_rat "Mesher_plus.cpp" "warp_mesh.cpp")
+add_executable(mesher_rat "Mesher_plus.cpp" "warp_mesh.cpp" "save_dgf.cpp" "input_parameters.cpp" "mesh_operations.cpp" "Sizing_fields.cpp")
 
 add_definitions(-DINPUTS_DIR="${CMAKE_SOURCE_DIR}/inputs")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lstdc++")

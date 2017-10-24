@@ -1,21 +1,17 @@
-//
-#include "Sizing_fields.h"
-#include "input_parameters.h"
-#include "Matlab_save.h"
-#include "save_dgf.h"
-
-
 // include/defines used across all  statements
 #include "CGAL_include.h"
+
+#include "input_parameters.h"
+#include "Sizing_fields.h"
+#include "mesh_operations.h"
+#include "save_dgf.h"
+#include "warp_mesh.h"
+
+#include "write_c3t3_to_vtk_xml_file.h"
 
 // To avoid verbose function and named parameters call
 using namespace CGAL::parameters;
 using namespace std;
-
-#include <CGAL/config.h>
-
-#include "from_matlab.h"
-#include "warp_mesh.h"
 
 void printusage(void)
 {
@@ -31,13 +27,9 @@ void printusage(void)
 int main(int argc, char* argv[])
 {
 
-  //TODO: Generate or save sigma values
-  //TODO: Look at mesh.pertubation section in PEITS model.hh file
-
   //TODO: If the inr file has units of mm, the output mesh will also be in mme.
   //Forward solever wants metres, so need to convert. Doing this expilcity at the moment with
-  // MM_TO_M, but is there a nicer way?
-  
+  // MM_TO_M, but is there a nicer way
   // Print CGAL Version number
   std::cout << "CGAL Version " << CGAL_VERSION_NR << " (1MMmmb1000)" << std::endl;
   std::cout << "where MM is the major number release, mm is the minor number release" << std::endl;
@@ -111,8 +103,6 @@ int main(int argc, char* argv[])
 
     }
 
-
-
     // Domain
     Mesh_domain domain(image);
 
@@ -172,19 +162,8 @@ int main(int argc, char* argv[])
     }
     cout << "Finished moving electrodes" << endl;
 
-    // TODO: Read in the prt from a file or something
-    static const int arr[] = {1,4,2,5,3,6,4,8};
-    vector<int> prt (arr, arr + sizeof(arr) / sizeof(arr[0]) );
-    vector<int> full_prt = generate_full_protocol(prt,32);
-
     // Put together parameters
     std::map<std::string, std::string> parameters;
-    //parameters["fem.io.macroGrid"] = output_file;
-    //parameters["electrode.use_node_assignment"] = string("false");
-    //parameters["electrode.positions"] = electrode_file;
-    // I don't think the below two are needed
-    //parameters["electrode.nodes"]
-    //parameters["surface.coordinates"]
 
     parameters["ground.hsquared"] = string("1.5e-5");
 
@@ -199,12 +178,6 @@ int main(int argc, char* argv[])
     parameters["groundposition.y"] = gndposy.str();
     parameters["groundposition.z"] = gndposz.str();
 
-    // TODO: Remove these from the relevant parameter files in PEITS
-    //parameters["current.protocol"] = protocol_file;
-    //parameters["fem.io.outputpath"] = PEITS_output_dir;
-
-    // TODO: modify below depnding on whether integer values for conductivitry are given
-    //parameters["fem.assign_conductivities"] = string("false");
 
     //all done
     std::cout<<"\n ALL DONE! :)" << endl;
@@ -217,10 +190,12 @@ int main(int argc, char* argv[])
     save_as_dgf(c3t3, p, output_base_file);
     save_electrodes(sizing_field.centres, output_base_file);
     save_parameters(parameters, output_base_file);
-    //save_protocol(full_prt, output_base_file);
     write_centres(c3t3, output_base_file);
 
     // Output the mesh for Paraview
+    // TODO: Since outputting everything in metres, rather than mm
+    // The vtk file is still being written in mm, as the mesh data is only changed
+    // at the point it is written. Fix this
     string vtk_file_path = output_base_file + ".vtu";
     int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
   }

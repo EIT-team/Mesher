@@ -222,16 +222,9 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
           string stretch_info = "";
 
-          //TODO: Check that input inr file actually has a domain/tissue type assigned.
-          // TODO: Do some actual stetching of mesh
-          // TODO:  pass dims to this function
-          //stretch_array_1D( image_data, 60, 25, 128, 'x', 256);
-         //dilate_layer(image_data, 5, 1, 256);
-
          srand(time(NULL));
 
-         // TODO: write parameters of random deformations to some file
-         // Do at least one
+         // Do at least one deformation
          random_stretch();
 
          while (rand() % 2) {
@@ -247,9 +240,6 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
   }
 
   void Deform_Volume::random_stretch() {
-
-    //TODO: return deformation parameters to allow for saving?
-
 
     char directions[3] = {'x', 'y', 'z'};
     char rand_direction = directions [ rand() % 3 ];
