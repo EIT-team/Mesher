@@ -51,9 +51,10 @@ void save_as_dgf (const C3t3& c3t3, Input st, string output_file)
 
 																current_point = vertices_iterator->point();
 
-																x = CGAL::to_double(current_point.x()*st.unit);
-																y = CGAL::to_double(current_point.y()*st.unit);
-																z = CGAL::to_double(current_point.z()*st.unit);
+																// Convert x,y,z to metres before writing
+																x = CGAL::to_double(current_point.x()*st.unit) / MM_TO_M;
+																y = CGAL::to_double(current_point.y()*st.unit) / MM_TO_M;
+																z = CGAL::to_double(current_point.z()*st.unit) / MM_TO_M;
 
 																fprintf(dgf_file, "%6.18f %6.18f %6.18f # %d\n", x, y, z, n_node++);
 								}
@@ -88,14 +89,15 @@ void save_as_dgf (const C3t3& c3t3, Input st, string output_file)
 
 void save_electrodes(Points electrodes, string output_file)
 {
-								output_file += "_electrodes";
+								output_file += ".electrodes";
 								cout << "Writing electrode file: " << output_file << '\n';
 
 								FILE *electrode_file;
 								electrode_file  =fopen(output_file.c_str(), "w");
 
 								for (int i = 0; i < electrodes.size(); i++) {
-																fprintf(electrode_file, "%6.18f, %6.18f, %6.18f \n", electrodes[i].x(), electrodes[i].y(), electrodes[i].z());
+																fprintf(electrode_file, "%6.18f, %6.18f, %6.18f \n",
+																 electrodes[i].x()/MM_TO_M, electrodes[i].y()/MM_TO_M, electrodes[i].z()/MM_TO_M);
 								}
 
 								fclose(electrode_file);
@@ -106,7 +108,7 @@ void save_electrodes(Points electrodes, string output_file)
 
 void save_parameters(map<string, string> parameters, string output_file)
 {
-								output_file += "_parameters";
+								output_file += ".parameters";
 								cout << "Writing parameter file: " << output_file << '\n';
 
 								// Use stream for writing output file, easier to use with map data structure that fprintf
@@ -132,7 +134,7 @@ void save_protocol(vector<int> full_prt, string output_file)
 	// Each sequence of four ints represents one protocol line
 	// e.g.  	inj_a inj_b meas gnd
 
-	output_file += "_protocol";
+	output_file += ".protocol";
 	cout << "writing full protocol to file: " << output_file << endl;
 	int n_prt = full_prt.size()/4;
 
@@ -154,7 +156,7 @@ void save_protocol(vector<int> full_prt, string output_file)
 void write_centres(C3t3& c3t3, string output_file) {
 	// Calculate the centres of each cell and write to a file
 
-	output_file += "_cell_centres";
+	output_file += ".cell_centres";
 	cout << "Writing cell centres to file: " << output_file << endl;
 
 	Point p;

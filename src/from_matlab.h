@@ -101,6 +101,8 @@ Point closest_element(const C3t3& c3t3, Point target_p) {
 }
 
 bool test_closest_element(const C3t3& c3t3) {
+
+	// TODO: This only works for a  particualr mesh (can't remember which)
 								cout << "Testing calculation of closest element" << endl;
 
 								Point test_closest(100,100,100);
@@ -148,9 +150,15 @@ Point set_reference_electrode(const C3t3& c3t3)
 								// This particular vector should come out of the front of the forehead
 								// for human head
 
+								// TODO: Combine this with Deform_Volume class to allow accessing of mesh_bounds?
+								// Then won't need to guestimate a point outside of the mesh.
 								cout << "Generating reference electrode location\n";
 
-								Vector far_away(0,-90,90);
+								Vector far_away(0,-150,50); 	//Extend from centre of forehead
+								//Point centre = centre_of_mesh(c3t3);
+								//double zmax = c3t3.zdim() * c3t3.vz();
+								//Point outside_mesh( CGAL::to_double(centre.x()),0,zmax);
+
 								Point outside_mesh = centre_of_mesh(c3t3) + far_away;
 								Point reference = closest_element( c3t3, outside_mesh);
 
