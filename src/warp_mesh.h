@@ -2,9 +2,13 @@
 #ifndef WARP_H
 #define WARP_H
 
-#include "include.h"
-#include "CGAL_include.h"
+//#include "include.h"
+//#include "CGAL_include.h"
 #include "stretch_info.h"
+
+#include <vector>
+#include <unordered_set>
+#include <climits>
 
 using namespace std;
 

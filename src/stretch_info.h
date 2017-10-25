@@ -1,4 +1,4 @@
-#ifndef STRTECH_INFO_H
+#ifndef STRETCH_INFO_H
 #define STRETCH_INFO_H
 
 #include <iostream>

@@ -102,7 +102,7 @@ int Stretch_Info::idx_to_copy_from( int i) {
 
   int idx_to_copy = i + round(stretch_ratio * distance);
 
-  return idx_to_copy;
+    return idx_to_copy;
 
 }
 
