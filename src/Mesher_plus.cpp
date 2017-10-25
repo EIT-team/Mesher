@@ -197,7 +197,11 @@ int main(int argc, char* argv[])
     // The vtk file is still being written in mm, as the mesh data is only changed
     // at the point it is written. Fix this
     string vtk_file_path = output_base_file + ".vtu";
-    int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
+
+    if (int(p.options["save_vtk"])==1) {
+      int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
+    }
+
   }
   while (n_deformations-- > 1);
 

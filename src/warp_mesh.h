@@ -33,7 +33,7 @@ int point_to_move, distance_to_move, anchor;
   //Deform_Volume(CGAL::Image_3);
   void dilate_layer( int, int);
   void stretch_array_1D(char);
-  void stretch_array();
+  void stretch_array(vector<int>);
 
   bool check_valid_points();
   void modify_image();

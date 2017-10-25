@@ -140,118 +140,52 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
   }
 
-  // void Deform_Volume::stretch_array_1D(char direction) {
-  //
-  //   /*    'Stretch' array contents
-  //
-  //   image_data: input array
-  //   point_to_move: array index of point to move
-  //   distance_to_move: how many elemnts to move this point by
-  //   anchor: fixed point, relative to which 'stretching' is calcualted
-  //   direction: axis along which to stretch (x,y,z)
-  //
-  //   */
-  //
-  //   cout << "Stretching array" << endl << "Point: " << point_to_move << " Distance: "
-  //   << distance_to_move << " Anchor: " << anchor << " along dimension: " << direction << endl;
-  //   // Check valid point is given
-  //
-  //   if (!check_valid_points()) {
-  //     return;
-  //   }
-  //
-  //   int start_iterate, end_iterate;
-  //   int move_point_dist_from_anchor;
-  //   int stretch_scale;
-  //
-  //   // TODO: Better way to handle this?
-  //   // /Is point to move to the left of anchor
-  //   if (point_to_move < anchor) {
-  //     start_iterate  = point_to_move - distance_to_move;
-  //     move_point_dist_from_anchor = point_to_move - distance_to_move - anchor;
-  //     end_iterate = anchor - 1;
-  //     stretch_scale = 1;
-  //
-  //   }
-  //
-  //   else {
-  //     start_iterate = point_to_move + distance_to_move;
-  //     move_point_dist_from_anchor = point_to_move + distance_to_move - anchor;
-  //     end_iterate = anchor + 1;
-  //     stretch_scale = -1;
-  //   }
-  //
-  //   int i, j, k;
-  //   int this_idx, vec_to_copy_from, idx_to_copy_from;
-  //   int distance_from_anchor;
-  //   double distance_anchor_ratio, stretch_ratio;
-  //
-  //   for (i = start_iterate; i != end_iterate; i += stretch_scale) {
-  //
-  //     distance_from_anchor = i - anchor;
-  //     distance_anchor_ratio = distance_from_anchor / (double)move_point_dist_from_anchor;
-  //     stretch_ratio = stretch_scale * distance_anchor_ratio * distance_anchor_ratio;
-  //     vec_to_copy_from = i + stretch_ratio * distance_to_move;
-  //
-  //     for (j = 0; j < dims; j++) {
-  //       for (k = 0; k < dims; k++) {
-  //
-  //         // TODO: better way to handle different directions?
-  //         if (direction == 'y') {
-  //           this_idx = get_array_index( i, k, j);
-  //           idx_to_copy_from  = get_array_index(vec_to_copy_from, k, j);
-  //         }
-  //
-  //         if (direction == 'z') {
-  //           this_idx = get_array_index( k, i, j);
-  //           idx_to_copy_from  = get_array_index(k, vec_to_copy_from, j);
-  //         }
-  //
-  //         if (direction == 'x') {
-  //           this_idx = get_array_index( j, k, i);
-  //           idx_to_copy_from  = get_array_index(j, k, vec_to_copy_from);
-  //         }
-  //
-  //         image_data[this_idx] = image_data[idx_to_copy_from];
-  //       }
-  //     }
-  //
-  //   }
-  //
-  //   // Build string detailing stretch parameters
-  //   // Not doing all in one step, as there is an issue with 'direction'
-  //   // because it is a char. Using to_string(direction) gives an integer
-  //   deformation_info += "_s";
-  //   deformation_info += direction;
-  //   deformation_info +=  "_" + to_string(point_to_move) + "." + to_string(distance_to_move) +
-  //   "." + to_string(anchor);
-  //
-  // }
 
-  void Deform_Volume::stretch_array() {
-    int x_info[3] = {480,30,256};
-    int y_info[3] = {480,20,256};
-    int z_info[3] = {480,10,256};
+  void Deform_Volume::stretch_array(vector<int> stretch) {
+    /* Stretch the image
+    vector<int> stretch: 9 element vector (3 for x, 3 for y, 3 for z) that gives the paremetners
+    of the stretch to be performed. For each dimension:
+      1st element - point at which stretch starts
+      2nd element - distance this point will be moved
+      3rd element - anchor point. The stretching distance for each elment is relative
+      to its distance from this point.
+
+      Only points between the move point and the anchor point are stretched.
+
+    */
+    // Print stretch parameters
+    cout << "Stretching with parameters:" << endl;
+    int vec_i;
+
+    for( vec_i = 0; vec_i < stretch.size(); ++vec_i) {
+      cout << stretch[vec_i] << " ";
+    }
+    cout << endl;
 
     int this_idx, idx_to_copy_from;
     int new_x, new_y, new_z;
 
-    Stretch_Info x(x_info[0],x_info[1],x_info[2]);
-    Stretch_Info y(y_info[0],y_info[1],y_info[2]);
-    Stretch_Info z(z_info[0],z_info[1],z_info[2]);
+    // Create stretch objects in each dimension
+    Stretch_Info x(stretch[0],stretch[1],stretch[2], dims);
+    Stretch_Info y(stretch[3],stretch[4],stretch[5], dims);
+    Stretch_Info z(stretch[6],stretch[7],stretch[8], dims);
 
+    // Loop over each element that is affected by the stretch
     int i, j, k;
     for (i = x.start_iterate; i != x.end_iterate; i += x.step) {
       for (j = y.start_iterate; j != y.end_iterate; j += y.step) {
         for (k = z.start_iterate; k != z.end_iterate; k += z.step) {
 
+
           this_idx = get_array_index(i,j,k);
 
+          // Calculate where to copy from
           new_x = x.idx_to_copy_from(i);
           new_y = y.idx_to_copy_from(j);
           new_z = z.idx_to_copy_from(k);
           idx_to_copy_from = get_array_index(new_x, new_y, new_z);
 
+          // Copy point over
           image_data[this_idx] = image_data[idx_to_copy_from];
 
         }
@@ -269,8 +203,6 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
   void Deform_Volume::modify_image() {
 
     std::cout << std::endl << "MODIFYING IMAGE DATA" << endl;
-    stretch_array();
-    return;
 
     string stretch_info = "";
 
@@ -279,50 +211,73 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     // Do at least one deformation
     random_stretch();
 
+    // 50% chance of cotinuing
     while (rand() % 2) {
       find_mesh_bounds(); //Update edges of object
+
+      //50% chance of stretch
+      if (rand() %2) {
       random_stretch();
 
     }
+    else {
     // 1 in 5 % chance of dilation
     if ((rand() %5) < 1) {
       random_dilate();
     }
-
+  }
+}
   }
 
   void Deform_Volume::random_stretch() {
 
-    char directions[3] = {'x', 'y', 'z'};
-    char rand_direction = directions [ rand() % 3 ];
-
-
-    //TODO: It seemsin some cases that the mesh is being stretched right to the edge of the cube
-    // Which looks odd. Try and fix this
     int max_stretch = 25;
-    // Want to pick an anchor point 'within' the object and a stretch point ouside
-    // TODO: Simple solution - can probably be made more concise
 
-    if (rand_direction == 'x') {
-      point_to_move = random_stretch_point(xmin, xmax);
-      anchor = random_anchor_point(xmin, xmax);
-    }
+    vector<int> stretch;
 
-    if (rand_direction == 'y') {
-      point_to_move = random_stretch_point(ymin, ymax);
-      anchor = random_anchor_point(ymin, ymax);
-    }
-
-    if (rand_direction == 'z') {
-      point_to_move = random_stretch_point(zmin, zmax);
-      anchor = random_anchor_point(zmin, zmax);
-    }
-
-    // Random distance, no bigger than max_stretch and remaining within the bounds of array
+    //TODO: point_to_move, distance and anchor are class variables, is this needed anymore?
+    //x data
+    point_to_move = random_stretch_point(xmin, xmax);
+    anchor = random_anchor_point(xmin, xmax);
     distance_to_move = rand() % (min (max_stretch, min(point_to_move, dims - point_to_move)));
 
-    stretch_array_1D(rand_direction);
+    stretch.push_back(point_to_move);
+    stretch.push_back(distance_to_move);
+    stretch.push_back(anchor);
 
+    //y data
+    point_to_move = random_stretch_point(ymin, ymax);
+    anchor = random_anchor_point(ymin, ymax);
+    distance_to_move = rand() % (min (max_stretch, min(point_to_move, dims - point_to_move)));
+
+    stretch.push_back(point_to_move);
+    stretch.push_back(distance_to_move);
+    stretch.push_back(anchor);
+
+    //z data
+    point_to_move = random_stretch_point(zmin, zmax);
+    anchor = random_anchor_point(zmin, zmax);
+    distance_to_move = rand() % (min (max_stretch, min(point_to_move, dims - point_to_move)));
+
+    stretch.push_back(point_to_move);
+    stretch.push_back(distance_to_move);
+    stretch.push_back(anchor);
+
+    // Randomly turn on or off stretchig in each dimension
+    //TODO: this can be better!
+    if (rand() % 2) {
+      stretch[0] = -1; //x
+    }
+
+    if (rand() % 2) {
+      stretch[3] = -1; //y
+    }
+
+    if (rand() % 2) {
+      stretch[6] = -1; //z
+    }
+
+    stretch_array(stretch);
   }
 
 
