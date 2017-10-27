@@ -3,8 +3,6 @@
 
 using namespace std;
 
-Point centre_of_mesh(const C3t3& c3t3);
-
 Point centre_of_mesh(const C3t3& c3t3) {
 
 								cout << "Calculating cetnre of mesh" << endl;
@@ -36,8 +34,9 @@ Point centre_of_mesh(const C3t3& c3t3) {
 								return centre_point;
 }
 
-Point closest_element(const C3t3& c3t3, Point target_p) {
-	// Find the closest element in the surface to a given point in space
+Point closest_element(const C3t3& c3t3, Point target_p, int target_domain) {
+	// Find the closest element in the surface to a given point in space,
+	// The found point will be in the specified domain (tissue type)
 
 								// Facet property map - used for finding the domain (tissue type) of a facet or cell
 								Cell_pmap cell_pmap(c3t3);
@@ -51,11 +50,6 @@ Point closest_element(const C3t3& c3t3, Point target_p) {
 								Point centre_of_closest(0,0,0);
 								vector<Point> facet_points;
 
-								// Only want to use facets that are in the outermost layer i.e. the skin
-								//TODO: Don't hardcode tihs value?
-								int skin_tissue_index = 7;
-
-
 								// Iterate over all facets
 								for (Facet_iterator facet_iterator = c3t3.facets_in_complex_begin(); facet_iterator != c3t3.facets_in_complex_end(); ++facet_iterator) {
 
@@ -63,7 +57,7 @@ Point closest_element(const C3t3& c3t3, Point target_p) {
 																int this_tissue = int(get(facet_pmap, *facet_iterator));
 
 																// Check facet is the tissue type we want
-																if ( this_tissue == skin_tissue_index) {
+																if ( this_tissue == target_domain) {
 																								for (int i = 0; i < 4; ++i) {
 
 																																// We only want to store the three verticies of the cell that correspond to this facet
@@ -132,12 +126,13 @@ Point set_reference_electrode(const C3t3& c3t3)
 								cout << "Generating reference electrode location\n";
 
 								Vector far_away(0,-150,50); 	//Extend from centre of forehead
-								//Point centre = centre_of_mesh(c3t3);
-								//double zmax = c3t3.zdim() * c3t3.vz();
-								//Point outside_mesh( CGAL::to_double(centre.x()),0,zmax);
+
+								// Only want to use facets that are in the outermost layer i.e. the skin
+								//TODO: Don't hardcode tihs value?
+								int skin_tissue_index = 7;
 
 								Point outside_mesh = centre_of_mesh(c3t3) + far_away;
-								Point reference = closest_element( c3t3, outside_mesh);
+								Point reference = closest_element( c3t3, outside_mesh, skin_tissue_index);
 
 								cout << "Point outside mesh is: " << outside_mesh << endl;
 								cout << "Reference located at: " << reference << endl << endl;

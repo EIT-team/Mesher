@@ -44,18 +44,7 @@ endif()
 set(CMAKE_CXX_FLAGS "-O3")
 # include for local package
 
+add_executable(run_tests "run_tests.cpp" "test_warping.cpp" "test_mesh_operations.cpp" "../src/mesh_operations.cpp" "test_stretching.cpp" "../src/warp_mesh.cpp" "../src/stretch_info.cpp")
 
-# Creating entries for all .cpp/.C files with "main" routine
-# ##########################################################
-
-include( CGAL_CreateSingleSourceCGALProgram )
-
-file(GLOB SOURCES "*.cpp")
-
-add_executable(mesher ${SOURCES})
-
-add_definitions(-DINPUTS_DIR="${CMAKE_SOURCE_DIR}/inputs")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lstdc++")
-
-set_target_properties(mesher PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+set_target_properties(run_tests PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/test")

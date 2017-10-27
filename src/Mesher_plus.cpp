@@ -157,8 +157,11 @@ int main(int argc, char* argv[])
     Point ground_electrode = set_ground_electrode(c3t3);
 
     cout << "Moving electrodes to closest facets: " << endl;
+    // 7 is the domain of skin. Only want to move electrode to another section of skin
+    // Not to brain/csf etc by mistake.
+    int skin_tissue_index = 7;
     for(int i = 0; i < sizing_field.centres.size(); ++i) {
-      sizing_field.centres[i] = closest_element(c3t3, sizing_field.centres[i]);
+      sizing_field.centres[i] = closest_element(c3t3, sizing_field.centres[i], skin_tissue_index);
     }
     cout << "Finished moving electrodes" << endl;
 
