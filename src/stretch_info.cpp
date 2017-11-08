@@ -1,6 +1,5 @@
 #include "stretch_info.h"
-#include <iostream>
-#include <math.h> //for round
+
 
 using namespace std;
 
@@ -11,9 +10,6 @@ point_to_move = point;
 distance = dist;
 anchor = anch;
 dims = dim;
-
-bool too_big = ((point + dist) > dims) || ( (point - dims) );
-bool point_equals_anchor = (point == anchor);
 
 // Check if we should do a stretch, exit if not
 if (!check_valid_points()) {
@@ -74,33 +70,38 @@ bool Stretch_Info::check_valid_points() {
 
 }
 
-int Stretch_Info::idx_to_copy_from( int i) {
-/* Calculate the array index from which to copy, this is the 'stretching' operation
-*/
 
-  //if not doing any stretching in this dimension, return the same index
-  if (!active) {
-    return i;
-  }
+void Stretch_Info::prepare_stretch( int i) {
+  // Calculate the stretch parameters for a given index, i
 
-  // Make sure that elements outside of the desired range aren't accessed.
-  // If they are, just return the same index
-  if ( (step > 0) && ( (i < start_iterate) || (i > end_iterate) )) {
-    cout << "Trying to stretch point outside of defined range" << endl;
-    return i;
-  }
-
-  if ( (step < 0) && ( (i > start_iterate) || (i < end_iterate) )) {
-    cout << "Trying to stretch point outside of defined range" << endl;
-    return i;
-  }
-
-  // The strech acts according to the square of the distance from the anchor
   distance_from_anchor = i - anchor;
   distance_anchor_ratio = distance_from_anchor / double(move_point_dist_from_anchor);
-  stretch_ratio = step * distance_anchor_ratio * distance_anchor_ratio;
+  stretch_ratio = distance_anchor_ratio * distance_anchor_ratio;
+}
 
-  int idx_to_copy = i + round(stretch_ratio * distance);
+
+int Stretch_Info::idx_to_copy_from(int i) {
+  /* Calculate the array index from which to copy, this is the 'stretching' operation
+  */
+
+    //if not doing any stretching in this dimension, return the same index
+    if (!active) {
+      return i;
+    }
+
+    // Make sure that elements outside of the desired range aren't accessed.
+    // If they are, just return the same index
+    if ( (step > 0) && ( (i < start_iterate) || (i > end_iterate) )) {
+      cout << "Trying to stretch point outside of defined range" << endl;
+      return i;
+    }
+
+    if ( (step < 0) && ( (i > start_iterate) || (i < end_iterate) )) {
+      cout << "Trying to stretch point outside of defined range" << endl;
+      return i;
+    }
+
+  int idx_to_copy = i + round(step * stretch_ratio * distance);
 
     return idx_to_copy;
 

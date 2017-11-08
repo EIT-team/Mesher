@@ -45,12 +45,22 @@ TEST_CASE("Stretchingtest_stretching") {
     int max_right = right_point + distance;
     int min_right = anchor + 1;
 
+    stretch_left.prepare_stretch(max_left);
     REQUIRE(stretch_left.idx_to_copy_from(max_left) ==  ( left_point ));
+
+    stretch_left.prepare_stretch(min_left);
     REQUIRE(stretch_left.idx_to_copy_from(min_left) == (min_left));
+
+    stretch_left.prepare_stretch(too_far_left);
     REQUIRE(stretch_left.idx_to_copy_from(too_far_left) == too_far_left);
 
+    stretch_right.prepare_stretch(max_right);
     REQUIRE(stretch_right.idx_to_copy_from(max_right) == ( right_point ));
+
+    stretch_right.prepare_stretch(min_right);
     REQUIRE(stretch_right.idx_to_copy_from(min_right) == (min_right));
+
+    stretch_right.prepare_stretch(too_far_right);
     REQUIRE(stretch_right.idx_to_copy_from(too_far_right) == too_far_right);
   }
 

@@ -2,6 +2,7 @@
 #define STRETCH_INFO_H
 
 #include <iostream>
+#include <math.h> //for round
 
 class Stretch_Info {
 public:
@@ -15,6 +16,7 @@ public:
   double distance_anchor_ratio, stretch_ratio;
 
   Stretch_Info(int, int, int, int);
+  void prepare_stretch(int);
   int idx_to_copy_from(int);
   bool check_valid_points();
   std::string stretch_description();
