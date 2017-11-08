@@ -93,8 +93,13 @@ int main(int argc, char* argv[])
     output_mesh_name = input_mesh_name;
 
     if (do_deform) {
+      cout << "Deformations left: " << n_deformations << endl;
       unsigned char * image_data = (unsigned char*)image.data();
       Deform_Volume warper(image.data(), image.xdim());
+
+      warper.min_stretch = p.options["min_stretch_distance"];
+      warper.max_stretch = p.options["max_stretch_distance"];
+
       warper.modify_image();
 
       // Append mesh_name with details of deformation
@@ -121,14 +126,14 @@ int main(int argc, char* argv[])
 
 
     // Meshing
-    std::cout<<"\n Meshing with initial mesh..." << endl;
-    C3t3 c3t3;
-    c3t3= CGAL::make_mesh_3<C3t3>(domain, criteria, CGAL::parameters::features(domain),
+    std::cout<<"\n Creating initial mesh..." << endl;
+    C3t3_EIT c3t3;
+
+    c3t3= CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
     CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
     CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
 
     //Optimisation
-    std::cout<<"\n Optimising: " << endl;
     if (int(p.options["perturb_opt"])==1) {
       std::cout<<"\n Perturb... ";
       CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=p.options["time_limit_sec"]);
@@ -151,19 +156,18 @@ int main(int argc, char* argv[])
 
 
     // Generate reference electrode location and append to elecrtode list
-    Point reference_electrode = set_reference_electrode(c3t3);
+    Point reference_electrode = c3t3.set_reference_electrode();
     sizing_field.centres.push_back(reference_electrode);
 
-    Point ground_electrode = set_ground_electrode(c3t3);
+    Point ground_electrode = c3t3.set_ground_electrode();
 
     cout << "Moving electrodes to closest facets: " << endl;
     // 7 is the domain of skin. Only want to move electrode to another section of skin
     // Not to brain/csf etc by mistake.
     int skin_tissue_index = 7;
     for(int i = 0; i < sizing_field.centres.size(); ++i) {
-      sizing_field.centres[i] = closest_element(c3t3, sizing_field.centres[i], skin_tissue_index);
+      sizing_field.centres[i] = c3t3.closest_element(sizing_field.centres[i], skin_tissue_index);
     }
-    cout << "Finished moving electrodes" << endl;
 
     // Put together parameters
     std::map<std::string, std::string> parameters;
@@ -180,11 +184,6 @@ int main(int argc, char* argv[])
     parameters["groundposition.x"] = gndposx.str();
     parameters["groundposition.y"] = gndposy.str();
     parameters["groundposition.z"] = gndposz.str();
-
-
-    //all done
-    std::cout<<"\n ALL DONE! :)" << endl;
-
 
     // Base filenames for electrode positions and parameters
     output_base_file = output_dir + output_mesh_name;

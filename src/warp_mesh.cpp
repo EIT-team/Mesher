@@ -165,27 +165,39 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     int this_idx, idx_to_copy_from;
     int new_x, new_y, new_z;
 
+    double min_stretch_ratio;
+
     // Create stretch objects in each dimension
     Stretch_Info x(stretch[0],stretch[1],stretch[2], dims);
     Stretch_Info y(stretch[3],stretch[4],stretch[5], dims);
     Stretch_Info z(stretch[6],stretch[7],stretch[8], dims);
 
     // Loop over each element that is affected by the stretch
-    int i, j, k;
-    for (i = x.start_iterate; i != x.end_iterate; i += x.step) {
-      for (j = y.start_iterate; j != y.end_iterate; j += y.step) {
-        for (k = z.start_iterate; k != z.end_iterate; k += z.step) {
+    int x_idx, y_idx, z_idx;
+    for (x_idx = x.start_iterate; x_idx != x.end_iterate; x_idx += x.step) {
+      for (y_idx = y.start_iterate; y_idx != y.end_iterate; y_idx += y.step) {
+        for (z_idx = z.start_iterate; z_idx != z.end_iterate; z_idx += z.step) {
 
+          x.prepare_stretch(x_idx);
+          y.prepare_stretch(y_idx);
+          z.prepare_stretch(z_idx);
 
-          this_idx = get_array_index(i,j,k);
+          //TODO: Explain this bit here!
+          min_stretch_ratio = min ( abs(x.stretch_ratio), abs(y.stretch_ratio));
+          min_stretch_ratio = min( min_stretch_ratio, abs(z.stretch_ratio));
+
+          x.stretch_ratio = min_stretch_ratio;
+          y.stretch_ratio = min_stretch_ratio;
+          z.stretch_ratio = min_stretch_ratio;
 
           // Calculate where to copy from
-          new_x = x.idx_to_copy_from(i);
-          new_y = y.idx_to_copy_from(j);
-          new_z = z.idx_to_copy_from(k);
-          idx_to_copy_from = get_array_index(new_x, new_y, new_z);
+          new_x = x.idx_to_copy_from(x_idx);
+          new_y = y.idx_to_copy_from(y_idx);
+          new_z = z.idx_to_copy_from(z_idx);
 
           // Copy point over
+          this_idx = get_array_index(z_idx,y_idx,x_idx);
+          idx_to_copy_from = get_array_index(new_z, new_y, new_x);
           image_data[this_idx] = image_data[idx_to_copy_from];
 
         }
@@ -196,7 +208,6 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     deformation_info += x.stretch_description() + ".";
     deformation_info += y.stretch_description() + ".";
     deformation_info += z.stretch_description();
-
 
 
   }
@@ -221,8 +232,8 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
     }
     else {
-    // 1 in 5 % chance of dilation
-    if ((rand() %5) < 1) {
+    // 1 in 3 % chance of dilation
+    if ((rand() %3) < 1) {
       random_dilate();
     }
   }
@@ -231,15 +242,13 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
   void Deform_Volume::random_stretch() {
 
-    int max_stretch = 25;
-
     vector<int> stretch;
 
     //TODO: point_to_move, distance and anchor are class variables, is this needed anymore?
     //x data
     point_to_move = random_stretch_point(xmin, xmax);
     anchor = random_anchor_point(xmin, xmax);
-    distance_to_move = rand() % (min (max_stretch, min(point_to_move, dims - point_to_move)));
+    distance_to_move = min_stretch + rand() % (min (max_stretch, min(point_to_move, dims - point_to_move)));
 
     stretch.push_back(point_to_move);
     stretch.push_back(distance_to_move);
@@ -248,7 +257,7 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     //y data
     point_to_move = random_stretch_point(ymin, ymax);
     anchor = random_anchor_point(ymin, ymax);
-    distance_to_move = rand() % (min (max_stretch, min(point_to_move, dims - point_to_move)));
+    distance_to_move = min_stretch + rand() % (min (max_stretch, min(point_to_move, dims - point_to_move)));
 
     stretch.push_back(point_to_move);
     stretch.push_back(distance_to_move);
@@ -257,7 +266,7 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     //z data
     point_to_move = random_stretch_point(zmin, zmax);
     anchor = random_anchor_point(zmin, zmax);
-    distance_to_move = rand() % (min (max_stretch, min(point_to_move, dims - point_to_move)));
+    distance_to_move = min_stretch + rand() % (min (max_stretch, min(point_to_move, dims - point_to_move)));
 
     stretch.push_back(point_to_move);
     stretch.push_back(distance_to_move);
@@ -265,15 +274,15 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
     // Randomly turn on or off stretchig in each dimension
     //TODO: this can be better!
-    if (rand() % 2) {
+    if (!(rand() % 3)) {
       stretch[0] = -1; //x
     }
 
-    if (rand() % 2) {
+    if (!(rand() % 3)) {
       stretch[3] = -1; //y
     }
 
-    if (rand() % 2) {
+    if (!(rand() % 3)) {
       stretch[6] = -1; //z
     }
 
@@ -282,10 +291,15 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
 
   int Deform_Volume::random_stretch_point(int idx_min, int idx_max) {
+
+    //TODO: don't hardcode this?
+    int max_dist_from_edge = 1;
     // Return a stretch point that is < idx_min or > idx_max
 
-    // > idx_max
-    int upper_rand = idx_max + ( rand() % (dims - idx_max));
+    // Pick  a point up to 10 voxels away from the maximum
+    // Check it is not outside of the array (> dims)
+    int upper_rand = idx_max + (rand() % max_dist_from_edge);
+    upper_rand = min(upper_rand, dims);
 
     // If the minimum value is 0, we can't stretch further in this direciton so
     // only use the upper value
@@ -295,8 +309,10 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
       return upper_rand;
     }
 
-    //  return value between 1 and idx_min
-    int lower_rand = 1 + rand() % idx_min;
+    //  return value between idx_min-10 and idx_min
+    int lower_rand = idx_min - max_dist_from_edge +  rand() % max_dist_from_edge;
+    lower_rand = max(lower_rand, 0);
+
     return lower_rand;
 
   }
@@ -345,26 +361,29 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     xmax = INT_MIN, ymax = INT_MIN, zmax = INT_MIN;
     xmin = INT_MAX, ymin = INT_MAX, zmin = INT_MAX;
 
-    int i,j,k;
+    int x,y,z;
     long idx;
 
-    for (i = 0; i < dims; i++) {
-      for (j = 0; j < dims; j++) {
-        for (k = 0; k < dims; k++) {
+    for (x = 0; x < dims; x++) {
+      for (y = 0; y < dims; y++) {
+        for (z = 0; z < dims; z++) {
 
-          idx = get_array_index(i, j, k);
+          // TODO: dimensions of inr data are assumed to be in z,y,x order here
+          // Not necessarily true in all cases?
+
+          idx = get_array_index(z, y, x);
           // Is this element non 0 i.e. not background
           // if so check if the min/max values should be updated
           if (image_data[idx] != 0) {
 
-            if (i > xmax) xmax = i;
-            if (i < xmin) xmin = i;
+            if (x > xmax) xmax = x;
+            if (x < xmin) xmin = x;
 
-            if (j > ymax) ymax = j;
-            if (j < ymin) ymin = j;
+            if (y > ymax) ymax = y;
+            if (y < ymin) ymin = y;
 
-            if (k > zmax) zmax = k;
-            if (k < zmin) zmin = k;
+            if (z > zmax) zmax = z;
+            if (z < zmin) zmin = z;
 
           }
         }

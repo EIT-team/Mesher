@@ -30,7 +30,7 @@ include( ${CGAL_USE_FILE} )
 
 
 # Boost and its components
-find_package( Boost REQUIRED )
+find_package( Boost COMPONENTS REQUIRED )
 
 if ( NOT Boost_FOUND )
 

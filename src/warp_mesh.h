@@ -2,13 +2,12 @@
 #ifndef WARP_H
 #define WARP_H
 
-//#include "include.h"
-//#include "CGAL_include.h"
 #include "stretch_info.h"
 
 #include <vector>
 #include <unordered_set>
 #include <climits>
+#include <math.h>
 
 using namespace std;
 
@@ -24,6 +23,10 @@ public:
   int xmin, ymin, zmin;
 
   vector<int> layers;
+
+  // Default values, can be changed in mesh input/parameter file
+  int min_stretch = 5;
+  int max_stretch = 50;
 
 // For stretching
 int point_to_move, distance_to_move, anchor;
@@ -52,6 +55,9 @@ int point_to_move, distance_to_move, anchor;
   vector<long> neighbouring_elements(long voxel_index);
   void get_layers();
   void find_mesh_bounds();
+
+//TODO: Functions to centre data in array and to pad array with 0s, to give more
+//space to deform into
 
 };
 

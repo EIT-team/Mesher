@@ -80,7 +80,6 @@ void save_as_dgf (const C3t3& c3t3, Input st, string output_file)
 								fprintf(dgf_file, "#\n");
 
 								fclose(dgf_file);
-								cout << "Finished writing" << "\n\n";
 }
 
 
@@ -98,7 +97,6 @@ void save_electrodes(Points electrodes, string output_file)
 								}
 
 								fclose(electrode_file);
-								cout << "Finished writing" << "\n\n";
 
 }
 
@@ -120,7 +118,6 @@ void save_parameters(map<string, string> parameters, string output_file)
 								}
 
 								parameter_file.close();
-								cout << "Finished writing \n\n";
 
 }
 
@@ -166,5 +163,4 @@ void write_centres(C3t3& c3t3, string output_file) {
 		}
 
 	fclose(centres_file);
-	cout << "Finished centres" << endl;
 }
