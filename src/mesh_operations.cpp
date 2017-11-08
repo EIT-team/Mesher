@@ -3,58 +3,50 @@
 
 using namespace std;
 
-Point centre_of_mesh(const C3t3& c3t3) {
+Point C3t3_EIT::centre_of_mesh() {
 
-								cout << "Calculating cetnre of mesh" << endl;
+	const Tr& tr = triangulation();
+	double n_vertex = tr.number_of_vertices();
 
-								const Tr& tr = c3t3.triangulation();
-								double n_vertex = tr.number_of_vertices();
-								double mean_vtx[3] = {0};
+	double mean_vtx[3] = {0};
 
-								map<Vertex_handle, int> V;
-								int inum = 1;
-								Point p;
+	map<Vertex_handle, int> V;
+	int inum = 1;
+	Point p;
 
-								for (Finite_vertices_iterator vit = tr.finite_vertices_begin(); vit != tr.finite_vertices_end(); ++vit)
-								{
-																p = vit->point();
-																mean_vtx[0] += CGAL::to_double(p.x());
-																mean_vtx[1] += CGAL::to_double(p.y());
-																mean_vtx[2] += CGAL::to_double(p.z());
+	for (Finite_vertices_iterator vit = tr.finite_vertices_begin(); vit != tr.finite_vertices_end(); ++vit)
+	{
+									p = vit->point();
+									mean_vtx[0] += CGAL::to_double(p.x());
+									mean_vtx[1] += CGAL::to_double(p.y());
+									mean_vtx[2] += CGAL::to_double(p.z());
 
-								}
+	}
 
-								Point centre_point(mean_vtx[0]/n_vertex, mean_vtx[1]/n_vertex, mean_vtx[2]/n_vertex);
+	Point centre_point(mean_vtx[0]/n_vertex, mean_vtx[1]/n_vertex, mean_vtx[2]/n_vertex);
 
-								cout << "x: " << centre_point.x() << endl
-																		<< "y: " << centre_point.y() << endl
-																		<< "z: " << centre_point.z() << endl;
+	cout << "x: " << centre_point.x() << endl
+											<< "y: " << centre_point.y() << endl
+											<< "z: " << centre_point.z() << endl;
 
-
-								return centre_point;
+	return centre_point;
 }
 
-Point closest_element(const C3t3& c3t3, Point target_p, int target_domain) {
+Point C3t3_EIT::closest_element(Point target_p, int target_domain) {
 	// Find the closest element in the surface to a given point in space,
 	// The found point will be in the specified domain (tissue type)
 
-								// Facet property map - used for finding the domain (tissue type) of a facet or cell
-								Cell_pmap cell_pmap(c3t3);
-								Facet_pmap facet_pmap(c3t3,cell_pmap);
-
-								//cout << "Finding closest surface element to " << target_p << endl;
-								//cout << "Number of facets in complex: " << c3t3.number_of_facets_in_complex() << endl
-								;
-								double min_dist = 1000000; //Large sentinel value
+								double min_dist = DBL_MAX;
 								double this_dist;
 								Point centre_of_closest(0,0,0);
 								vector<Point> facet_points;
 
 								// Iterate over all facets
-								for (Facet_iterator facet_iterator = c3t3.facets_in_complex_begin(); facet_iterator != c3t3.facets_in_complex_end(); ++facet_iterator) {
+								for (	Facet_iterator facet_iterator = facets_in_complex_begin();
+								 			facet_iterator != facets_in_complex_end(); ++facet_iterator) {
 
 																// Get domain number/tissue type using facet map
-																int this_tissue = int(get(facet_pmap, *facet_iterator));
+																int this_tissue = facet_iterator->first->subdomain_index();
 
 																// Check facet is the tissue type we want
 																if ( this_tissue == target_domain) {
@@ -79,8 +71,6 @@ Point closest_element(const C3t3& c3t3, Point target_p, int target_domain) {
 																																min_dist = this_dist;
 																																centre_of_closest = centre_of_facet;
 
-																																//cout << " Centre: " <<      centre_of_facet << " Distance: " << this_dist <<endl;
-																																//cout << "Facet type: " << get(facet_pmap, *facet_iterator) << endl;
 																								}
 
 																								// Empty facet_points, otherwise the [0] [1] [2] indexing used for CGAL::centroid won't do anything with new data
@@ -94,6 +84,127 @@ Point closest_element(const C3t3& c3t3, Point target_p, int target_domain) {
 
 }
 
+int C3t3_EIT::get_outer_layer_domain() {
+
+	double max_x = -DBL_MAX;
+	int outer_domain;
+	Point this_point;
+
+	// Iterate over all facets
+	for (	Facet_iterator facet_iterator = facets_in_complex_begin();
+				facet_iterator != facets_in_complex_end(); ++facet_iterator) {
+
+									// Get domain number/tissue type using facet map
+									int this_tissue = facet_iterator->first->subdomain_index();
+
+																	for (int i = 0; i < 4; ++i) {
+
+																									if ( i != facet_iterator->second) {
+																																	this_point = facet_iterator->first->vertex(i)->point();
+																									}
+																	}
+
+																	// Found a nex max_point, store the domain
+																	if (this_point[0] > max_x) {
+																		outer_domain = facet_iterator->first->subdomain_index();
+																	}
+
+
+									}
+
+	return outer_domain;
+
+	}
+
+Point C3t3_EIT::set_reference_electrode()
+{
+								// Add a sufficently large vector to the centre of the mesh,
+								// should result in a point outside of the mesh.
+								// This particular vector should come out of the front of the forehead
+								// for human head
+
+								// TODO: Combine this with Deform_Volume class to allow accessing of mesh_bounds?
+								// Then won't need to guestimate a point outside of the mesh.
+								cout << "Generating reference electrode location\n";
+
+								Vector far_away(0,-150,50); 	//Extend from centre of forehead
+
+								// Only want to use facets that are in the outermost layer i.e. the skin
+								//TODO: Don't hardcode tihs value?
+								int skin_tissue_index = get_outer_layer_domain();
+								cout << "Domain of outer layer is " << skin_tissue_index << endl;
+								Point outside_mesh = centre_of_mesh() + far_away;
+								Point reference = closest_element(outside_mesh, skin_tissue_index);
+
+								//cout << "Point outside mesh is: " << outside_mesh << endl;
+								cout << "Reference located at: " << reference << endl;
+
+								return reference;
+}
+
+Point C3t3_EIT::set_ground_electrode()
+{
+								// Place the ground location at the back of the head (For humans)
+
+
+								const Tr& tr = triangulation();
+								double n_vertex = tr.number_of_vertices();
+								Point gnd_electrode, current_vertex;
+								double furthest = -1000; // Set to sentinel values
+								double current_y;
+
+								int inum = 1;
+
+// Find the largest y value by iterating through all vertices
+								for (Finite_vertices_iterator vit = tr.finite_vertices_begin(); vit != tr.finite_vertices_end(); ++vit)
+								{
+
+																current_vertex = vit->point();
+																current_y = CGAL::to_double(current_vertex.y());
+
+																// Check if current value is the largest and updtate if so
+																if (current_y > furthest) {
+																								furthest = current_y;
+																								gnd_electrode = current_vertex;
+																}
+
+								}
+
+								cout << "Ground electrode placed at: " << gnd_electrode << endl;
+								return gnd_electrode;
+
+}
+
+
+void C3t3_EIT::find_mesh_bounds() {
+
+	const Tr& tr = triangulation();
+	double n_vertex = tr.number_of_vertices();
+	Point current_vertex;
+	double x,y,z;
+
+// Iterate through all vertices
+	for (Finite_vertices_iterator vit = tr.finite_vertices_begin(); vit != tr.finite_vertices_end(); ++vit)
+	{
+
+									current_vertex = vit->point();
+									x = CGAL::to_double(current_vertex.x());
+									y = CGAL::to_double(current_vertex.y());
+									z = CGAL::to_double(current_vertex.z());
+
+									// Check if current value is the bigger/smaller than current and updtate if so
+									if (x > x_max) x_max = x;
+									if (x < x_min) x_min = x;
+									if (y > y_max) y_max = y;
+									if (y < y_min) y_min = y;
+									if (z > z_max) z_max = z;
+									if (z < z_min) z_min = z;
+
+
+
+	}
+
+}
 
 vector<Point> load_electrode_locations(FILE *F, FT scale) {
 								// Loads electrode positions from a file and returns a vector of points
@@ -112,104 +223,4 @@ vector<Point> load_electrode_locations(FILE *F, FT scale) {
 
 								return electrode_locations;
 
-}
-
-Point set_reference_electrode(const C3t3& c3t3)
-{
-								// Add a sufficently large vector to the centre of the mesh,
-								// should result in a point outside of the mesh.
-								// This particular vector should come out of the front of the forehead
-								// for human head
-
-								// TODO: Combine this with Deform_Volume class to allow accessing of mesh_bounds?
-								// Then won't need to guestimate a point outside of the mesh.
-								cout << "Generating reference electrode location\n";
-
-								Vector far_away(0,-150,50); 	//Extend from centre of forehead
-
-								// Only want to use facets that are in the outermost layer i.e. the skin
-								//TODO: Don't hardcode tihs value?
-								int skin_tissue_index = 7;
-
-								Point outside_mesh = centre_of_mesh(c3t3) + far_away;
-								Point reference = closest_element( c3t3, outside_mesh, skin_tissue_index);
-
-								cout << "Point outside mesh is: " << outside_mesh << endl;
-								cout << "Reference located at: " << reference << endl << endl;
-
-								return reference;
-}
-
-Point set_ground_electrode(const C3t3& c3t3)
-{
-								// Place the ground location at the back of the head (For humans)
-
-								cout << "Placing ground elecrtode\n";
-
-
-								const Tr& tr = c3t3.triangulation();
-								double n_vertex = tr.number_of_vertices();
-								Point gnd_electrode, current_vertex;
-								double furthest = -1000; // Set to sentinel values
-								double current_y;
-
-//map<Vertex_handle, int> V;
-								int inum = 1;
-//Point p;
-
-// Find the largest y value by iterating through all vertices
-								for (Finite_vertices_iterator vit = tr.finite_vertices_begin(); vit != tr.finite_vertices_end(); ++vit)
-								{
-
-																current_vertex = vit->point();
-																current_y = CGAL::to_double(current_vertex.y());
-
-																// Check if current value is the largest and updtate if so
-																if (current_y > furthest) {
-																								furthest = current_y;
-																								gnd_electrode = current_vertex;
-																}
-
-								}
-
-								cout << "Ground electrode placed at: " << gnd_electrode << endl << endl;
-								return gnd_electrode;
-
-}
-
-vector<int> generate_full_protocol(vector<int> prt, int n_elecs)
-{
-								// Take input protocol as a vector of ints.
-								// Each pair of ints represents one injection pair.
-								// e.g.  [2 5 3 7] means injection between 2,5 and injeciton between 3,7
-								cout << "generating full protocol\n";
-								int n_prt = prt.size()/2;
-
-								int gnd_elec = n_elecs + 1;
-								int injection_a, injection_b;
-
-								vector<int> full_prt;
-
-								for (int i = 0; i < n_prt; i++)
-								{
-																injection_a = prt[2*i];
-																injection_b = prt[2*i +1];
-
-																cout << "Injection electrodes: " << injection_a << " " << injection_b << endl;
-
-																for (int elec_num = 1; elec_num <= n_elecs; elec_num++)
-																{
-																								// Don't include injection electrodes in measurements
-																								if (elec_num != injection_a && elec_num != injection_b)
-																								{
-																																// Add prt row - inj_a inj_b meas gnd
-																																full_prt.push_back(gnd_elec);
-																																full_prt.push_back(elec_num);
-																																full_prt.push_back(injection_b);
-																																full_prt.push_back(injection_a);
-
-																								}
-																}
-								}
-								return full_prt;
 }
