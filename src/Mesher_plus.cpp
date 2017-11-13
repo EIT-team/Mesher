@@ -94,8 +94,7 @@ int main(int argc, char* argv[])
 
     if (do_deform) {
       cout << "Deformations left: " << n_deformations << endl;
-      unsigned char * image_data = (unsigned char*)image.data();
-      Deform_Volume warper(image.data(), image.xdim());
+      Deform_Volume warper( &image );
 
       warper.min_stretch = p.options["min_stretch_distance"];
       warper.max_stretch = p.options["max_stretch_distance"];

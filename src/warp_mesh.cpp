@@ -6,10 +6,15 @@ Deform_Volume::Deform_Volume() {
   ;
 }
 
-Deform_Volume::Deform_Volume(void * data, int image_dims) {
+Deform_Volume::Deform_Volume(CGAL::Image_3 *image) {
 
-  image_data = (unsigned char*)data;
-  dims = image_dims;
+  image_data = (unsigned char*)image->data();
+  dims = image->xdim();
+
+  vx =  image->vx();
+  vy = image->vy();
+  vz = image->vz();
+
   find_mesh_bounds();
 
   deformation_info = "";
@@ -211,6 +216,7 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
 
   }
+
   void Deform_Volume::modify_image() {
 
     std::cout << std::endl << "MODIFYING IMAGE DATA" << endl;
@@ -223,22 +229,26 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     random_stretch();
 
     // 50% chance of cotinuing
-    while (rand() % 2) {
-      find_mesh_bounds(); //Update edges of object
+     while (rand() % 2); {
 
       //50% chance of stretch
       if (rand() %2) {
       random_stretch();
 
     }
-    else {
+
     // 1 in 3 % chance of dilation
     if ((rand() %3) < 1) {
       random_dilate();
     }
-  }
+
+    find_mesh_bounds(); //Update edges of object
+
+    }
+
+
 }
-  }
+
 
   void Deform_Volume::random_stretch() {
 
@@ -274,15 +284,15 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
     // Randomly turn on or off stretchig in each dimension
     //TODO: this can be better!
-    if (!(rand() % 3)) {
+    if (!(rand() % 4)) {
       stretch[0] = -1; //x
     }
 
-    if (!(rand() % 3)) {
+    if (!(rand() % 4)) {
       stretch[3] = -1; //y
     }
 
-    if (!(rand() % 3)) {
+    if (!(rand() % 4)) {
       stretch[6] = -1; //z
     }
 
@@ -291,31 +301,25 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
 
   int Deform_Volume::random_stretch_point(int idx_min, int idx_max) {
-
-    //TODO: don't hardcode this?
-    int max_dist_from_edge = 1;
     // Return a stretch point that is < idx_min or > idx_max
 
-    // Pick  a point up to 10 voxels away from the maximum
-    // Check it is not outside of the array (> dims)
-    int upper_rand = idx_max + (rand() % max_dist_from_edge);
-    upper_rand = min(upper_rand, dims);
+    // Pick  a point 1 voxels away from the maximum/minimum
+    // Check it is not outside of the array (> dims or < 0)
+    int upper = idx_max + 1;
+    int lower = idx_min - 1;
 
-    // If the minimum value is 0, we can't stretch further in this direciton so
-    // only use the upper value
-    // Even if min > 0, we want to pick at random between a value < idx_min and > idx_max
-    int even_odd = rand() %2;
-    if ( (idx_min == 0) || even_odd ) {
-      return upper_rand;
+    // Make sure they are within bounds of array
+    upper = min(upper, dims);
+    lower = max(lower, 0);
+
+    if (rand() %2) {
+      return upper;
     }
 
-    //  return value between idx_min-10 and idx_min
-    int lower_rand = idx_min - max_dist_from_edge +  rand() % max_dist_from_edge;
-    lower_rand = max(lower_rand, 0);
-
-    return lower_rand;
+    return lower;
 
   }
+
 
   int Deform_Volume::random_anchor_point(int idx_min, int idx_max) {
     // Want to pick an anchor point  'within' the object
