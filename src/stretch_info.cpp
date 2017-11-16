@@ -74,6 +74,17 @@ bool Stretch_Info::check_valid_points() {
 void Stretch_Info::prepare_stretch( int i) {
   // Calculate the stretch parameters for a given index, i
 
+  // If not stretching in this direction, need to set stretch_ratio to 1
+  // so that this dimension is effectively ignored i.e. it doesn't affect the
+  // min(stretch_ratios) calculation
+
+  if (!active) {
+
+    stretch_ratio = 1;
+    return;
+    
+  }
+
   distance_from_anchor = i - anchor;
   distance_anchor_ratio = distance_from_anchor / double(move_point_dist_from_anchor);
   stretch_ratio = distance_anchor_ratio * distance_anchor_ratio;

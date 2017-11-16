@@ -1,14 +1,19 @@
 set -e # Terminate script on any error
-input="./inputs/reduced_elements_01000.inr"
-electrodes="./inputs/Electrodes.txt"
-parameters="./inputs/input_idx.txt"
-output_dir="./output/"
-output_name="test_out"
+for mesh_name in "01000_padded" "01001_padded" "01003_padded"
+do
+	input="./inputs/"$mesh_name".inr"
+	electrodes="./inputs/"$mesh_name".electrodes"
+	parameters="./inputs/input_idx.txt"
+	output_dir="./output/"
 
-VM_share_folder="/mnt/test_share/"
+	VM_share_folder="/mnt/test_share/output_meshes/"
 
-./bin/mesher_rat -i $input -e $electrodes -p $parameters -d $output_dir -o $output_name
+	#Clear pervious outputs
+	rm ./output/*
 
-# Using a VM, so copy the paraview files to the host pc
-echo "Copying Paraview files to host PC"
-cp $output_dir*.vtu $VM_share_folder
+	./bin/mesher -i $input -e $electrodes -p $parameters -d $output_dir -o $mesh_name
+
+	# Using a VM, so copy the paraview files to the host pc
+	echo "Copying Paraview files to host PC"
+	cp $output_dir* $VM_share_folder
+done

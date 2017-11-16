@@ -22,6 +22,7 @@ public:
   // max/min bounds of object in volume
   int xmax, ymax, zmax;
   int xmin, ymin, zmin;
+  int xmid, ymid, zmid; // Centre of each dimensions
 
   vector<int> layers;
 
@@ -34,7 +35,7 @@ int point_to_move, distance_to_move, anchor;
 
   // Store the parameters of the deformation
   string deformation_info;
-  
+
   Deform_Volume();
   Deform_Volume(CGAL::Image_3*);
 
@@ -48,7 +49,7 @@ int point_to_move, distance_to_move, anchor;
   void random_stretch();
   void random_dilate();
 
-  void defined_stretch(int distance_mm, std::string dimension );
+  void defined_stretch(std::vector<double>);
 
   int random_stretch_point(int idx_min, int idx_max);
   int random_anchor_point(int idx_min, int idx_max);

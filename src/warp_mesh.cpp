@@ -145,6 +145,71 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
   }
 
+  void Deform_Volume::defined_stretch(vector<double> distance_mm) {
+    /* Deform the mesh by a particular amount (disance_mm) in a particular x/y/z direction
+    If distance_mm[x/y/z] is 0, no stretch is performed in that direction.
+    A positive/negative value stretches to the right/left respectively.
+    */
+    int n_dims = distance_mm.size();
+    // Check inputs, should be 3 elments, one for each dimension
+    if (n_dims != 3) {
+
+      cout << "Invalid number of values passed, should be 3, one for each dimension" << endl;
+
+    }
+//TODO: Tidy up here, too messy/repeated
+
+    vector<int> stretch;
+    int point, anchor, voxel_distance;
+
+    //x data
+    double xdist = distance_mm[0];
+
+    if (xdist> 0) point = xmax; //stretch right
+    else if (xdist < 0) point = xmin; //stretcg left
+    else point = -1; //Do nothing
+
+    anchor = xmid;
+    // Covert distance in mm to number of voxels, basxed on the distance for each voxel.
+    voxel_distance = round (abs( xdist / vx));
+
+    stretch.push_back(point);
+    stretch.push_back(voxel_distance);
+    stretch.push_back(anchor);
+
+    //y data
+    double ydist = distance_mm[1];
+
+    if (ydist> 0) point = ymax; //stretch right
+    else if (ydist < 0) point = ymin; //stretcg left
+    else point = -1; //Do nothing
+
+    anchor = ymid;
+    voxel_distance = round ( abs(ydist) / vy);
+
+    stretch.push_back(point);
+    stretch.push_back(voxel_distance);
+    stretch.push_back(anchor);
+
+    //z data
+    double zdist = distance_mm[2];
+
+    if (zdist> 0) point = zmax; //stretch right
+    else if (zdist < 0) point = zmin; //stretcg left
+    else point = -1; //Do nothing
+
+    anchor = zmid;
+    voxel_distance = round ( abs(zdist) / vz);
+
+    stretch.push_back(point);
+    stretch.push_back(voxel_distance);
+    stretch.push_back(anchor);
+
+    // Do the stretch
+    stretch_array(stretch);
+
+  }
+
 
   void Deform_Volume::stretch_array(vector<int> stretch) {
     /* Stretch the image
@@ -396,6 +461,10 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
     printf("Bounds of image are X: %d %d  Y: %d %d  Z: %d %d\n", xmin, xmax,
     ymin, ymax, zmin, zmax);
+
+    xmid = (xmin + xmax)/2;
+    ymid = (ymin + ymax)/2;
+    zmid = (zmin + zmax)/2;
   }
 
   /*

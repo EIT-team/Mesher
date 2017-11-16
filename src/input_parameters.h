@@ -23,4 +23,6 @@ struct Input
 
 };
 
+std::vector< std::vector<double> > load_deformations(const char*);
+
 #endif
