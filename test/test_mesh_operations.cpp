@@ -5,103 +5,132 @@
 using namespace CGAL::parameters;
 using namespace std;
 
+#include "write_c3t3_to_vtk_xml_file.h"
+TEST_CASE ("2-Domain Unit Cube") {
+    const char* inr_path_2_domains = "./unit_cube_2_domains.inr";
+    
+    CGAL::Image_3 image;
+    image.read(inr_path_2_domains);
 
+    Mesh_domain domain(image);
+    //TODO: Pick some objective values for facet_size etc. Just geussing at the moment
+    Mesh_criteria criteria(facet_angle=30, facet_size=0.03, facet_distance=1, cell_radius_edge_ratio=3, cell_size=0.03);
+
+    C3t3_EIT c3t3;
+    c3t3 = CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
+    CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
+    CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
+
+    SECTION( "Check outer domain") {
+
+        int expected_domain = 2;
+        int target_domain = c3t3.get_outer_layer_domain(); // only one domain in cube
+        REQUIRE(target_domain == 2);
+    }
+
+
+}
 TEST_CASE ("Unit Cube") {
 
-  // Unit cube (dimensions 1 x 1 x 1) centred around 0.5,0.5,0.5
+    // Unit cube (dimensions 1 x 1 x 1) centred around 0.5,0.5,0.5
 
-  const char* inr_path = "./unit_cube.inr";
+    const char* inr_path = "./unit_cube.inr";
 
-  CGAL::Image_3 image;
-  image.read(inr_path);
-
-
-  SECTION ("Read inr file and check dims") {
-    // Check the input file is as expected
-    REQUIRE (image.xdim() == 100);
-    REQUIRE (image.ydim() == 100);
-    REQUIRE (image.zdim() == 100);
-    REQUIRE (image.vx() == 0.02);
-    REQUIRE (image.vy() == 0.02);
-    REQUIRE (image.vz() == 0.02);
-  }
-
-cout << "Creating mesh" << endl;
-
-Mesh_domain domain(image);
-//TODO: Pick some objective values for facet_size etc. Just geussing at the moment
-Mesh_criteria criteria(facet_angle=30, facet_size=0.03, facet_distance=1, cell_radius_edge_ratio=3, cell_size=0.03);
-
-C3t3_EIT c3t3;
-c3t3 = CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
-CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
-CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
-//TODO: Choose sensible amrgin
-double margin = 0.2; // Margin of error in results
+    CGAL::Image_3 image;
+    image.read(inr_path);
 
 
-SECTION ("Check centre of mesh") {
+    SECTION ("Read inr file and check dims") {
+        // Check the input file is as expected
+        REQUIRE (image.xdim() == 100);
+        REQUIRE (image.ydim() == 100);
+        REQUIRE (image.zdim() == 100);
+        REQUIRE (image.vx() == 0.02);
+        REQUIRE (image.vy() == 0.02);
+        REQUIRE (image.vz() == 0.02);
+    }
 
-  // Centre of mesh should be approx 1,1,1. Exact values depend on complexity of mesh
-  Point centre = c3t3.centre_of_mesh();
-  int expected_centre = 1;
-  //centre should be within 'margin' of expected value
-  REQUIRE (expected_centre == Approx( CGAL::to_double( centre.x() )).margin(margin) );
-  REQUIRE (expected_centre == Approx( CGAL::to_double( centre.y() )).margin(margin) );
-  REQUIRE (expected_centre == Approx( CGAL::to_double( centre.z() )).margin(margin) );
-}
+    cout << "Creating mesh" << endl;
 
-SECTION ("Check closest elements") {
+    Mesh_domain domain(image);
+    //TODO: Pick some objective values for facet_size etc. Just geussing at the moment
+    Mesh_criteria criteria(facet_angle=30, facet_size=0.03, facet_distance=1, cell_radius_edge_ratio=3, cell_size=0.03);
 
-  Point min_elem(0,0,0);
-  double expected_min_close = 0.5;
-
-  Point max_elem(100,100,100);
-  double expected_max_close = 1.5;
-
-  int target_domain = c3t3.get_outer_layer_domain(); // only one domain in cube
-  REQUIRE(target_domain == 1);
-
-  Point closest_to_min = c3t3.closest_element(min_elem, target_domain);
-
-  REQUIRE (expected_min_close == Approx( CGAL::to_double( closest_to_min.x() )).margin(margin) );
-  REQUIRE (expected_min_close == Approx( CGAL::to_double( closest_to_min.y() )).margin(margin) );
-  REQUIRE (expected_min_close == Approx( CGAL::to_double( closest_to_min.z() )).margin(margin) );
-
-  Point closest_to_max = c3t3.closest_element(max_elem, target_domain);
-
-  REQUIRE (expected_max_close == Approx( CGAL::to_double( closest_to_max.x() )).margin(margin) );
-  REQUIRE (expected_max_close == Approx( CGAL::to_double( closest_to_max.y() )).margin(margin) );
-  REQUIRE (expected_max_close == Approx( CGAL::to_double( closest_to_max.z() )).margin(margin) );
-
-}
-
-SECTION ("Check mesh bounds") {
-
-  c3t3.find_mesh_bounds();
-  double expected_max_bound = 1.5;
-  double expected_min_bound = 0.5;
-
-  REQUIRE(c3t3.x_min == Approx (expected_min_bound).margin(margin));
-  REQUIRE(c3t3.y_min == Approx (expected_min_bound).margin(margin));
-  REQUIRE(c3t3.z_min == Approx (expected_min_bound).margin(margin));
-
-  REQUIRE(c3t3.x_max == Approx (expected_max_bound).margin(margin));
-  REQUIRE(c3t3.y_max == Approx (expected_max_bound).margin(margin));
-  REQUIRE(c3t3.z_max == Approx (expected_max_bound).margin(margin));
-}
-
-SECTION( "Check reference electrode location") {
+    C3t3_EIT c3t3;
+    c3t3 = CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
+    CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
+    CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
 
 
-  Point ref_electrode = c3t3.set_reference_electrode();
-  double expected_ref_x_z = 1.5;
-  double expected_ref_y = 0.5;
+    //TODO: Choose sensible amrgin
+    double margin = 0.2; // Margin of error in results
 
-  REQUIRE (expected_ref_x_z == Approx(CGAL::to_double( ref_electrode.x() )).margin(margin) );
-  REQUIRE (expected_ref_y == Approx(CGAL::to_double( ref_electrode.y() )).margin(margin) );
-  REQUIRE (expected_ref_x_z == Approx(CGAL::to_double( ref_electrode.z() )).margin(margin) );
 
-}
+    SECTION ("Check centre of mesh") {
+
+        // Centre of mesh should be approx 1,1,1. Exact values depend on complexity of mesh
+        Point centre = c3t3.centre_of_mesh();
+        int expected_centre = 1;
+        //centre should be within 'margin' of expected value
+        REQUIRE (expected_centre == Approx( CGAL::to_double( centre.x() )).margin(margin) );
+        REQUIRE (expected_centre == Approx( CGAL::to_double( centre.y() )).margin(margin) );
+        REQUIRE (expected_centre == Approx( CGAL::to_double( centre.z() )).margin(margin) );
+    }
+
+    SECTION ("Check closest elements") {
+
+        Point min_elem(0,0,0);
+        double expected_min_close = 0.5;
+
+        Point max_elem(100,100,100);
+        double expected_max_close = 1.5;
+
+        int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, "cube_stretch_debug.vtu");
+
+        int target_domain = c3t3.get_outer_layer_domain(); // only one domain in cube
+        int expected_domain = 1;
+        REQUIRE(target_domain == expected_domain);
+
+        Point closest_to_min = c3t3.closest_element(min_elem, target_domain);
+
+        REQUIRE (expected_min_close == Approx( CGAL::to_double( closest_to_min.x() )).margin(margin) );
+        REQUIRE (expected_min_close == Approx( CGAL::to_double( closest_to_min.y() )).margin(margin) );
+        REQUIRE (expected_min_close == Approx( CGAL::to_double( closest_to_min.z() )).margin(margin) );
+
+        Point closest_to_max = c3t3.closest_element(max_elem, target_domain);
+
+        REQUIRE (expected_max_close == Approx( CGAL::to_double( closest_to_max.x() )).margin(margin) );
+        REQUIRE (expected_max_close == Approx( CGAL::to_double( closest_to_max.y() )).margin(margin) );
+        REQUIRE (expected_max_close == Approx( CGAL::to_double( closest_to_max.z() )).margin(margin) );
+
+    }
+
+    SECTION ("Check mesh bounds") {
+
+        c3t3.find_mesh_bounds();
+        double expected_max_bound = 1.5;
+        double expected_min_bound = 0.5;
+
+        REQUIRE(c3t3.x_min == Approx (expected_min_bound).margin(margin));
+        REQUIRE(c3t3.y_min == Approx (expected_min_bound).margin(margin));
+        REQUIRE(c3t3.z_min == Approx (expected_min_bound).margin(margin));
+
+        REQUIRE(c3t3.x_max == Approx (expected_max_bound).margin(margin));
+        REQUIRE(c3t3.y_max == Approx (expected_max_bound).margin(margin));
+        REQUIRE(c3t3.z_max == Approx (expected_max_bound).margin(margin));
+    }
+
+    SECTION( "Check reference electrode location") {
+
+
+        Point ref_electrode = c3t3.set_reference_electrode();
+        double expected_ref_x_z = 1.5;
+        double expected_ref_y = 0.5;
+
+        REQUIRE (expected_ref_x_z == Approx(CGAL::to_double( ref_electrode.x() )).margin(margin) );
+        REQUIRE (expected_ref_y == Approx(CGAL::to_double( ref_electrode.y() )).margin(margin) );
+        REQUIRE (expected_ref_x_z == Approx(CGAL::to_double( ref_electrode.z() )).margin(margin) );
+
+    }
 
 }
