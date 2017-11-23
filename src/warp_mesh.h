@@ -27,8 +27,8 @@ public:
   vector<int> layers;
 
   // Default values, can be changed in mesh input/parameter file
-  int min_stretch = 5;
-  int max_stretch = 50;
+  int min_stretch;
+  int max_stretch;
 
 // For stretching
 int point_to_move, distance_to_move, anchor;

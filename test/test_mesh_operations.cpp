@@ -8,7 +8,7 @@ using namespace std;
 #include "write_c3t3_to_vtk_xml_file.h"
 TEST_CASE ("2-Domain Unit Cube") {
     const char* inr_path_2_domains = "./unit_cube_2_domains.inr";
-    
+
     CGAL::Image_3 image;
     image.read(inr_path_2_domains);
 
@@ -93,15 +93,15 @@ TEST_CASE ("Unit Cube") {
 
         Point closest_to_min = c3t3.closest_element(min_elem, target_domain);
 
-        REQUIRE (expected_min_close == Approx( CGAL::to_double( closest_to_min.x() )).margin(margin) );
-        REQUIRE (expected_min_close == Approx( CGAL::to_double( closest_to_min.y() )).margin(margin) );
-        REQUIRE (expected_min_close == Approx( CGAL::to_double( closest_to_min.z() )).margin(margin) );
+        CHECK (expected_min_close == Approx( CGAL::to_double( closest_to_min.x() )).margin(margin) );
+        CHECK (expected_min_close == Approx( CGAL::to_double( closest_to_min.y() )).margin(margin) );
+        CHECK (expected_min_close == Approx( CGAL::to_double( closest_to_min.z() )).margin(margin) );
 
         Point closest_to_max = c3t3.closest_element(max_elem, target_domain);
 
-        REQUIRE (expected_max_close == Approx( CGAL::to_double( closest_to_max.x() )).margin(margin) );
-        REQUIRE (expected_max_close == Approx( CGAL::to_double( closest_to_max.y() )).margin(margin) );
-        REQUIRE (expected_max_close == Approx( CGAL::to_double( closest_to_max.z() )).margin(margin) );
+        CHECK (expected_max_close == Approx( CGAL::to_double( closest_to_max.x() )).margin(margin) );
+        CHECK (expected_max_close == Approx( CGAL::to_double( closest_to_max.y() )).margin(margin) );
+        CHECK (expected_max_close == Approx( CGAL::to_double( closest_to_max.z() )).margin(margin) );
 
     }
 
@@ -127,9 +127,11 @@ TEST_CASE ("Unit Cube") {
         double expected_ref_x_z = 1.5;
         double expected_ref_y = 0.5;
 
-        REQUIRE (expected_ref_x_z == Approx(CGAL::to_double( ref_electrode.x() )).margin(margin) );
-        REQUIRE (expected_ref_y == Approx(CGAL::to_double( ref_electrode.y() )).margin(margin) );
-        REQUIRE (expected_ref_x_z == Approx(CGAL::to_double( ref_electrode.z() )).margin(margin) );
+
+        //TODO: This is failing, as currently not adding a vector in the x/first dimension when calculating the ref electrode location
+        CHECK (expected_ref_x_z == Approx(CGAL::to_double( ref_electrode.x() )).margin(margin) );
+        CHECK (expected_ref_y == Approx(CGAL::to_double( ref_electrode.y() )).margin(margin) );
+        CHECK (expected_ref_x_z == Approx(CGAL::to_double( ref_electrode.z() )).margin(margin) );
 
     }
 

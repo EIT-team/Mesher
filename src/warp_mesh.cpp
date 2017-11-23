@@ -8,6 +8,10 @@ Deform_Volume::Deform_Volume() {
 
 Deform_Volume::Deform_Volume(CGAL::Image_3 *image) {
 
+  // Default values, can be changed in mesh input/parameter file
+  min_stretch = 5;
+  max_stretch = 50;
+
   image_data = (unsigned char*)image->data();
   dims = image->xdim();
 
