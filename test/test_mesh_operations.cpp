@@ -140,10 +140,10 @@ TEST_CASE ("Unit Cube") {
 
 TEST_CASE ("Validate mesh") {
 
-  SECTION ("Regular Tetrahedron Volume")
+  SECTION ("Regular Tetrahedron")
   {
 
-    double expected_volume;
+    double expected_volume, expected_edge_length;
     vector<Point> vertices;
 
     // Regular tetrahedron with edge length 2*sqrt(2)
@@ -161,16 +161,18 @@ TEST_CASE ("Validate mesh") {
     expected_volume = 2.66667;
     CHECK( tetra_volume(vertices) == Approx(expected_volume) );
 
-    // Irregulat Tetrahedron
+    expected_edge_length = 16.9705; //= 12* sqrt(2)
+    CHECK( tetra_edge_length(vertices) == Approx(expected_edge_length));
+
 
 
   }
 
 
-  SECTION ("Irregular Tetrahedron Volume")
+  SECTION ("Irregular Tetrahedron")
   {
 
-    double expected_volume;
+    double expected_volume, expected_edge_length;
     vector<Point> vertices;
 
     vertices.push_back(Point(0,0,0));
@@ -181,8 +183,8 @@ TEST_CASE ("Validate mesh") {
     expected_volume = 0.16667;
     CHECK( tetra_volume(vertices) == Approx(expected_volume) );
 
-    // Irregulat Tetrahedron
-
+    expected_edge_length = 7.2426; //=3.0 + 3.0 * sqrt(2);
+    CHECK( tetra_edge_length(vertices) == Approx(expected_edge_length));
 
   }
 

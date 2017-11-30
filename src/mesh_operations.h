@@ -8,8 +8,9 @@ using namespace std;
 
 vector<Point> load_electrode_locations(FILE *, FT );
 
-double tetra_volume_cell_wrapper(Cell_handle);
+std::vector<Point> tetra_cell_to_points(Cell_handle);
 double tetra_volume(std::vector<Point>);
+double tetra_edge_length(std::vector<Point>);
 
 class C3t3_EIT : public C3t3 {
 
