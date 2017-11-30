@@ -3,14 +3,14 @@
 
 #include "CGAL_include.h"
 #include "include.h"
+#include <cmath>
 
 using namespace std;
 
 vector<Point> load_electrode_locations(FILE *, FT );
 
-std::vector<Point> tetra_cell_to_points(Cell_handle);
-double tetra_volume(std::vector<Point>);
-double tetra_edge_length(std::vector<Point>);
+
+
 
 class C3t3_EIT : public C3t3 {
 
@@ -30,13 +30,17 @@ class C3t3_EIT : public C3t3 {
       void find_mesh_bounds();
       int get_outer_layer_domain();
 
-
-
       Point centre_of_mesh();
       Point closest_element(Point, int);
       Point set_reference_electrode();
       Point set_ground_electrode();
 
 };
+
+std::vector<Point> tetra_cell_to_points(Cell_handle);
+double tetra_volume(std::vector<Point>);
+double tetra_squared_edge_length(std::vector<Point>);
+double tetra_quality(std::vector<Point>);
+double check_mesh_quality( C3t3_EIT&);
 
 #endif

@@ -259,8 +259,8 @@ vector<Point> tetra_cell_to_points(Cell_handle cell) {
 
 }
 
-double tetra_edge_length(vector<Point> vertices) {
-  /* Calculate sum of all edge lengths of tetra */
+double tetra_squared_edge_length(vector<Point> vertices) {
+  /* Calculate sum of  squared edge lengths of tetra */
 
   if (vertices.size() != 4) {
     cout << "Invalid tetra passed - doesn't have 4 vertices!" << endl;
@@ -276,9 +276,56 @@ double tetra_edge_length(vector<Point> vertices) {
   for (i = 0 ; i < n_vertex; i ++) {
     for (j = 0; j < i; j++) {
 
-        total_length += CGAL::sqrt( CGAL::squared_distance( vertices[i], vertices[j]) );
+        total_length += CGAL::squared_distance( vertices[i], vertices[j]);
     }
   }
 
   return total_length;
+}
+
+
+double tetra_quality(vector<Point> vertices) {
+/* Calculate the Joe-Liu quality of a tertrahedral element */
+
+  double volume, edge_length, quality;
+
+  volume = tetra_volume(vertices);
+  edge_length = tetra_squared_edge_length(vertices);
+
+  quality =   (12 * pow( (3 * volume), (2.0/3.0) ) )
+              / edge_length;
+
+  return quality;
+
+}
+
+double check_mesh_quality(C3t3_EIT& c3t3) {
+  /* Checks the quality of a mesh TODO: more details*/
+
+  cout << "Checking mesh quality" << endl;
+  Cell_iterator cell_iterator;
+  double quality;
+  double sum_quality = 0;
+  long num_cells = c3t3.number_of_cells_in_complex();
+
+  vector<Point> vertices;
+
+  for ( cell_iterator = c3t3.cells_in_complex_begin();
+        cell_iterator != c3t3.cells_in_complex_end();
+         ++cell_iterator) {
+
+           // Convert cell handle to vertices vector
+           vertices = tetra_cell_to_points( cell_iterator);
+
+           // Calculate Joe-Liu quality
+           quality = tetra_quality(vertices);
+           sum_quality += quality;
+
+           //if (quality < 0.1) {
+           //cout << quality << endl;
+         //}
+
+         }
+
+         return sum_quality /= num_cells;
 }

@@ -61,6 +61,7 @@ TEST_CASE ("Unit Cube") {
     CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
     CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
 
+    cout << "Average quality: " << check_mesh_quality(c3t3) <<endl;
 
     //TODO: Choose sensible amrgin
     double margin = 0.2; // Margin of error in results
@@ -161,10 +162,8 @@ TEST_CASE ("Validate mesh") {
     expected_volume = 2.66667;
     CHECK( tetra_volume(vertices) == Approx(expected_volume) );
 
-    expected_edge_length = 16.9705; //= 12* sqrt(2)
-    CHECK( tetra_edge_length(vertices) == Approx(expected_edge_length));
-
-
+    expected_edge_length = 48; //= 6 * (2*sqrt(2))^2
+    CHECK( tetra_squared_edge_length(vertices) == Approx(expected_edge_length));
 
   }
 
@@ -183,8 +182,8 @@ TEST_CASE ("Validate mesh") {
     expected_volume = 0.16667;
     CHECK( tetra_volume(vertices) == Approx(expected_volume) );
 
-    expected_edge_length = 7.2426; //=3.0 + 3.0 * sqrt(2);
-    CHECK( tetra_edge_length(vertices) == Approx(expected_edge_length));
+    expected_edge_length = 9; //=3 * 1^2 + 3 * sqrt(2)^2;
+    CHECK( tetra_squared_edge_length(vertices) == Approx(expected_edge_length));
 
   }
 

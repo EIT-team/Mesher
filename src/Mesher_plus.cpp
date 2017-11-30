@@ -89,6 +89,10 @@ int main(int argc, char* argv[])
   for (int i = 0; i < deformations.size(); i++) {
     cout << "Doing deform from file no: " << i << endl;
     n_deformations = p.options["num_deformations"];
+
+	int do_deform = 0;
+	if (n_deformations > 0) { do_deform = 1;}
+
     do {
       // Loads image
       CGAL::Image_3 image;
@@ -110,7 +114,7 @@ int main(int argc, char* argv[])
       // Also do some random deformation
       warper.min_stretch = p.options["min_stretch_distance"];
       warper.max_stretch = p.options["max_stretch_distance"];
-      warper.modify_image();
+	  if (do_deform) { warper.modify_image(); }
 
       // Append mesh_name with details of deformation
       output_mesh_name = input_mesh_name + warper.deformation_info;
@@ -164,13 +168,15 @@ int main(int argc, char* argv[])
       C3t3_EIT c3t3;
 
       c3t3= CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
-      CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
-      CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
+      CGAL::parameters::lloyd(), CGAL::parameters::odt(),
+      CGAL::parameters::perturb(),CGAL::parameters::exude());
+      cout << "Average quality: " << check_mesh_quality(c3t3) <<endl;
 
       //Optimisation
-      if (int(p.options["perturb_opt"])==1) {
-        std::cout<<"\n Perturb... ";
-        CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=p.options["time_limit_sec"]);
+
+      if (int(p.options["odt_opt"])==1) {
+        std::cout<<"\n ODT... ";
+        CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);
       }
 
       if (int(p.options["lloyd_opt"])==1) {
@@ -178,15 +184,18 @@ int main(int argc, char* argv[])
         CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);
       }
 
-      if (int(p.options["odt_opt"])==1) {
-        std::cout<<"\n ODT... ";
-        CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);
+      if (int(p.options["perturb_opt"])==1) {
+        std::cout<<"\n Perturb... ";
+        CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=p.options["time_limit_sec"]);
       }
 
-      if (int(p.options["exude_opt"])==1)  {
+
+    if (int(p.options["exude_opt"])==1)  {
         std::cout<<"\n Exude... ";
         CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);
       }
+
+      cout << "Average quality: " << check_mesh_quality(c3t3) <<endl;
 
 
       // Generate reference electrode location and append to elecrtode list

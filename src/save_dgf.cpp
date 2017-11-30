@@ -7,6 +7,7 @@ using namespace std;
 
 // Write Mesh as DGF file, to replace matlab dune_exporter function
 
+//TODO: Update so that it correctly references C3t3_EIT, not C3t3
 void save_as_dgf (const C3t3& c3t3, Input st, string output_file)
 {
 								output_file += ".dgf";
