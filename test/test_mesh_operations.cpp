@@ -136,3 +136,55 @@ TEST_CASE ("Unit Cube") {
     }
 
 }
+
+
+TEST_CASE ("Validate mesh") {
+
+  SECTION ("Regular Tetrahedron Volume")
+  {
+
+    double expected_volume;
+    vector<Point> vertices;
+
+    // Regular tetrahedron with edge length 2*sqrt(2)
+
+    vertices.push_back(Point(1,1,1));
+    vertices.push_back(Point(1,-1,-1));
+    vertices.push_back(Point(-1,1,-1));
+
+    // Only 3 vertices at this point, check that this is rejected
+    CHECK ( tetra_volume(vertices) == 0 );
+
+    //Add final Point
+    vertices.push_back(Point(-1,-1,1));
+
+    expected_volume = 2.66667;
+    CHECK( tetra_volume(vertices) == Approx(expected_volume) );
+
+    // Irregulat Tetrahedron
+
+
+  }
+
+
+  SECTION ("Irregular Tetrahedron Volume")
+  {
+
+    double expected_volume;
+    vector<Point> vertices;
+
+    vertices.push_back(Point(0,0,0));
+    vertices.push_back(Point(0,0,1));
+    vertices.push_back(Point(0,1,0));
+    vertices.push_back(Point(1,0,0));
+
+    expected_volume = 0.16667;
+    CHECK( tetra_volume(vertices) == Approx(expected_volume) );
+
+    // Irregulat Tetrahedron
+
+
+  }
+
+
+}

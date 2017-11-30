@@ -8,6 +8,9 @@ using namespace std;
 
 vector<Point> load_electrode_locations(FILE *, FT );
 
+double tetra_volume_cell_wrapper(Cell_handle);
+double tetra_volume(std::vector<Point>);
+
 class C3t3_EIT : public C3t3 {
 
   // Repeating this here from CGAL_include.h as won't compile without it
@@ -25,6 +28,9 @@ class C3t3_EIT : public C3t3 {
 
       void find_mesh_bounds();
       int get_outer_layer_domain();
+
+
+
       Point centre_of_mesh();
       Point closest_element(Point, int);
       Point set_reference_electrode();

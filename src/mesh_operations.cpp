@@ -228,3 +228,34 @@ vector<Point> load_electrode_locations(FILE *F, FT scale) {
     return electrode_locations;
 
 }
+
+
+double tetra_volume(vector<Point> vertices) {
+
+  if (vertices.size() != 4) {
+    cout << "Invalid tetra passed - there aren't 4 vertices!" << endl;
+    return 0;
+  }
+
+  double volume = CGAL::volume(vertices[0], vertices[1], vertices[2], vertices[3]);
+  return CGAL::abs(volume);
+
+}
+
+double tetra_volume_cell_wrapper(Cell_handle cell) {
+
+  /* Convert a cell handle to  a vector of vertices, which can be passed to
+  another fuction to calculate the volume.
+  This is done as it is easier to test the volume claculation separately.
+  */
+
+  vector<Point> vertices;
+
+  // Put vertices in vector
+  for (int i = 0; i < 4; i++) {
+    vertices.push_back(cell->vertex(i)->point());
+  }
+
+  return tetra_volume(vertices);
+
+}
