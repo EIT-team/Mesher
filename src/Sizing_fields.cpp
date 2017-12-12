@@ -1,4 +1,4 @@
-//Contains different sizing fields structures for different proposes: Spherical, Elliptical, planar gradient
+  //Contains different sizing fields structures for different proposes: Spherical, Elliptical, planar gradient
 // Refer to original CGAL documents if you would like to know more about sizing fields
 // developed by Kirill Aristovich
 // Example change by James H
@@ -18,7 +18,7 @@ using namespace std;
 
           coarse_size=params.options["cell_coarse_size_mm"];
           fine_size=params.options["cell_fine_size_mm"];
-          preserve=int(params.options["elements_with_fine_sizing_fieldercentage"]);
+          preserve=int(params.options["elements_with_fine_sizing_field_percentage"]);
           e_R=2*params.options["electrode_radius_mm"]; //2* to secure fit of the electrode
           electrode_size=params.options["cell_size_electrodes_mm"];//Planar gradient with electrodes -- size of the mesh near electrodes
 
