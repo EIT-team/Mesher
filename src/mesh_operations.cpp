@@ -299,17 +299,19 @@ double tetra_quality(vector<Point> vertices) {
 
 }
 
-double check_mesh_quality(C3t3_EIT& c3t3) {
-  /* Checks the quality of a mesh TODO: more details*/
+std::vector<double> check_mesh_quality(C3t3_EIT& c3t3) {
+  /* Checks the quality of a mesh TODO: more details and metric for pass/fail*/
 
   cout << "Checking mesh quality" << endl;
   Cell_iterator cell_iterator;
-  double quality;
-  double sum_quality = 0;
   long num_cells = c3t3.number_of_cells_in_complex();
+  double quality;
+  double low_quality = 0, high_quality = 0;
+  double sum_quality = 0, average_quality = 0;
 
   vector<Point> vertices;
-
+  vector<double> metrics; // Store some quality metrics about the mesh
+  // Iterate over all cells and calculate the Joe-Liu quality of the element
   for ( cell_iterator = c3t3.cells_in_complex_begin();
         cell_iterator != c3t3.cells_in_complex_end();
          ++cell_iterator) {
@@ -321,11 +323,28 @@ double check_mesh_quality(C3t3_EIT& c3t3) {
            quality = tetra_quality(vertices);
            sum_quality += quality;
 
-           //if (quality < 0.1) {
+           if (quality < 0.1) {
+             low_quality += 1;
            //cout << quality << endl;
-         //}
+
+           if (quality > 0.9) {
+             high_quality += 1;
+           }
 
          }
 
-         return sum_quality /= num_cells;
+         }
+
+         average_quality = sum_quality /= num_cells;
+
+        // Store the number of low/high quality cells, and the average quality
+         metrics.push_back(low_quality);
+         metrics.push_back(high_quality);
+         metrics.push_back (average_quality);
+
+         cout << "Low quality elements: " << low_quality << endl;
+         cout << "High quality elements: " << high_quality << endl;
+         cout << "Average quality of elements: " << average_quality << endl;
+
+         return metrics;
 }

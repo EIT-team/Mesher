@@ -61,7 +61,7 @@ TEST_CASE ("Unit Cube") {
     CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
     CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
 
-    cout << "Average quality: " << check_mesh_quality(c3t3) <<endl;
+    check_mesh_quality(c3t3);
 
     //TODO: Choose sensible amrgin
     double margin = 0.2; // Margin of error in results

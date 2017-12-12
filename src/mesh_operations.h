@@ -41,6 +41,6 @@ std::vector<Point> tetra_cell_to_points(Cell_handle);
 double tetra_volume(std::vector<Point>);
 double tetra_squared_edge_length(std::vector<Point>);
 double tetra_quality(std::vector<Point>);
-double check_mesh_quality( C3t3_EIT&);
+std::vector<double> check_mesh_quality( C3t3_EIT&);
 
 #endif
