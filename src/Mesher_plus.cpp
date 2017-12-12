@@ -30,17 +30,19 @@ int main(int argc, char* argv[])
   //TODO: If the inr file has units of mm, the output mesh will also be in mme.
   //Forward solever wants metres, so need to convert. Doing this expilcity at the moment with
   // MM_TO_M, but is there a nicer way
+
   // Print CGAL Version number
   std::cout << "CGAL Version " << CGAL_VERSION_NR << " (1MMmmb1000)" << std::endl;
   std::cout << "where MM is the major number release, mm is the minor number release" << std::endl;
 
-  // Process input parameters
 
-  if(argc < 10) printusage();
   int opt;
   char *path_image, *path_electrode, *path_parameter;
   string        output_dir, input_mesh_name,  output_mesh_name, output_base_file;
 
+
+  // Process input parameters
+  if(argc < 10) printusage();
   while((opt = getopt(argc, argv, "i:e:p:o:d:"))!=-1)
   {
     switch(opt)
@@ -90,9 +92,6 @@ int main(int argc, char* argv[])
     cout << "Doing deform from file no: " << i << endl;
     n_deformations = p.options["num_deformations"];
 
-	int do_deform = 0;
-	if (n_deformations > 0) { do_deform = 1;}
-
     do {
       // Loads image
       CGAL::Image_3 image;
@@ -105,7 +104,6 @@ int main(int argc, char* argv[])
       output_mesh_name = input_mesh_name;
 
       Deform_Volume warper( &image );
-
 
       // Do the strech in input file
       warper.defined_stretch(deformations[i]);
@@ -162,15 +160,17 @@ int main(int argc, char* argv[])
       Mesh_criteria criteria(facet_angle=p.options["facet_angle_deg"], facet_size=sizing_field, facet_distance=p.options["facet_distance_mm"],
       cell_radius_edge_ratio=p.options["cell_radius_edge_ratio"], cell_size=sizing_field);
 
-
       // Meshing
       std::cout<<"\n Creating initial mesh..." << endl;
       C3t3_EIT c3t3;
 
       c3t3= CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
-      CGAL::parameters::lloyd(), CGAL::parameters::odt(),
-      CGAL::parameters::perturb(),CGAL::parameters::exude());
-      cout << "Average quality: " << check_mesh_quality(c3t3) <<endl;
+                                        CGAL::parameters::no_lloyd(),
+                                        CGAL::parameters::no_odt(),
+                                        CGAL::parameters::no_perturb(),
+                                        CGAL::parameters::no_exude()                         );
+
+      check_mesh_quality(c3t3);
 
       //Optimisation
 
@@ -195,7 +195,7 @@ int main(int argc, char* argv[])
         CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);
       }
 
-      cout << "Average quality: " << check_mesh_quality(c3t3) <<endl;
+      check_mesh_quality(c3t3);
 
 
       // Generate reference electrode location and append to elecrtode list
@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
       cout << "Moving electrodes to closest facets: " << endl;
       // 7 is the domain of skin. Only want to move electrode to another section of skin
       // Not to brain/csf etc by mistake.
-      int skin_tissue_index = 7;
+      int skin_tissue_index = 7; //TODO: don;t hardcode
       for(int i = 0; i < sizing_field.centres.size(); ++i) {
         sizing_field.centres[i] = c3t3.closest_element(sizing_field.centres[i], skin_tissue_index);
       }

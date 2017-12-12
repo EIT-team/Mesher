@@ -256,7 +256,10 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
           y.prepare_stretch(y_idx);
           z.prepare_stretch(z_idx);
 
-          //TODO: Explain this bit here!
+          //In order to avoid irregular warping of the mesh,
+          // need to use the same stretch ratio for all dimensions,
+          // which should be the minimum value.
+          // Inactive dimensions (Which aren't being stretched) have a ratio of 1, so are ignored.
           min_stretch_ratio = min ( abs(x.stretch_ratio), abs(y.stretch_ratio));
           min_stretch_ratio = min( min_stretch_ratio, abs(z.stretch_ratio));
 
@@ -287,7 +290,7 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
   }
 
   void Deform_Volume::modify_image() {
-
+    //TODO: Don;t use hard coded values for probabilities of operations below
     std::cout << std::endl << "MODIFYING IMAGE DATA" << endl;
 
     string stretch_info = "";
