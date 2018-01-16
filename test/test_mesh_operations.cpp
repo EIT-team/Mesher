@@ -30,6 +30,7 @@ TEST_CASE ("2-Domain Unit Cube") {
 
 
 }
+
 TEST_CASE ("Unit Cube") {
 
     // Unit cube (dimensions 1 x 1 x 1) centred around 0.5,0.5,0.5
@@ -137,7 +138,6 @@ TEST_CASE ("Unit Cube") {
     }
 
 }
-
 
 TEST_CASE ("Validate mesh") {
 

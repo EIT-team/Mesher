@@ -44,8 +44,15 @@ endif()
 set(CMAKE_CXX_FLAGS "-O3")
 # include for local package
 
-add_executable(run_tests "run_tests.cpp" "test_warping.cpp" "test_mesh_operations.cpp" "../src/mesh_operations.cpp" "test_stretching.cpp" "../src/warp_mesh.cpp" "../src/stretch_info.cpp")
+add_executable(run_tests  "run_tests.cpp"
+                          "test_warping.cpp"
+                          "test_mesh_operations.cpp"
+                          "test_sizing_field.cpp"
+                          "../src/Sizing_fields.cpp"
+                           "../src/mesh_operations.cpp"
+                           "test_stretching.cpp"
+                           "../src/warp_mesh.cpp"
+                           "../src/stretch_info.cpp")
 
 set_target_properties(run_tests PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/test")
-

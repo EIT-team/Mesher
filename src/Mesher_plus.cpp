@@ -73,14 +73,14 @@ int main(int argc, char* argv[])
   std::cout << "Input mesh name: "    << input_mesh_name << "\n\n";
 
   // Read input file with parameters
-  Input p;
-  p.load_file_idx(path_parameter);
+  Input params;
+  params.load_file_idx(path_parameter);
 
   const char * deformation_file = "./list_of_deformations.txt";
 
 
   // How many deformations to do (if any)
-  int n_deformations = p.options["num_deformations"];
+  int n_deformations = params.options["num_deformations"];
   bool do_deform = (n_deformations > 0); // True if > 0
 
   if (do_deform) {
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 
   for (int i = 0; i < deformations.size(); i++) {
     cout << "Doing deform from file no: " << i << endl;
-    n_deformations = p.options["num_deformations"];
+    n_deformations = params.options["num_deformations"];
 
     do {
       // Loads image
@@ -111,8 +111,8 @@ int main(int argc, char* argv[])
       cout << "Deformations left: " << n_deformations << endl;
 
       // Also do some random deformation
-      warper.min_stretch = p.options["min_stretch_distance"];
-      warper.max_stretch = p.options["max_stretch_distance"];
+      warper.min_stretch = params.options["min_stretch_distance"];
+      warper.max_stretch = params.options["max_stretch_distance"];
 	  if (do_deform) { warper.modify_image(); }
 
       // Append mesh_name with details of deformation
@@ -155,11 +155,36 @@ int main(int argc, char* argv[])
       image.vy () * image.ydim ()/2,
       image.vz () * image.zdim ()/2); //origin
 
-      sizing_field_elliptic_electrodes sizing_field (origin,path_electrode,p); //This is basic and working now for both rat and human
+      Sizing_field sizing_field (origin,path_electrode,params); //This is basic and working now for both rat and human
 
+      // Set parameters if plana refinenemt being used
+      if (params.options["planar_refinement"] == 1)
+        {
+          if( params.options["direction"]==1 ) {
+            params.options["height"]  *= image.vx();
+            params.options["upper_bound"]  = image.vx() * image.xdim();
+          }
+
+          else if( params.options["direction"]==2 ) {
+            params.options["height"]  *= image.vy();
+            params.options["upper_bound"]  = image.vy() * image.ydim();
+          }
+
+          else if( params.options["direction"]==3 ) {
+            params.options["height"]  *= image.vz();
+            params.options["upper_bound"]  = image.vz() * image.zdim();
+          }
+
+          else { // Invalid parameter passed
+            cout << "Invalid planar direction specified, should be 1, 2 or 3" << endl;
+            exit(0);
+          }
+
+
+        }
       // Mesh criteria: faces and cells
-      Mesh_criteria criteria(facet_angle=p.options["facet_angle_deg"], facet_size=sizing_field, facet_distance=p.options["facet_distance_mm"],
-      cell_radius_edge_ratio=p.options["cell_radius_edge_ratio"], cell_size=sizing_field);
+      Mesh_criteria criteria(facet_angle=params.options["facet_angle_deg"], facet_size=sizing_field, facet_distance=params.options["facet_distance_mm"],
+      cell_radius_edge_ratio=params.options["cell_radius_edge_ratio"], cell_size=sizing_field);
 
       // Meshing
       std::cout<<"\n Creating initial mesh..." << endl;
@@ -175,25 +200,25 @@ int main(int argc, char* argv[])
 
       //Optimisation
 
-      if (int(p.options["odt_opt"])==1) {
+      if (int(params.options["odt_opt"])==1) {
         std::cout<<"\n ODT... ";
-        CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);
+        CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=params.options["time_limit_sec"]);
       }
 
-      if (int(p.options["lloyd_opt"])==1) {
+      if (int(params.options["lloyd_opt"])==1) {
         std::cout<<"\n Lloyd... ";
-        CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=p.options["time_limit_sec"]);
+        CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=params.options["time_limit_sec"]);
       }
 
-      if (int(p.options["perturb_opt"])==1) {
+      if (int(params.options["perturb_opt"])==1) {
         std::cout<<"\n Perturb... ";
-        CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=p.options["time_limit_sec"]);
+        CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=params.options["time_limit_sec"]);
       }
 
 
-    if (int(p.options["exude_opt"])==1)  {
+    if (int(params.options["exude_opt"])==1)  {
         std::cout<<"\n Exude... ";
-        CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=p.options["time_limit_sec"]);
+        CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=params.options["time_limit_sec"]);
       }
 
       check_mesh_quality(c3t3);
@@ -233,7 +258,7 @@ int main(int argc, char* argv[])
       output_base_file = output_dir + output_mesh_name;
 
       // Output dgf file and electrode_positions
-      save_as_dgf(c3t3, p, output_base_file);
+      save_as_dgf(c3t3, params, output_base_file);
       save_electrodes(sizing_field.centres, output_base_file);
       save_parameters(parameters, output_base_file);
       write_centres(c3t3, output_base_file);
@@ -244,7 +269,7 @@ int main(int argc, char* argv[])
       // at the point it is written. Fix this
       string vtk_file_path = output_base_file + ".vtu";
 
-      if (int(p.options["save_vtk"])==1) {
+      if (int(params.options["save_vtk"])==1) {
         int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
       }
     }
