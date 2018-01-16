@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
 
 
   int opt;
+  //TODO: can tese all be strings? Think chars are used as file handles later
   char *path_image, *path_electrode, *path_parameter;
   string        output_dir, input_mesh_name,  output_mesh_name, output_base_file;
 

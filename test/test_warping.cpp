@@ -210,13 +210,13 @@ TEST_CASE ("Defined deformations of unit cube") {
 
   cout << "Saving some stretches performed on the unit cube" << endl;
 
-  const char* inr_path = "./unit_cube.inr";
+  const char* inr_path = "../test/unit_cube.inr";
 
 
 
       vector< vector<double> > deformations;
 
-      ifstream deform_file("list_of_deformations.txt", std::ifstream::in);
+      ifstream deform_file("../test/list_of_deformations.txt", std::ifstream::in);
       if (!deform_file) perror ("\n Error opening deformations file");
           cout << "Reading deformations from fie." << endl;
 
