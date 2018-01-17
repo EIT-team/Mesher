@@ -18,19 +18,18 @@ TEST_CASE ("Sizing Fields on Unit Cube") {
 
     CGAL::Image_3 image;
     image.read(inr_path);
-    Input input;
 
     std::map<std::string, FT> options;
-    input.options["facet_size"] = 0.03;
-    input.options["facet_angle"] = 30;
-    input.options["facet_distance"] = 1;
-    input.options["cell_radius_edge_ratio"] = 3;
-    input.options["cell_size"] = 0.03;
-    input.options["preserve"] = 10;
-    input.options["cell_coarse_size_mm"] = 0.2;
-    input.options["cell_fine_size_mm"] = 0.025;
-    input.options["electrode_radius_mm"] = 3;
-    input.options["cell_size_electrodes_mm"] = 0.01;
+    options["facet_size"] = 0.03;
+    options["facet_angle"] = 30;
+    options["facet_distance"] = 1;
+    options["cell_radius_edge_ratio"] = 3;
+    options["cell_size"] = 0.03;
+    options["preserve"] = 10;
+    options["cell_coarse_size_mm"] = 0.2;
+    options["cell_fine_size_mm"] = 0.025;
+    options["electrode_radius_mm"] = 3;
+    options["cell_size_electrodes_mm"] = 0.01;
 
     char * path_electrode = "electrodes.txt"; // Empty file (TODO: add electrode test?)
 
@@ -40,15 +39,15 @@ TEST_CASE ("Sizing Fields on Unit Cube") {
 
     SECTION ("Elliptic sizing field") {
 
-      Sizing_field sizing_field (origin,path_electrode,input);
+      Sizing_field sizing_field (origin,path_electrode,options);
 
           cout << "Creating mesh" << endl;
 
       Mesh_domain domain(image);
-      Mesh_criteria criteria( facet_angle=input.options["facet_angle_deg"],
+      Mesh_criteria criteria( facet_angle=options["facet_angle_deg"],
                             facet_size=sizing_field,
-                            facet_distance=input.options["facet_distance_mm"],
-                            cell_radius_edge_ratio=input.options["cell_radius_edge_ratio"],
+                            facet_distance=options["facet_distance_mm"],
+                            cell_radius_edge_ratio=options["cell_radius_edge_ratio"],
                              cell_size=sizing_field);
 
        C3t3_EIT c3t3;
@@ -63,20 +62,20 @@ TEST_CASE ("Sizing Fields on Unit Cube") {
 
 SECTION ("Planar sizing field") {
 
-  input.options["planar_refinement"] = 1;
-  input.options["height"] = 0.25;
-  input.options["direction"] = 2;
-  input.options["upper_bound"] = image.vx() * image.xdim(); // x/y/z are equal for the unit cube., so can use either one here
+  options["planar_refinement"] = 1;
+  options["height"] = 0.25;
+  options["direction"] = 2;
+  options["upper_bound"] = image.vx() * image.xdim(); // x/y/z are equal for the unit cube., so can use either one here
 
-  Sizing_field sizing_field (origin,path_electrode,input);
+  Sizing_field sizing_field (origin,path_electrode,options);
 
       cout << "Creating mesh" << endl;
 
   Mesh_domain domain(image);
-  Mesh_criteria criteria( facet_angle=input.options["facet_angle_deg"],
+  Mesh_criteria criteria( facet_angle=options["facet_angle_deg"],
                         facet_size=sizing_field,
-                        facet_distance=input.options["facet_distance_mm"],
-                        cell_radius_edge_ratio=input.options["cell_radius_edge_ratio"],
+                        facet_distance=options["facet_distance_mm"],
+                        cell_radius_edge_ratio=options["cell_radius_edge_ratio"],
                          cell_size=sizing_field);
 
    C3t3_EIT c3t3;

@@ -7,29 +7,59 @@
 #include "Sizing_fields.h"
 using namespace std;
 
-Sizing_field::Sizing_field(Point& origin_in, string path_electrode, Input params)
+Sizing_field::Sizing_field(Point& origin_in, string path_electrode, std::map<std::string, FT> opts)
 {
 
   FILE *F;
   try { F=fopen(path_electrode.c_str(),"r");}
   catch (exception& e) { cout << e.what() << endl;}
 
-  FT scale_xyz = 1/params.unit;
+  options = opts;
+  origin = origin_in;
 
-  coarse_size=params.options["cell_coarse_size_mm"];
-  fine_size=params.options["cell_fine_size_mm"];
-  preserve=int(params.options["elements_with_fine_sizing_field_percentage"]);
-  e_R=2*params.options["electrode_radius_mm"]; //2* to secure fit of the electrode
-  electrode_size=params.options["cell_size_electrodes_mm"];//Planar gradient with electrodes -- size of the mesh near electrodes
-  do_planar_refinement = params.options["planar_refinement"];
+  ub_x=origin.x();
+  ub_y=origin.y();
+  ub_z=origin.z();
 
-if (do_planar_refinement) {
-  height = params.options["height"];
-  upper_bound = params.options["upper_bound"];
-  direction = params.options["direction"];
+  FT scale_xyz = 1/options["pixel_scale_mm"];
 
-}
 
+  // Reallocate some parameters to have less verbose names
+  coarse_size = options["cell_coarse_size_mm"];
+  fine_size = options["cell_fine_size_mm"];
+  preserve = int(options["elements_with_fine_sizing_field_percentage"]);
+  e_R = 2 * options["electrode_radius_mm"]; //2* to secure fit of the electrode
+  electrode_size = options["cell_size_electrodes_mm"];//Planar gradient with electrodes -- size of the mesh near electrodes
+  do_planar_refinement = options["planar_refinement"];
+
+  if (do_planar_refinement)
+
+  {
+
+    if( options["direction"]==1 ) {
+      options["height"]  *= options["vx"];
+      upper_bound  = options["vx"] * options["xdim"];
+    }
+
+    else if( options["direction"]==2 ) {
+      options["height"]  *= options["vy"];
+      upper_bound  = options["vy"] * options["ydim"];
+    }
+
+    else if( options["direction"]==3 ) {
+      options["height"]  *= options["vz"];
+      upper_bound  = options["vz"] * options["zdim"];
+    }
+
+    else { // Invalid parameter passed
+      cout << "Invalid planar direction specified, should be 1, 2 or 3" << endl;
+      exit(0);
+    }
+
+  }
+
+
+  // Load electrode positions
   if (F == NULL) perror ("Error opening electrode file");
   else {
     while(!feof(F))
@@ -40,10 +70,6 @@ if (do_planar_refinement) {
       centres.push_back(pt);
     }
   }
-  origin=origin_in;
-  ub_x=origin.x();
-  ub_y=origin.y();
-  ub_z=origin.z();
 
   if (F!=NULL) fclose(F);
 
@@ -67,7 +93,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
     }
   }
 
-  if (do_planar_refinement == 1)
+  if (do_planar_refinement)
   {
     FT dist;
 
@@ -82,10 +108,10 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
     else {return fine_size;}
 
-    FT el = dist / upper_bound;
+    FT el = dist / upper_bound ;
 
     if (el<=FT(preserve)/100)
-     out=fine_size;
+    out=fine_size;
 
     else out = fine_size + CGAL::abs((coarse_size-fine_size)*(el-FT(preserve)/100));
 

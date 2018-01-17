@@ -5,7 +5,7 @@
 #include "input_parameters.h"
 #include "include.h"
 
-void save_as_dgf(const C3t3&, Input, std::string);
+void save_as_dgf(const C3t3&, std::map<std::string, FT>, std::string);
 void save_electrodes(Points, std::string);
 void save_parameters(std::map<std::string, std::string>, std::string);
 void write_centres(C3t3&, std::string);

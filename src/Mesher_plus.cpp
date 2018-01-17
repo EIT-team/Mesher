@@ -73,25 +73,23 @@ int main(int argc, char* argv[])
   std::cout << "Input mesh name: "    << input_mesh_name << "\n\n";
 
   // Read input file with parameters
-  Input params;
-  params.load_file_idx(path_parameter);
-
-  const char * deformation_file = "./list_of_deformations.txt";
+  std::map<std::string, FT> options =  load_file_idx(path_parameter);
 
 
   // How many deformations to do (if any)
-  int n_deformations = params.options["num_deformations"];
+  int n_deformations = options["num_deformations"];
   bool do_deform = (n_deformations > 0); // True if > 0
 
   if (do_deform) {
     cout << "Mesh deformation turned on. " <<  n_deformations << " meshes will be generated" << endl;
   }
 
+  const char * deformation_file = "./list_of_deformations.txt"; //TODO@ Don't hardcode
   vector< vector<double> > deformations = load_deformations(deformation_file);
 
   for (int i = 0; i < deformations.size(); i++) {
     cout << "Doing deform from file no: " << i << endl;
-    n_deformations = params.options["num_deformations"];
+    n_deformations = options["num_deformations"];
 
     do {
       // Loads image
@@ -100,6 +98,14 @@ int main(int argc, char* argv[])
 
       image.read(path_image);
       cout << "Dimensions of image: " << image.xdim() << endl;
+
+      options["vx"] = image.vx();
+      options["vy"] = image.vy();
+      options["vz"] = image.vz();
+
+      options["xdim"] = image.xdim();
+      options["ydim"] = image.ydim();
+      options["zdim"] = image.zdim();
 
       // Set to default value
       output_mesh_name = input_mesh_name;
@@ -111,8 +117,8 @@ int main(int argc, char* argv[])
       cout << "Deformations left: " << n_deformations << endl;
 
       // Also do some random deformation
-      warper.min_stretch = params.options["min_stretch_distance"];
-      warper.max_stretch = params.options["max_stretch_distance"];
+      warper.min_stretch = options["min_stretch_distance"];
+      warper.max_stretch = options["max_stretch_distance"];
 
       if (do_deform) {
        warper.modify_image();
@@ -120,9 +126,6 @@ int main(int argc, char* argv[])
        output_mesh_name = input_mesh_name + warper.deformation_info;
        cout << "New mesh name: " << output_mesh_name << endl;
       }
-
-
-
 
       // do {
       //   // Loads image
@@ -150,45 +153,21 @@ int main(int argc, char* argv[])
       //   }
 
       // Domain
+
       Mesh_domain domain(image);
 
       //Define Sizing field
       // vx, vy and vz are the size of each voxel
       // xdim, ydim and zdim are the number of voxels along each axis
-      Point origin(image.vx () * image.xdim ()/2,
-      image.vy () * image.ydim ()/2,
-      image.vz () * image.zdim ()/2); //origin
+      Point centre( image.vx () * image.xdim ()/2,
+                    image.vy () * image.ydim ()/2,
+                    image.vz () * image.zdim ()/2);
 
-      Sizing_field sizing_field (origin,path_electrode,params); //This is basic and working now for both rat and human
+      Sizing_field sizing_field (centre, path_electrode, options); //This is basic and working now for both rat and human
 
-      // Set parameters if plana refinenemt being used
-      if (params.options["planar_refinement"] == 1)
-        {
-          if( params.options["direction"]==1 ) {
-            params.options["height"]  *= image.vx();
-            params.options["upper_bound"]  = image.vx() * image.xdim();
-          }
-
-          else if( params.options["direction"]==2 ) {
-            params.options["height"]  *= image.vy();
-            params.options["upper_bound"]  = image.vy() * image.ydim();
-          }
-
-          else if( params.options["direction"]==3 ) {
-            params.options["height"]  *= image.vz();
-            params.options["upper_bound"]  = image.vz() * image.zdim();
-          }
-
-          else { // Invalid parameter passed
-            cout << "Invalid planar direction specified, should be 1, 2 or 3" << endl;
-            exit(0);
-          }
-
-
-        }
       // Mesh criteria: faces and cells
-      Mesh_criteria criteria(facet_angle=params.options["facet_angle_deg"], facet_size=sizing_field, facet_distance=params.options["facet_distance_mm"],
-      cell_radius_edge_ratio=params.options["cell_radius_edge_ratio"], cell_size=sizing_field);
+      Mesh_criteria criteria(facet_angle=options["facet_angle_deg"], facet_size=sizing_field, facet_distance=options["facet_distance_mm"],
+      cell_radius_edge_ratio=options["cell_radius_edge_ratio"], cell_size=sizing_field);
 
       // Meshing
       std::cout<<"\n Creating initial mesh..." << endl;
@@ -204,25 +183,25 @@ int main(int argc, char* argv[])
 
       //Optimisation
 
-      if (int(params.options["odt_opt"])==1) {
+      if (int(options["odt_opt"])==1) {
         std::cout<<"\n ODT... ";
-        CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=params.options["time_limit_sec"]);
+        CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=options["time_limit_sec"]);
       }
 
-      if (int(params.options["lloyd_opt"])==1) {
+      if (int(options["lloyd_opt"])==1) {
         std::cout<<"\n Lloyd... ";
-        CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=params.options["time_limit_sec"]);
+        CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=options["time_limit_sec"]);
       }
 
-      if (int(params.options["perturb_opt"])==1) {
+      if (int(options["perturb_opt"])==1) {
         std::cout<<"\n Perturb... ";
-        CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=params.options["time_limit_sec"]);
+        CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=options["time_limit_sec"]);
       }
 
 
-    if (int(params.options["exude_opt"])==1)  {
+    if (int(options["exude_opt"])==1)  {
         std::cout<<"\n Exude... ";
-        CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=params.options["time_limit_sec"]);
+        CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=options["time_limit_sec"]);
       }
 
       check_mesh_quality(c3t3);
@@ -262,7 +241,7 @@ int main(int argc, char* argv[])
       output_base_file = output_dir + output_mesh_name;
 
       // Output dgf file and electrode_positions
-      save_as_dgf(c3t3, params, output_base_file);
+      save_as_dgf(c3t3, options, output_base_file);
       save_electrodes(sizing_field.centres, output_base_file);
       save_parameters(parameters, output_base_file);
       write_centres(c3t3, output_base_file);
@@ -273,7 +252,7 @@ int main(int argc, char* argv[])
       // at the point it is written. Fix this
       string vtk_file_path = output_base_file + ".vtu";
 
-      if (int(params.options["save_vtk"])==1) {
+      if (int(options["save_vtk"])==1) {
         int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
       }
     }

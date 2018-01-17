@@ -10,20 +10,23 @@ struct Sizing_field
         //TODO: compiler error if below line is removed, but not entirely sure why
         // ::FT means the global value of FT is used.....
         typedef ::FT FT;
-
-        //TODO: store the whole parameter structire here, rather than reassigning to individual vars?
+        std::map<std::string, FT> options;
         Point origin;
+        FT scale_xyz;
+        FT ub_x,ub_y,ub_z;
+
+        // LEss verbose names for some of the input paremters
         FT electrode_size; //element size near electrodes
         FT e_R; //electrode radius
         Points centres; //electrode centres
         FT fine_size, coarse_size;
         int preserve;
-        int do_planar_refinement; // Whether to do planar refinement
-        int direction = 0, height = 0, upper_bound = 0; // Planar refinement parameters
-        FT ub_x,ub_y,ub_z;
+        int direction;
+        int height;
+        int do_planar_refinement;
+        FT upper_bound;
 
-
-        Sizing_field(Point&, std::string, Input);
+        Sizing_field(Point&, std::string, std::map<std::string, FT>);
 
       FT operator()(const Point&, const int, const Index&) const;
 

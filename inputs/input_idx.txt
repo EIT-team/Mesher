@@ -1,4 +1,15 @@
-elliptic_refinement = 1
+# Whether to do planar refinement
+planar_refinement = 1
+height = 1
+
+#Whether to do speherical refinement
+sphere_refinement = 1
+sphere_radius = 1
+sphere_centre_x = 1
+sphere_centre_y = 1
+sphere_centre_z = 1 
+
+# Mesh refinement settings
 refine_electrodes = 1
 pixel_scale_mm = 1
 facet_angle_deg = 30
@@ -10,12 +21,18 @@ electrode_radius_mm = 3
 elements_with_fine_sizing_field_percentage = 40
 cell_size_electrodes_mm = 1
 planar_sizing_direction_XYZ = 2
+
+#Optimisation settings
 lloyd_opt = 1
 odt_opt = 1
 exude_opt = 1
 perturb_opt = 1
 time_limit_sec = 300
-num_deformations = 5
+
+# Output a vtu file for paraview (1 - yes, 0 - no)
 save_vtk = 1
+
+# Parameters for mesh deformation
+num_deformations = 5
 min_stretch_distance = 5
 max_stretch_distance = 50
