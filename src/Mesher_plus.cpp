@@ -113,11 +113,15 @@ int main(int argc, char* argv[])
       // Also do some random deformation
       warper.min_stretch = params.options["min_stretch_distance"];
       warper.max_stretch = params.options["max_stretch_distance"];
-	  if (do_deform) { warper.modify_image(); }
 
-      // Append mesh_name with details of deformation
-      output_mesh_name = input_mesh_name + warper.deformation_info;
-      cout << "New mesh name: " << output_mesh_name << endl;
+      if (do_deform) {
+       warper.modify_image();
+       // Append mesh_name with details of deformation
+       output_mesh_name = input_mesh_name + warper.deformation_info;
+       cout << "New mesh name: " << output_mesh_name << endl;
+      }
+
+
 
 
       // do {
