@@ -30,7 +30,6 @@ Sizing_field::Sizing_field(Point& origin_in, string path_electrode, std::map<std
   preserve = int(options["elements_with_fine_sizing_field_percentage"]);
   e_R = 2 * options["electrode_radius_mm"]; //2* to secure fit of the electrode
   electrode_size = options["cell_size_electrodes_mm"];//Planar gradient with electrodes -- size of the mesh near electrodes
-  do_planar_refinement = options["planar_refinement"];
 
   if (options["planar_refinement"])
 
@@ -79,7 +78,7 @@ Sizing_field::Sizing_field(Point& origin_in, string path_electrode, std::map<std
 FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
 {
-
+  // Mesh the electrodes
   FT out;
   Points::const_iterator it;
   for (it=centres.begin(); it<centres.end(); it++)
@@ -92,28 +91,59 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
       return out;
     }
   }
+
+  // Do some additional refienments if turned on in parameter file
   // Need to use MAP.at("x") rather than MAP["x"] to be const safe
-  if (options.at("planar_refinement"))
-  {
-    FT dist;
+
+  double distance;
+
+  if (options.at("sphere_refinement") ) {
+    // Refine a sphere around a specificed point.
+
+    Point sphere_centre(  options.at("sphere_centre_x"),
+                          options.at("sphere_centre_y"),
+                          options.at("sphere_centre_z"));
+
+    distance = CGAL::sqrt( CGAL::squared_distance(p, sphere_centre) );
+
+    if ( distance < FT(options.at("sphere_radius")) ) {
+      out = options.at("sphere_cell_size");
+    }
+
+    else {
+      out = coarse_size;
+    }
+
+  }
+
+  else if (options.at("planar_refinement"))   {
 
     if(options.at("direction") == 1)
-    dist=CGAL::abs(p.x()- options.at("height"));
+    distance=CGAL::abs(p.x()- options.at("height"));
 
     else if(options.at("direction") == 2)
-    dist=CGAL::abs(p.y()- options.at("height"));
+    distance=CGAL::abs(p.y()- options.at("height"));
 
     else if(options.at("direction") == 3)
-    dist=CGAL::abs(p.z()- options.at("height"));
+    distance=CGAL::abs(p.z()- options.at("height"));
 
-    else {return fine_size;}
+    else {
+      return fine_size;
+    }
 
-    FT el = dist / options.at("upper_bound") ;
+    cout << "upper bound: " << options.at("upper_bound");
+    double dist_percentage = distance / double(options.at("upper_bound")) ;
+    cout << "Distance: " << distance << " Distance percent: " << dist_percentage << "  prserve ratio: " << ((preserve)/100.0) << endl;
 
-    if (el<=FT(preserve)/100)
-    out=fine_size;
+    if (dist_percentage <= (preserve)/100.0) {
+      out=fine_size;
+    }
 
-    else out = fine_size + CGAL::abs((coarse_size-fine_size)*(el-FT(preserve)/100));
+
+    else  {
+      out = fine_size +
+       CGAL::abs((coarse_size-fine_size)*(dist_percentage - (preserve)/100.0));
+  }
 
   }
 
@@ -121,7 +151,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
 
     // Cartersian distance from centre of the mesh
-    FT distance = CGAL::sqrt( CGAL::squared_distance(p, origin));
+    distance = CGAL::sqrt( CGAL::squared_distance(p, origin));
 
     if (distance>=1-FT(preserve)/100) out=fine_size;
     else out=fine_size + (coarse_size-fine_size)*(1-distance);

@@ -7,7 +7,8 @@ sphere_refinement = 1
 sphere_radius = 1
 sphere_centre_x = 1
 sphere_centre_y = 1
-sphere_centre_z = 1 
+sphere_centre_z = 1
+sphere_cell_size = 0.01
 
 # Mesh refinement settings
 refine_electrodes = 1

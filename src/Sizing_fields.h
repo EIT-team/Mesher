@@ -22,9 +22,6 @@ struct Sizing_field
         FT fine_size, coarse_size;
         int preserve;
         int direction;
-        int height;
-        int do_planar_refinement;
-        FT upper_bound;
 
         Sizing_field(Point&, std::string, std::map<std::string, FT>);
 
