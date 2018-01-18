@@ -32,23 +32,23 @@ Sizing_field::Sizing_field(Point& origin_in, string path_electrode, std::map<std
   electrode_size = options["cell_size_electrodes_mm"];//Planar gradient with electrodes -- size of the mesh near electrodes
   do_planar_refinement = options["planar_refinement"];
 
-  if (do_planar_refinement)
+  if (options["planar_refinement"])
 
   {
 
     if( options["direction"]==1 ) {
       options["height"]  *= options["vx"];
-      upper_bound  = options["vx"] * options["xdim"];
+      options["upper_bound"]  = options["vx"] * options["xdim"];
     }
 
     else if( options["direction"]==2 ) {
       options["height"]  *= options["vy"];
-      upper_bound  = options["vy"] * options["ydim"];
+      options["upper_bound"]  = options["vy"] * options["ydim"];
     }
 
     else if( options["direction"]==3 ) {
       options["height"]  *= options["vz"];
-      upper_bound  = options["vz"] * options["zdim"];
+      options["upper_bound"]  = options["vz"] * options["zdim"];
     }
 
     else { // Invalid parameter passed
@@ -92,23 +92,23 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
       return out;
     }
   }
-
-  if (do_planar_refinement)
+  // Need to use MAP.at("x") rather than MAP["x"] to be const safe
+  if (options.at("planar_refinement"))
   {
     FT dist;
 
-    if(direction == 1)
-    dist=CGAL::abs(p.x()- height);
+    if(options.at("direction") == 1)
+    dist=CGAL::abs(p.x()- options.at("height"));
 
-    else if(direction == 2)
-    dist=CGAL::abs(p.y()- height);
+    else if(options.at("direction") == 2)
+    dist=CGAL::abs(p.y()- options.at("height"));
 
-    else if(direction == 3)
-    dist=CGAL::abs(p.z()- height);
+    else if(options.at("direction") == 3)
+    dist=CGAL::abs(p.z()- options.at("height"));
 
     else {return fine_size;}
 
-    FT el = dist / upper_bound ;
+    FT el = dist / options.at("upper_bound") ;
 
     if (el<=FT(preserve)/100)
     out=fine_size;
