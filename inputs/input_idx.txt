@@ -1,39 +1,47 @@
-# Whether to do planar refinement
-planar_refinement = 1
+#Planar refinment (1 - yes, 0 -no)
+planar_refinement = 0
 height = 1
+planar_xyz = 3
+elements_with_fine_sizing_field_percentage = 50
 
-#Whether to do speherical refinement
-sphere_refinement = 1
-sphere_radius = 1
-sphere_centre_x = 1
-sphere_centre_y = 1
-sphere_centre_z = 1
-sphere_cell_size = 0.01
+#Spherical refinment (1 - yes, 0 - no)
+sphere_refinement = 0
+sphere_radius = 25
+sphere_centre_x = 110
+sphere_centre_y = 110
+sphere_centre_z = 110
+sphere_cell_size = 1
 
-# Mesh refinement settings
+# Standard refinement parameters
 refine_electrodes = 1
 pixel_scale_mm = 1
 facet_angle_deg = 30
 facet_distance_mm = 2
 cell_radius_edge_ratio = 3
 cell_fine_size_mm = 2
-cell_coarse_size_mm = 5
+cell_coarse_size_mm = 10
 electrode_radius_mm = 3
-elements_with_fine_sizing_field_percentage = 40
 cell_size_electrodes_mm = 1
-planar_sizing_direction_XYZ = 2
 
-#Optimisation settings
-lloyd_opt = 1
-odt_opt = 1
-exude_opt = 1
-perturb_opt = 1
+# Optimisation (1 - yes, 0 - no)
+lloyd_opt = 0
+odt_opt = 0
+exude_opt = 0
+perturb_opt = 0
 time_limit_sec = 300
-
-# Output a vtu file for paraview (1 - yes, 0 - no)
+#Save a vtu file of the mesh?
 save_vtk = 1
+#Deform the mesh?
 
-# Parameters for mesh deformation
+do_deformation = 0
+deform_x = 0
+deform_y = 0
+deform_z = 0
 num_deformations = 5
 min_stretch_distance = 5
 max_stretch_distance = 50
+
+#Move electrodes to the closest facet in the mesh? Useful is electrodes not exactly on the mesh
+# Will move electrode to the nearest facet with tissue type equal to outermost_tissue
+move_electrodes = 0
+outermost_tissue = 7

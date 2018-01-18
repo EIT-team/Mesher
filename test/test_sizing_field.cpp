@@ -103,7 +103,7 @@ SECTION ("Planar sizing field") {
   options["planar_refinement"] = 1;
   options["preserve"] = 50; // 50% of mesh to be fine
   options["height"] = 0;
-  options["direction"] = 2;
+  options["planar_xyz"] = 2;
   options["upper_bound"] = image.vx() * image.xdim(); // x/y/z are equal for the unit cube., so can use either one here
   cout << "Upper bound: " << options["upper_bound"] << endl;
 

@@ -23,7 +23,6 @@ Sizing_field::Sizing_field(Point& origin_in, string path_electrode, std::map<std
 
   FT scale_xyz = 1/options["pixel_scale_mm"];
 
-
   // Reallocate some parameters to have less verbose names
   coarse_size = options["cell_coarse_size_mm"];
   fine_size = options["cell_fine_size_mm"];
@@ -35,17 +34,17 @@ Sizing_field::Sizing_field(Point& origin_in, string path_electrode, std::map<std
 
   {
 
-    if( options["direction"]==1 ) {
+    if( options["planar_xyz"]==1 ) {
       options["height"]  *= options["vx"];
       options["upper_bound"]  = options["vx"] * options["xdim"];
     }
 
-    else if( options["direction"]==2 ) {
+    else if( options["planar_xyz"]==2 ) {
       options["height"]  *= options["vy"];
       options["upper_bound"]  = options["vy"] * options["ydim"];
     }
 
-    else if( options["direction"]==3 ) {
+    else if( options["planar_xyz"]==3 ) {
       options["height"]  *= options["vz"];
       options["upper_bound"]  = options["vz"] * options["zdim"];
     }
@@ -56,7 +55,6 @@ Sizing_field::Sizing_field(Point& origin_in, string path_electrode, std::map<std
     }
 
   }
-
 
   // Load electrode positions
   if (F == NULL) perror ("Error opening electrode file");
@@ -92,10 +90,9 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
     }
   }
 
+  double distance;
   // Do some additional refienments if turned on in parameter file
   // Need to use MAP.at("x") rather than MAP["x"] to be const safe
-
-  double distance;
 
   if (options.at("sphere_refinement") ) {
     // Refine a sphere around a specificed point.
@@ -107,6 +104,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
     distance = CGAL::sqrt( CGAL::squared_distance(p, sphere_centre) );
 
     if ( distance < FT(options.at("sphere_radius")) ) {
+
       out = options.at("sphere_cell_size");
     }
 
@@ -118,22 +116,24 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
   else if (options.at("planar_refinement"))   {
 
-    if(options.at("direction") == 1)
-    distance=CGAL::abs(p.x()- options.at("height"));
+    if(options.at("planar_xyz") == 1) {
+      distance=CGAL::abs(p.x()- options.at("height"));
+  }
 
-    else if(options.at("direction") == 2)
-    distance=CGAL::abs(p.y()- options.at("height"));
+    else if(options.at("planar_xyz") == 2) {
+      distance=CGAL::abs(p.y()- options.at("height"));
+    }
 
-    else if(options.at("direction") == 3)
-    distance=CGAL::abs(p.z()- options.at("height"));
+    else if(options.at("planar_xyz") == 3) {
+      distance=CGAL::abs(p.z()- options.at("height"));
+    }
+
 
     else {
       return fine_size;
     }
 
-    cout << "upper bound: " << options.at("upper_bound");
     double dist_percentage = distance / double(options.at("upper_bound")) ;
-    cout << "Distance: " << distance << " Distance percent: " << dist_percentage << "  prserve ratio: " << ((preserve)/100.0) << endl;
 
     if (dist_percentage <= (preserve)/100.0) {
       out=fine_size;
@@ -147,14 +147,22 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
   }
 
-  else { //do elliptical refinement_type
+  else { //refine centre of mesh more than outside
 
-
+    //TODO: Not sure if this algorithm is legit
     // Cartersian distance from centre of the mesh
-    distance = CGAL::sqrt( CGAL::squared_distance(p, origin));
+    Vector distance_eliptic = p - origin;
+    FT distance_percent = CGAL::sqrt(     (distance_eliptic.x()/origin.x()) * (distance_eliptic.x()/origin.x()) +
+                                          (distance_eliptic.y()/origin.y()) * (distance_eliptic.y()/origin.y()) +
+                                          (distance_eliptic.z()/origin.z()) * (distance_eliptic.z()/origin.z())  );
 
-    if (distance>=1-FT(preserve)/100) out=fine_size;
-    else out=fine_size + (coarse_size-fine_size)*(1-distance);
+    if (distance_percent >= 1-FT(preserve)/100) {
+      out=fine_size + (coarse_size-fine_size) * (1-distance_percent);
+    }
+
+    else {
+      out=fine_size;
+    }
 
 
   }

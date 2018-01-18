@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
 
     }
   }
-
+  
   if(optind != argc) printusage();
 
   // Output file names for sanity check
@@ -75,190 +75,193 @@ int main(int argc, char* argv[])
   // Read input file with parameters
   std::map<std::string, FT> options =  load_file_idx(path_parameter);
 
+  // Sset some additional parameters if deforming the mesh
+  //  if (options["do_deformation"]) {
 
-  // How many deformations to do (if any)
-  int n_deformations = options["num_deformations"];
-  bool do_deform = (n_deformations > 0); // True if > 0
+  //int n_deformations = options["num_deformations"];
+  //cout << "Mesh deformation turned on. " <<  n_deformations << " meshes will be generated" << endl;
 
-  if (do_deform) {
-    cout << "Mesh deformation turned on. " <<  n_deformations << " meshes will be generated" << endl;
+  //const char * deformation_file = "./list_of_deformations.txt"; //TODO@ Don't hardcode
+  //vector< vector<double> > deformations = load_deformations(deformation_file);
+  //num_meshes_to_make = deformations.size();
+  //}
+
+  // Loads image
+  CGAL::Image_3 image;
+  std::cout<<"\n Reading the Image file... ";
+
+  image.read(path_image);
+  cout << "Dimensions of image: " << image.xdim() << endl;
+
+  options["vx"] = image.vx();
+  options["vy"] = image.vy();
+  options["vz"] = image.vz();
+
+  options["xdim"] = image.xdim();
+  options["ydim"] = image.ydim();
+  options["zdim"] = image.zdim();
+
+  // Set to default value
+  output_mesh_name = input_mesh_name;
+
+  // Do the strech in input file
+  if (options["do_deformation"]) {
+
+    cout << "Deforming mesh." << endl;
+
+    // Multiple deformations could be defined in needed, only using 1 for now
+    vector <double> single_deformation;
+
+    single_deformation.push_back(options["deform_x"]);
+    single_deformation.push_back(options["deform_y"]);
+    single_deformation.push_back(options["deform_z"]);
+
+    Deform_Volume warper( &image );
+
+    warper.defined_stretch(single_deformation);
+
+    //TODO: is thes needed? If so, make it more streamlined to do lost of deformations
+    // Also do some random deformation
+    //warper.min_stretch = options["min_stretch_distance"];
+    //warper.max_stretch = options["max_stretch_distance"];
+    //warper.modify_image();
+
+    // Append mesh_name with details of deformation
+    output_mesh_name = input_mesh_name + warper.deformation_info;
+    cout << "New mesh name: " << output_mesh_name << endl;
   }
 
-  const char * deformation_file = "./list_of_deformations.txt"; //TODO@ Don't hardcode
-  vector< vector<double> > deformations = load_deformations(deformation_file);
+  Mesh_domain domain(image);
 
-  for (int i = 0; i < deformations.size(); i++) {
-    cout << "Doing deform from file no: " << i << endl;
-    n_deformations = options["num_deformations"];
+  //Define Sizing field
+  // vx, vy and vz are the size of each voxel
+  // xdim, ydim and zdim are the number of voxels along each axis
+  Point centre( image.vx () * image.xdim ()/2,
+  image.vy () * image.ydim ()/2,
+  image.vz () * image.zdim ()/2);
 
-    do {
-      // Loads image
-      CGAL::Image_3 image;
-      std::cout<<"\n Reading the Image file... ";
+  Sizing_field sizing_field (centre, path_electrode, options); //This is basic and working now for both rat and human
 
-      image.read(path_image);
-      cout << "Dimensions of image: " << image.xdim() << endl;
+  // Mesh criteria: faces and cells
+  Mesh_criteria criteria(facet_angle=options["facet_angle_deg"], facet_size=sizing_field, facet_distance=options["facet_distance_mm"],
+  cell_radius_edge_ratio=options["cell_radius_edge_ratio"], cell_size=sizing_field);
 
-      options["vx"] = image.vx();
-      options["vy"] = image.vy();
-      options["vz"] = image.vz();
+  // Meshing
+  std::cout<<"\n Creating initial mesh..." << endl;
+  C3t3_EIT c3t3;
 
-      options["xdim"] = image.xdim();
-      options["ydim"] = image.ydim();
-      options["zdim"] = image.zdim();
+  c3t3= CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
+  CGAL::parameters::no_lloyd(),
+  CGAL::parameters::no_odt(),
+  CGAL::parameters::no_perturb(),
+  CGAL::parameters::no_exude()                         );
 
-      // Set to default value
-      output_mesh_name = input_mesh_name;
+  check_mesh_quality(c3t3);
 
-      Deform_Volume warper( &image );
+  //Optimisation - this is the preferred order to run the optimisations in
+  //according to CGAL documentation.
+  if (int(options["odt_opt"])==1) {
+    std::cout<<"\n ODT... ";
+    CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=options["time_limit_sec"]);
+  }
 
-      // Do the strech in input file
-      warper.defined_stretch(deformations[i]);
-      cout << "Deformations left: " << n_deformations << endl;
+  if (int(options["lloyd_opt"])==1) {
+    std::cout<<"\n Lloyd... ";
+    CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=options["time_limit_sec"]);
+  }
 
-      // Also do some random deformation
-      warper.min_stretch = options["min_stretch_distance"];
-      warper.max_stretch = options["max_stretch_distance"];
-
-      if (do_deform) {
-       warper.modify_image();
-       // Append mesh_name with details of deformation
-       output_mesh_name = input_mesh_name + warper.deformation_info;
-       cout << "New mesh name: " << output_mesh_name << endl;
-      }
-
-      // do {
-      //   // Loads image
-      //   CGAL::Image_3 image;
-      //   std::cout<<"\n Reading the Image file... ";
-      //
-      //   image.read(path_image);
-      //   cout << "Dimensions of image: " << image.xdim() << endl;
-      //
-      //   // Set to default value
-      //   output_mesh_name = input_mesh_name;
-      //
-      //   if (do_deform) {
-      //     cout << "Deformations left: " << n_deformations << endl;
-      //     Deform_Volume warper( &image );
-      //
-
-      //
-      //     warper.modify_image();
-      //
-      //     // Append mesh_name with details of deformation
-      //     output_mesh_name = input_mesh_name + warper.deformation_info;
-      //     cout << "New mesh name: " << output_mesh_name << endl;
-      //
-      //   }
-
-      // Domain
-
-      Mesh_domain domain(image);
-
-      //Define Sizing field
-      // vx, vy and vz are the size of each voxel
-      // xdim, ydim and zdim are the number of voxels along each axis
-      Point centre( image.vx () * image.xdim ()/2,
-                    image.vy () * image.ydim ()/2,
-                    image.vz () * image.zdim ()/2);
-
-      Sizing_field sizing_field (centre, path_electrode, options); //This is basic and working now for both rat and human
-
-      // Mesh criteria: faces and cells
-      Mesh_criteria criteria(facet_angle=options["facet_angle_deg"], facet_size=sizing_field, facet_distance=options["facet_distance_mm"],
-      cell_radius_edge_ratio=options["cell_radius_edge_ratio"], cell_size=sizing_field);
-
-      // Meshing
-      std::cout<<"\n Creating initial mesh..." << endl;
-      C3t3_EIT c3t3;
-
-      c3t3= CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
-                                        CGAL::parameters::no_lloyd(),
-                                        CGAL::parameters::no_odt(),
-                                        CGAL::parameters::no_perturb(),
-                                        CGAL::parameters::no_exude()                         );
-
-      check_mesh_quality(c3t3);
-
-      //Optimisation
-
-      if (int(options["odt_opt"])==1) {
-        std::cout<<"\n ODT... ";
-        CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=options["time_limit_sec"]);
-      }
-
-      if (int(options["lloyd_opt"])==1) {
-        std::cout<<"\n Lloyd... ";
-        CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=options["time_limit_sec"]);
-      }
-
-      if (int(options["perturb_opt"])==1) {
-        std::cout<<"\n Perturb... ";
-        CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=options["time_limit_sec"]);
-      }
+  if (int(options["perturb_opt"])==1) {
+    std::cout<<"\n Perturb... ";
+    CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=options["time_limit_sec"]);
+  }
 
 
-    if (int(options["exude_opt"])==1)  {
-        std::cout<<"\n Exude... ";
-        CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=options["time_limit_sec"]);
-      }
+  if (int(options["exude_opt"])==1)  {
+    std::cout<<"\n Exude... ";
+    CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=options["time_limit_sec"]);
+  }
 
-      check_mesh_quality(c3t3);
+  check_mesh_quality(c3t3);
 
+  // Generate reference electrode location and append to elecrtode list
+  Point reference_electrode = c3t3.set_reference_electrode();
+  sizing_field.centres.push_back(reference_electrode);
 
-      // Generate reference electrode location and append to elecrtode list
-      Point reference_electrode = c3t3.set_reference_electrode();
-      sizing_field.centres.push_back(reference_electrode);
+  Point ground_electrode = c3t3.set_ground_electrode();
 
-      Point ground_electrode = c3t3.set_ground_electrode();
+  if (options["move_electrodes"]) {
+    cout << "Moving electrodes to closest facets: " << endl;
 
-      cout << "Moving electrodes to closest facets: " << endl;
-      // 7 is the domain of skin. Only want to move electrode to another section of skin
-      // Not to brain/csf etc by mistake.
-      int skin_tissue_index = 7; //TODO: don;t hardcode
-      for(int i = 0; i < sizing_field.centres.size(); ++i) {
-        sizing_field.centres[i] = c3t3.closest_element(sizing_field.centres[i], skin_tissue_index);
-      }
-
-      // Put together parameters
-      std::map<std::string, std::string> parameters;
-
-      parameters["ground.hsquared"] = string("1.5e-5");
-
-      // Need to convert double to string before adding to parameter map
-      // using std::ostringstream to do this
-      std::ostringstream gndposx, gndposy, gndposz;
-      gndposx << CGAL::to_double(ground_electrode.x())/MM_TO_M;
-      gndposy << CGAL::to_double(ground_electrode.y())/MM_TO_M;
-      gndposz << CGAL::to_double(ground_electrode.z())/MM_TO_M;
-
-      parameters["groundposition.x"] = gndposx.str();
-      parameters["groundposition.y"] = gndposy.str();
-      parameters["groundposition.z"] = gndposz.str();
-
-      // Base filenames for electrode positions and parameters
-      output_base_file = output_dir + output_mesh_name;
-
-      // Output dgf file and electrode_positions
-      save_as_dgf(c3t3, options, output_base_file);
-      save_electrodes(sizing_field.centres, output_base_file);
-      save_parameters(parameters, output_base_file);
-      write_centres(c3t3, output_base_file);
-
-      // Output the mesh for Paraview
-      // TODO: Since outputting everything in metres, rather than mm
-      // The vtk file is still being written in mm, as the mesh data is only changed
-      // at the point it is written. Fix this
-      string vtk_file_path = output_base_file + ".vtu";
-
-      if (int(options["save_vtk"])==1) {
-        int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
-      }
+    int outer_tissue_index = options["outermost_tissue"];
+    for(int i = 0; i < sizing_field.centres.size(); ++i) {
+      sizing_field.centres[i] = c3t3.closest_element(sizing_field.centres[i], outer_tissue_index);
     }
-    while (n_deformations-- > 1);
-
   }
+
+  // Put together parameters
+  std::map<std::string, std::string> parameters;
+
+  parameters["ground.hsquared"] = string("1.5e-5");
+
+  // Need to convert double to string before adding to parameter map
+  // using std::ostringstream to do this
+  std::ostringstream gndposx, gndposy, gndposz;
+  gndposx << CGAL::to_double(ground_electrode.x())/MM_TO_M;
+  gndposy << CGAL::to_double(ground_electrode.y())/MM_TO_M;
+  gndposz << CGAL::to_double(ground_electrode.z())/MM_TO_M;
+
+  parameters["groundposition.x"] = gndposx.str();
+  parameters["groundposition.y"] = gndposy.str();
+  parameters["groundposition.z"] = gndposz.str();
+
+  // Base filenames for electrode positions and parameters
+  output_base_file = output_dir + output_mesh_name;
+
+  // Output dgf file and electrode_positions
+  save_as_dgf(c3t3, options, output_base_file);
+  save_electrodes(sizing_field.centres, output_base_file);
+  save_parameters(parameters, output_base_file);
+  write_centres(c3t3, output_base_file);
+
+  // Output the mesh for Paraview
+  // TODO: Since outputting everything in metres, rather than mm
+  // The vtk file is still being written in mm, as the mesh data is only changed
+  // at the point it is written. Fix this
+  string vtk_file_path = output_base_file + ".vtu";
+
+  if (int(options["save_vtk"])==1) {
+    int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
+  }
+
 
   return 0;
 }
+
+
+
+// do {
+//   // Loads image
+//   CGAL::Image_3 image;
+//   std::cout<<"\n Reading the Image file... ";
+//
+//   image.read(path_image);
+//   cout << "Dimensions of image: " << image.xdim() << endl;
+//
+//   // Set to default value
+//   output_mesh_name = input_mesh_name;
+//
+//   if (do_deform) {
+//     cout << "Deformations left: " << n_deformations << endl;
+//     Deform_Volume warper( &image );
+//
+
+//
+//     warper.modify_image();
+//
+//     // Append mesh_name with details of deformation
+//     output_mesh_name = input_mesh_name + warper.deformation_info;
+//     cout << "New mesh name: " << output_mesh_name << endl;
+//
+//   }
+
+// Domain
