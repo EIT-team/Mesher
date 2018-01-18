@@ -5,16 +5,27 @@ using namespace std;
 std::map<std::string, FT> load_file_idx(char* file_name_input)
 {
   std::map<std::string, FT> options;
-  
+
   std::ifstream cfgfile(file_name_input, std::ifstream::in); // = std::ifstream::open(file_name_input);
   if (!cfgfile) perror ("\n Error opening input parameters file");
+
+  string line;
+
+  cout << "Reading parameters from: " << file_name_input << endl;
 
   std::string id, eq;
   FT val;
 
-  while(cfgfile >> id >> eq >> val)
+  //while(cfgfile >> id >> eq >> val)
+  while (getline( cfgfile, line) )
+
   {
-    if (id[0] == '#') continue; // skip comments
+    stringstream ss (line);
+
+    if ( ss.peek() == '#') continue; // skip comments
+
+    ss >> id >> eq >> val;
+
     if (eq != "=") throw std::runtime_error("Input parameters file parse error: has to be variable[space]=[space]value");
 
     options[id] = val;
