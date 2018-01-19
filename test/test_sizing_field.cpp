@@ -25,7 +25,7 @@ TEST_CASE ("Sizing Fields on Unit Cube") {
     options["facet_distance"] = 1;
     options["cell_radius_edge_ratio"] = 3;
     options["cell_size"] = 0.03;
-    options["elements_with_fine_sizing_field_percentage"] = 10;
+    options["elements_with_fine_sizing_field_percentage"] = 50;
     options["cell_coarse_size_mm"] = 0.1;
     options["cell_fine_size_mm"] = 0.01;
     options["electrode_radius_mm"] = 3;
@@ -76,10 +76,11 @@ TEST_CASE ("Sizing Fields on Unit Cube") {
 
     }
     SECTION ("Elliptic sizing field") {
+      options["elements_with_fine_sizing_field_percentage"] = 50;
 
       Sizing_field sizing_field (origin,path_electrode,options);
 
-          cout << "Creating mesh" << endl;
+          cout << "Creating mesh with elliptic refinement" << endl;
 
       Mesh_domain domain(image);
       Mesh_criteria criteria( facet_angle=options["facet_angle_deg"],
@@ -101,11 +102,10 @@ TEST_CASE ("Sizing Fields on Unit Cube") {
 SECTION ("Planar sizing field") {
 
   options["planar_refinement"] = 1;
-  options["preserve"] = 50; // 50% of mesh to be fine
+  options["elements_with_fine_sizing_field_percentage"] = 50;
   options["height"] = 0;
   options["planar_xyz"] = 2;
   options["upper_bound"] = image.vx() * image.xdim(); // x/y/z are equal for the unit cube., so can use either one here
-  cout << "Upper bound: " << options["upper_bound"] << endl;
 
   Sizing_field sizing_field (origin,path_electrode,options);
 
