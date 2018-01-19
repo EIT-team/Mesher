@@ -15,11 +15,12 @@ using namespace std;
 
 void printusage(void)
 {
-  printf("Usage:  -i input image file\n");
+  printf("Usage:  ./mesher -i INPUT_INR -e INPUT_ELECTRODES -p INPUT_PARAMETERS");
+  printf("        -i input image file\n");
   printf("        -e electrode position file\n");
   printf("        -p parameter file\n");
-  printf("        -o output mesh name\n");
-  printf("        -d output directory\n");
+  printf("        -o output mesh name (default = new_mesh)\n");
+  printf("        -d output directory (default = output/)\n");
   exit(EXIT_FAILURE);
 }
 
@@ -31,46 +32,54 @@ int main(int argc, char* argv[])
   //Forward solever wants metres, so need to convert. Doing this expilcity at the moment with
   // MM_TO_M, but is there a nicer way
 
-  // Print CGAL Version number
-  std::cout << "CGAL Version " << CGAL_VERSION_NR << " (1MMmmb1000)" << std::endl;
-  std::cout << "where MM is the major number release, mm is the minor number release" << std::endl;
-
-
   int opt;
-  //TODO: can tese all be strings? Think chars are used as file handles later
+  //TODO: can these all be strings? Think chars are used as file handles later
+  // Input file locations (required as arugments)
   char *path_image, *path_electrode, *path_parameter;
-  string        output_dir, input_mesh_name,  output_mesh_name, output_base_file;
+  bool image_path_set = false, elec_path_set = false, param_path_set = false;
+  // Default values, can be changed with command line arugments
+  string output_dir = "./output/";
+  string input_mesh_name = "new_mesh";
 
+  //Used if deforming mesh, to modify the output name
+  string  output_mesh_name, output_base_file;
 
   // Process input parameters
-  if(argc < 10) printusage();
   while((opt = getopt(argc, argv, "i:e:p:o:d:"))!=-1)
   {
     switch(opt)
     {
       case 'i':
       path_image = optarg;
+      image_path_set = true;
+      break;
       case 'e':
       path_electrode = optarg;
+      elec_path_set = true;
+      break;
       case 'p':
       path_parameter = optarg;
-
+      param_path_set = true;
+      break;
       case 'd':
       output_dir = optarg;
+      break;
       case 'o':
       input_mesh_name = optarg;
-
+      break;
     }
   }
-  
-  if(optind != argc) printusage();
+
+  if(!image_path_set || !elec_path_set || !param_path_set) {
+    printusage();
+}
 
   // Output file names for sanity check
   std::cout << "Input file: "     << path_image << "\n";
   std::cout << "Electrode file: "   << path_electrode << "\n";
   std::cout << "Parameter file: "   << path_parameter << "\n";
   std::cout << "Output directory: "   << output_dir << "\n";
-  std::cout << "Input mesh name: "    << input_mesh_name << "\n\n";
+  std::cout << "Output mesh name: "    << input_mesh_name << "\n\n";
 
   // Read input file with parameters
   std::map<std::string, FT> options =  load_file_idx(path_parameter);
