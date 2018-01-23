@@ -165,3 +165,98 @@ void write_centres(C3t3& c3t3, string output_file) {
 
 	fclose(centres_file);
 }
+
+
+
+void save_matlab (const C3t3& c3t3, std::map<std::string, FT> options, string output_file)
+
+{
+
+								string output_file_v = output_file;
+								string output_file_t = output_file;
+
+								output_file_v += "_vertices.csv";
+								cout << "Writing vertices file: " << output_file_v << '\n';
+
+								//! Doing some initial mapping
+								Cell_pmap cell_pmap(c3t3);
+								Facet_pmap facet_pmap(c3t3,cell_pmap);
+								Facet_pmap_twice facet_pmap_twice(c3t3,cell_pmap);
+								Vertex_pmap vertex_pmap(c3t3,cell_pmap,facet_pmap);
+
+								map<Vertex_handle, int> vertex_map; // This handles connectivity of vertex_handles to vertex number
+
+								int n_node = 1;
+								int n_tetra = 1;
+
+								Point current_point;
+								double x,y,z;
+								int cell_nodes[4];
+								double cell_domain; // What domain/tissue type is the cell
+
+								const Tr& triangulation = c3t3.triangulation();
+
+								Finite_vertices_iterator vertices_iterator;
+								Cell_iterator cell_iterator;
+
+								FILE *vert_file;
+								vert_file = fopen(output_file_v.c_str(), "w"); // Convert str to char* for fopen command
+
+								// Write Nodes
+								//fprintf(vert_file, "DGF\n");
+								//fprintf(vert_file, "vertex\n");
+								//fprintf(vert_file, "firstindex 1\n");
+
+								for (vertices_iterator = triangulation.finite_vertices_begin(); vertices_iterator != triangulation.finite_vertices_end(); ++vertices_iterator) {
+
+																// Store vertex info in vertex_handle to vertex map
+																vertex_map[vertices_iterator] = n_tetra++;
+
+																current_point = vertices_iterator->point();
+
+																// Convert x,y,z to metres before writing
+																x = CGAL::to_double(current_point.x() * options["pixel_scale_mm"]) / MM_TO_M;
+																y = CGAL::to_double(current_point.y() * options["pixel_scale_mm"]) / MM_TO_M;
+																z = CGAL::to_double(current_point.z() * options["pixel_scale_mm"]) / MM_TO_M;
+
+																fprintf(vert_file, "%6.18f, %6.18f, %6.18f \n", x, y, z);
+								}
+
+								fclose(vert_file);
+
+
+
+								output_file_t += "_tetra.csv";
+								cout << "Writing tetra file: " << output_file_t << '\n';
+
+								FILE *tetra_file;
+								tetra_file = fopen(output_file_t.c_str(), "w"); // Convert str to char* for fopen command
+
+
+								// Write Tetrahedron
+								//fprintf(dgf_file, "Simplex\n");
+								//fprintf(dgf_file, "parameters 2\n");
+
+								n_tetra = 1; //reset
+
+								for (cell_iterator = c3t3.cells_in_complex_begin(); cell_iterator != c3t3.cells_in_complex_end(); ++cell_iterator) {
+
+																for (int i = 0; i < 4; i++) {
+																								// We want to store the number of the vertex, as stored in 'Nodes' rather than the vertex cordinates itself
+																								cell_nodes[i] = int(vertex_map[ cell_iterator->vertex(i)]);
+																}
+
+																// get the cell domain/tissue index
+																cell_domain = double(get(cell_pmap, cell_iterator));
+
+																fprintf(tetra_file, "%d, %d, %d, %d, %f\n", cell_nodes[0], cell_nodes[1], cell_nodes[2], cell_nodes[3], cell_domain);
+
+								}
+
+								//fprintf(dgf_file, "#\n");
+
+								fclose(tetra_file);
+
+
+	
+}
