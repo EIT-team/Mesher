@@ -32,12 +32,23 @@ std::map<std::string, FT> load_file_idx(char* file_name_input)
     std::cout << id <<" = "<< options[id] << "\n";
   }
 
+  //The voxel size in the input mesh can vary,
+  //Scale everything so that it is in mm
+  
   FT unit = options["pixel_scale_mm"]; //Scaling units - mm per pixel
   options["facet_distance_mm"]/=unit;
   options["cell_fine_size_mm"]/=unit;
   options["cell_coarse_size_mm"]/=unit;
   options["cell_size_electrodes_mm"]/=unit;
   options["electrode_radius_mm"]/=unit;
+  options["sphere_radius"]/=unit;
+  options["sphere_centre_x"]/=unit;
+  options["sphere_centre_y"]/=unit;
+  options["sphere_centre_z"]/=unit;
+  options["sphere_cell_size"]/=unit;
+
+
+
 
   return options;
 
