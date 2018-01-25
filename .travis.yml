@@ -1,0 +1,16 @@
+language: bash
+sudo: required
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libcgal-dev git cmake g++
+
+
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+
+  - cd../test/
+  - ./run_tests
