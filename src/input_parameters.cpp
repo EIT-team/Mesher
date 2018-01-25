@@ -26,15 +26,18 @@ std::map<std::string, FT> load_file_idx(char* file_name_input)
 
     ss >> id >> eq >> val;
 
-    if (eq != "=") throw std::runtime_error("Input parameters file parse error: has to be variable[space]=[space]value");
+    if (eq != "=") {
+     throw std::runtime_error("Input parameters file parse error: has to be variable[space]=[space]value");
+}
 
     options[id] = val;
-    std::cout << id <<" = "<< options[id] << "\n";
+    //std::cout << id <<" = "<< options[id] << "\n";
   }
 
   //The voxel size in the input mesh can vary,
   //Scale everything so that it is in mm
-  
+
+//TODO: Set pixel scale automatically by reading the value from the inr file
   FT unit = options["pixel_scale_mm"]; //Scaling units - mm per pixel
   options["facet_distance_mm"]/=unit;
   options["cell_fine_size_mm"]/=unit;
@@ -47,10 +50,7 @@ std::map<std::string, FT> load_file_idx(char* file_name_input)
   options["sphere_centre_z"]/=unit;
   options["sphere_cell_size"]/=unit;
 
-
-
-
-  return options;
+    return options;
 
 
 }
