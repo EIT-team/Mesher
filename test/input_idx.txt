@@ -1,0 +1,55 @@
+#Planar refinment (1 - yes, 0 -no)
+planar_refinement = 0
+height = 0
+planar_xyz = 2
+elements_with_fine_sizing_field_percentage = 50
+
+#Spherical refinment (1 - yes, 0 - no)
+#Distances in mm
+sphere_refinement = 0
+sphere_radius = 0.25
+sphere_centre_x = 1
+sphere_centre_y = 1
+sphere_centre_z = 1
+sphere_cell_size = 0.01
+
+# Standard refinement parameters
+refine_electrodes = 0
+pixel_scale_mm = 0.025
+
+facet_angle_deg = 30
+facet_distance_mm = 1
+cell_radius_edge_ratio = 3
+cell_fine_size_mm = 0.02
+cell_coarse_size_mm = 0.05
+electrode_radius_mm = 3
+cell_size_electrodes_mm = 0.02
+
+# Optimisation (1 - yes, 0 - no)
+lloyd_opt = 0
+odt_opt = 0
+exude_opt = 0
+perturb_opt = 0
+time_limit_sec = 300
+#Save a vtu file of the mesh?
+save_vtk = 1
+
+#Save cell centres as csv?
+save_cell_centres = 0
+
+#Save nodes and tetra as csv?
+save_nodes_tetra = 0
+
+#Deform the mesh?
+do_deformation = 0
+deform_x = 0
+deform_y = 0
+deform_z = 0
+num_deformations = 5
+min_stretch_distance = 5
+max_stretch_distance = 50
+
+#Move electrodes to the closest facet in the mesh? Useful is electrodes not exactly on the mesh
+# Will move electrode to the nearest facet with tissue type equal to outermost_tissue
+move_electrodes = 0
+outermost_tissue = 7
