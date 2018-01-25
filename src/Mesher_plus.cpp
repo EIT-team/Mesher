@@ -230,17 +230,20 @@ int main(int argc, char* argv[])
   save_as_dgf(c3t3, options, output_base_file);
   save_electrodes(sizing_field.centres, output_base_file);
   save_parameters(parameters, output_base_file);
-  write_centres(c3t3, output_base_file);
+
+  if (options["save_cell_centres"]) {
+    write_centres(c3t3, output_base_file);
+  }
 
 if (int(options["save_nodes_tetra"])==1) {
-  save_matlab(c3t3, options, output_base_file);	
+  save_matlab(c3t3, options, output_base_file);
 }
 
   // Output the mesh for Paraview
   // TODO: Since outputting everything in metres, rather than mm
   // The vtk file is still being written in mm, as the mesh data is only changed
   // at the point it is written. Fix this
-  
+
   string vtk_file_path = output_base_file + ".vtu";
 
   if (int(options["save_vtk"])==1) {
