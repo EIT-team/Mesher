@@ -34,10 +34,13 @@ time_limit_sec = 300
 #Save a vtu file of the mesh?
 save_vtk = 1
 
+#Save cell centres as csv?
+save_cell_centres = 0
+
 #Save nodes and tetra as csv?
 save_nodes_tetra = 0
-#Deform the mesh?
 
+#Deform the mesh?
 do_deformation = 0
 deform_x = 0
 deform_y = 0
