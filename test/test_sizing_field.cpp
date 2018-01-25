@@ -1,6 +1,8 @@
 #include "catch.hpp"
 #include "mesh_operations.h"
 #include "Sizing_fields.h"
+#include "input_parameters.h"
+
 #include <iostream>
 
 using namespace CGAL::parameters;
@@ -19,19 +21,10 @@ TEST_CASE ("Sizing Fields on Unit Cube") {
     CGAL::Image_3 image;
     image.read(inr_path);
 
-    std::map<std::string, FT> options;
-    options["facet_size"] = 0.03;
-    options["facet_angle"] = 30;
-    options["facet_distance"] = 1;
-    options["cell_radius_edge_ratio"] = 3;
-    options["cell_size"] = 0.03;
-    options["elements_with_fine_sizing_field_percentage"] = 50;
-    options["cell_coarse_size_mm"] = 0.1;
-    options["cell_fine_size_mm"] = 0.01;
-    options["electrode_radius_mm"] = 3;
-    options["cell_size_electrodes_mm"] = 0.01;
-    options["sphere_refinement"] = 0;
-    options["planar_refinement"] = 0;
+    // Read input file with parameters
+    char *path_parameter = (char*)"./input_idx.txt";
+    std::map<std::string, FT> options =  load_file_idx(path_parameter);
+
 
     options["vx"] = image.vx();
     options["vy"] = image.vy();
@@ -49,11 +42,6 @@ TEST_CASE ("Sizing Fields on Unit Cube") {
     SECTION ("Spherical sizing field") {
 
       options["sphere_refinement"] = 1;
-      options["sphere_radius"] = 0.25;
-      options["sphere_centre_x"] = 1;
-      options["sphere_centre_y"] = 1;
-      options["sphere_centre_z"] = 1;
-      options["sphere_cell_size"] = 0.01;
 
       Sizing_field sizing_field (origin,path_electrode,options);
 
@@ -76,7 +64,6 @@ TEST_CASE ("Sizing Fields on Unit Cube") {
 
     }
     SECTION ("Elliptic sizing field") {
-      options["elements_with_fine_sizing_field_percentage"] = 50;
 
       Sizing_field sizing_field (origin,path_electrode,options);
 
@@ -102,9 +89,6 @@ TEST_CASE ("Sizing Fields on Unit Cube") {
 SECTION ("Planar sizing field") {
 
   options["planar_refinement"] = 1;
-  options["elements_with_fine_sizing_field_percentage"] = 50;
-  options["height"] = 0;
-  options["planar_xyz"] = 2;
   options["upper_bound"] = image.vx() * image.xdim(); // x/y/z are equal for the unit cube., so can use either one here
 
   Sizing_field sizing_field (origin,path_electrode,options);

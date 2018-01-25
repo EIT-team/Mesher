@@ -52,7 +52,8 @@ add_executable(run_tests  "run_tests.cpp"
                            "../src/mesh_operations.cpp"
                            "test_stretching.cpp"
                            "../src/warp_mesh.cpp"
-                           "../src/stretch_info.cpp")
+                           "../src/stretch_info.cpp"
+                           "../src/input_parameters.cpp")
 
 set_target_properties(run_tests PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/test")

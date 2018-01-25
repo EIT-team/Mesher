@@ -1,5 +1,7 @@
 #include "catch.hpp"
 #include "mesh_operations.h"
+#include "input_parameters.h"
+
 #include <iostream>
 
 using namespace CGAL::parameters;
@@ -7,14 +9,22 @@ using namespace std;
 
 #include "write_c3t3_to_vtk_xml_file.h"
 TEST_CASE ("2-Domain Unit Cube") {
-    const char* inr_path_2_domains = "../test/unit_cube_2_domains.inr";
+    char* inr_path_2_domains = "../test/unit_cube_2_domains.inr";
 
     CGAL::Image_3 image;
     image.read(inr_path_2_domains);
 
+
     Mesh_domain domain(image);
     //TODO: Pick some objective values for facet_size etc. Just geussing at the moment
-    Mesh_criteria criteria(facet_angle=30, facet_size=0.03, facet_distance=1, cell_radius_edge_ratio=3, cell_size=0.03);
+    char *path_parameter = (char*)"./input_idx.txt";
+    std::map<std::string, FT> options =  load_file_idx(path_parameter);
+
+    Mesh_criteria criteria( facet_angle=options["facet_angle_deg"],
+                          facet_size=options["cell_coarse_size_mm"],
+                          facet_distance=options["facet_distance_mm"],
+                          cell_radius_edge_ratio=options["cell_radius_edge_ratio"],
+                           cell_size=options["cell_coarse_size_mm"]);
 
     C3t3_EIT c3t3;
     c3t3 = CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
@@ -28,14 +38,13 @@ TEST_CASE ("2-Domain Unit Cube") {
         REQUIRE(target_domain == 2);
     }
 
-
 }
 
 TEST_CASE ("Unit Cube") {
 
     // Unit cube (dimensions 1 x 1 x 1) centred around 0.5,0.5,0.5
 
-    const char* inr_path = "../test/unit_cube.inr";
+    char* inr_path = "../test/unit_cube.inr";
 
     CGAL::Image_3 image;
     image.read(inr_path);
@@ -54,8 +63,15 @@ TEST_CASE ("Unit Cube") {
     cout << "Creating mesh" << endl;
 
     Mesh_domain domain(image);
-    //TODO: Pick some objective values for facet_size etc. Just geussing at the moment
-    Mesh_criteria criteria(facet_angle=30, facet_size=0.03, facet_distance=1, cell_radius_edge_ratio=3, cell_size=0.03);
+
+    char *path_parameter = (char*)"./input_idx.txt";
+    std::map<std::string, FT> options =  load_file_idx(path_parameter);
+
+    Mesh_criteria criteria( facet_angle=options["facet_angle_deg"],
+                          facet_size=options["cell_coarse_size_mm"],
+                          facet_distance=options["facet_distance_mm"],
+                          cell_radius_edge_ratio=options["cell_radius_edge_ratio"],
+                           cell_size=options["cell_coarse_size_mm"]);
 
     C3t3_EIT c3t3;
     c3t3 = CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
@@ -88,6 +104,8 @@ TEST_CASE ("Unit Cube") {
         double expected_max_close = 1.5;
 
         int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, "cube_stretch_debug.vtu");
+        REQUIRE( vtk_success == 1 );
+
 
         int target_domain = c3t3.get_outer_layer_domain(); // only one domain in cube
         int expected_domain = 1;
