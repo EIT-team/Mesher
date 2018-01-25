@@ -7,10 +7,11 @@ before_install:
   
 script:
  - cd $TRAVIS_BUILD_DIR
+ - pwd
   - mkdir build
   - cd build
   - cmake ..
   - make
 
-  - cd ../../test/
+  - cd ../test/
   - ./run_tests
