@@ -9,7 +9,6 @@ sudo apt-get install libcgal-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-
 * Clone repository
 ```
 git clone https://github.com/EIT-team/Mesher.git
-cd Mesher
 ```
 
 * Make build directory
