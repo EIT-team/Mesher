@@ -1,11 +1,16 @@
 # Mesher
-## install on linux machine (with cmake)
-* Download from GitHub
+## Build instructions (tested on Ubuntu 17)
+
+* Install dependencies
+```
+sudo apt-get install libcgal-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev
+
+* Clone repository
 ```
 git clone https://github.com/EIT-team/Mesher.git
 cd Mesher
-git checkout tidyup
 ```
+
 * Make build directory
 ```
 cd Mesher
