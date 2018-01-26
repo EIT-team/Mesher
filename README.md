@@ -4,6 +4,7 @@
 * Install dependencies
 ```
 sudo apt-get install libcgal-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev
+```
 
 * Clone repository
 ```
