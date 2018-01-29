@@ -3,7 +3,7 @@
 
 * Install dependencies
 ```
-sudo apt-get install libcgal-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev
+sudo apt-get install cmake libcgal-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev
 ```
 
 * Clone repository
