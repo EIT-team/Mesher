@@ -1,5 +1,5 @@
 # Mesher
-## Build instructions (tested on Ubuntu 17)
+## Build instructions (tested on Ubuntu 16 & 17)
 
 * Install dependencies
 ```
