@@ -49,6 +49,13 @@ std::map<std::string, FT> load_file_idx(char* file_name_input)
   options["sphere_centre_y"]/=unit;
   options["sphere_centre_z"]/=unit;
   options["sphere_cell_size"]/=unit;
+  options["square_x_extent"]/=unit;
+  options["square_y_extent"]/=unit;
+  options["square_z_extent"]/=unit;
+  options["square_centre_x"]/=unit;
+  options["square_centre_y"]/=unit;
+  options["square_centre_z"]/=unit;
+  options["square_cell_size"]/=unit;
 
     return options;
 

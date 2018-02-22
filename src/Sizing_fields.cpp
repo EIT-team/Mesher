@@ -90,7 +90,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
     }
   }
 
-  double distance;
+  double distance, distance_x, distance_y, distance_z;
   // Do some additional refienments if turned on in parameter file
   // Need to use MAP.at("x") rather than MAP["x"] to be const safe
 
@@ -106,6 +106,28 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
     if ( distance < FT(options.at("sphere_radius")) ) {
 
       out = options.at("sphere_cell_size");
+    }
+
+    else {
+      out = coarse_size;
+    }
+
+  }
+
+  if (options.at("square_refinement") ) {
+    // Refine a sphere around a specificed point.
+
+    Point square_centre(  options.at("square_centre_x"),
+                          options.at("square_centre_y"),
+                          options.at("square_centre_z"));
+
+    distance_x = CGAL::abs(p.x()- square_centre.x());
+	distance_y = CGAL::abs(p.y()- square_centre.y());
+	distance_z = CGAL::abs(p.z()- square_centre.z());
+
+    if ( distance_x < FT(options.at("sphere_x_extent")) && distance_y < FT(options.at("sphere_y_extent")) && distance_z < FT(options.at("sphere_z_extent"))) {
+
+      out = options.at("square_cell_size");
     }
 
     else {
