@@ -101,7 +101,9 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
                           options.at("sphere_centre_y"),
                           options.at("sphere_centre_z"));
 
-    distance = CGAL::sqrt( CGAL::squared_distance(p, sphere_centre) );
+
+    //distance = CGAL::sqrt( CGAL::squared_distance(p, sphere_centre) );
+	distance = CGAL::abs(p.x() - sphere_centre.x())
 
     if ( distance < FT(options.at("sphere_radius")) ) {
 
