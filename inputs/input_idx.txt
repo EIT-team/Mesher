@@ -6,12 +6,22 @@ elements_with_fine_sizing_field_percentage = 50
 
 #Spherical refinment (1 - yes, 0 - no)
 #Distances in mm
-sphere_refinement = 1
+sphere_refinement = 0
 sphere_radius = 2
-sphere_centre_x = 13.9
+sphere_centre_x = 13.5
 sphere_centre_y = 13.2
 sphere_centre_z = 17.9
 sphere_cell_size = 0.5
+
+
+square_refinement = 1
+square_x_extent = 4
+square_y_extent = 6
+square_z_extent = 4
+square_centre_x = 13.9
+square_centre_y = 13.2
+square_centre_z = 17.9
+square_cell_size = 0.09
 
 # Standard refinement parameters
 refine_electrodes = 0
@@ -21,9 +31,9 @@ facet_angle_deg = 30
 facet_distance_mm = 2
 cell_radius_edge_ratio = 3
 cell_fine_size_mm = 0.5
-cell_coarse_size_mm = 1
-electrode_radius_mm = 0.1
-cell_size_electrodes_mm = 0.01
+cell_coarse_size_mm = 0.5
+electrode_radius_mm = 0.15
+cell_size_electrodes_mm = 0.015
 
 # Optimisation (1 - yes, 0 - no)
 lloyd_opt = 0
@@ -38,7 +48,7 @@ save_vtk = 1
 save_cell_centres = 0
 
 #Save nodes and tetra as csv?
-save_nodes_tetra = 0
+save_nodes_tetra = 1
 
 #Deform the mesh?
 do_deformation = 0

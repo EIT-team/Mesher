@@ -102,8 +102,9 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
                           options.at("sphere_centre_z"));
 
 
-    //distance = CGAL::sqrt( CGAL::squared_distance(p, sphere_centre) );
-	distance = CGAL::abs(p.x() - sphere_centre.x())
+    distance = CGAL::sqrt( CGAL::squared_distance(p, sphere_centre) );
+	
+
 
     if ( distance < FT(options.at("sphere_radius")) ) {
 
@@ -127,7 +128,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 	distance_y = CGAL::abs(p.y()- square_centre.y());
 	distance_z = CGAL::abs(p.z()- square_centre.z());
 
-    if ( distance_x < FT(options.at("sphere_x_extent")) && distance_y < FT(options.at("sphere_y_extent")) && distance_z < FT(options.at("sphere_z_extent"))) {
+    if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
 
       out = options.at("square_cell_size");
     }
