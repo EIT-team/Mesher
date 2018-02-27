@@ -63,6 +63,30 @@ TEST_CASE ("Sizing Fields on Unit Cube") {
 
 
     }
+
+	  SECTION ("Square sizing field") {
+
+      Sizing_field sizing_field (origin,path_electrode,options);
+
+          cout << "Creating mesh with square refinement" << endl;
+
+      Mesh_domain domain(image);
+      Mesh_criteria criteria( facet_angle=options["facet_angle_deg"],
+                            facet_size=sizing_field,
+                            facet_distance=options["facet_distance_mm"],
+                            cell_radius_edge_ratio=options["cell_radius_edge_ratio"],
+                             cell_size=sizing_field);
+
+       C3t3_EIT c3t3;
+       c3t3 = CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
+       CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
+       CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
+
+       int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, "cube_square_sizing_field.vtu");
+
+
+}
+
     SECTION ("Elliptic sizing field") {
 
       Sizing_field sizing_field (origin,path_electrode,options);
