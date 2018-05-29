@@ -11,10 +11,11 @@ sudo apt-get install cmake libcgal-dev libcgal-qt5-dev libglu1-mesa libxi-dev li
 git clone https://github.com/EIT-team/Mesher.git
 ```
 
-* Make build directory
+* Make build & output directories
 ```
 cd Mesher
 mkdir build
+mkdir output
 ```
 * Compile
 ```
