@@ -96,11 +96,11 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
     for (it=centres.begin(); it<centres.end(); it++)
   {
-    Vector elec=(*it);
-	distance_ref = CGAL::sqrt( CGAL::squared_distance(p, elec) ) - e_R;
+    Vector pp=(p-*it);
+	distance_ref = CGAL::sqrt( pp.squared_length() ) - e_R;
 	distance_max = 10*e_R;
 
-		if ( distance_ref <= dist_max)
+		if ( distance_ref <= distance_max)
 			{
 				out=electrode_size + (fine_size - electrode_size)*(distance_ref/distance_max);
 				return out;
