@@ -90,6 +90,25 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
     }
   }
 
+
+  //if (options.at("electrode_gradation_refinement")) {
+  double distance_ref, distance_max;
+
+    for (it=centres.begin(); it<centres.end(); it++)
+  {
+    Vector elec=(*it);
+	distance_ref = CGAL::sqrt( CGAL::squared_distance(p, elec) ) - e_R;
+	distance_max = 10*e_R;
+
+		if ( distance_ref <= dist_max)
+			{
+				out=electrode_size + (fine_size - electrode_size)*(distance_ref/distance_max);
+				return out;
+			}
+		}
+  //}
+
+
   double distance, distance_x, distance_y, distance_z;
   // Do some additional refienments if turned on in parameter file
   // Need to use MAP.at("x") rather than MAP["x"] to be const safe
