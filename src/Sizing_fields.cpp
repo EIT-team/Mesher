@@ -91,14 +91,14 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
   }
 
 
-  //if (options.at("electrode_gradation_refinement")) {
+
   double distance_ref, distance_max;
 
     for (it=centres.begin(); it<centres.end(); it++)
   {
     Vector pp=(p-*it);
-	distance_ref = CGAL::sqrt( pp.squared_length() ) - e_R;
-	distance_max = 10*e_R;
+	distance_ref = CGAL::sqrt( pp.squared_length() )
+	distance_max = 3*e_R;
 
 		if ( distance_ref <= distance_max)
 			{
@@ -107,7 +107,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 			}
 		}
   //}
-
+  
 
   double distance, distance_x, distance_y, distance_z;
   // Do some additional refienments if turned on in parameter file
