@@ -162,7 +162,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
     if(options.at("planar_xyz") == 1) {
       distance=CGAL::abs(p.x()- options.at("height"));
-  }
+	}
 
     else if(options.at("planar_xyz") == 2) {
       distance=CGAL::abs(p.y()- options.at("height"));
@@ -172,8 +172,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
       distance=CGAL::abs(p.z()- options.at("height"));
     }
 
-
-    else {
+	 else {
       return fine_size;
     }
 
@@ -187,7 +186,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
     else  {
       out = fine_size +
        CGAL::abs((coarse_size-fine_size)*(dist_percentage - (preserve)/100.0));
-  }
+	}
 
   }
 
@@ -215,16 +214,15 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
   for (it=centres.begin(); it<centres.end(); it++)
   {
     Vector pp=(p-*it);
-	distance_ref = CGAL::sqrt( pp.squared_length() );
+	distance_ref = CGAL::sqrt( pp.squared_length() -e_R );
 	distance_max = 6*e_R;
 
 		if ( distance_ref <= distance_max)
 			{
 				out=electrode_size + (fine_size - electrode_size)*(distance_ref/distance_max);
-				out;
-			}
+							}
 		}
-  //}	
+  	
 
   return out;
 }
