@@ -94,18 +94,18 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
   double distance_ref, distance_max;
 
-    for (it=centres.begin(); it<centres.end(); it++)
-  {
-    Vector pp=(p-*it);
-	distance_ref = CGAL::sqrt( pp.squared_length() )
-	distance_max = 3*e_R;
+ //   for (it=centres.begin(); it<centres.end(); it++)
+  //{
+   // Vector pp=(p-*it);
+	//distance_ref = CGAL::sqrt( pp.squared_length() )
+	//distance_max = 3*e_R;
 
-		if ( distance_ref <= distance_max)
-			{
-				out=electrode_size + (fine_size - electrode_size)*(distance_ref/distance_max);
-				return out;
-			}
-		}
+		//if ( distance_ref <= distance_max)
+			//{
+				//out=electrode_size + (fine_size - electrode_size)*(distance_ref/distance_max);
+				//return out;
+			//}
+		//}
   //}
   
 
@@ -210,5 +210,21 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
 
   }
+
+
+  for (it=centres.begin(); it<centres.end(); it++)
+  {
+    Vector pp=(p-*it);
+	distance_ref = CGAL::sqrt( pp.squared_length() );
+	distance_max = 6*e_R;
+
+		if ( distance_ref <= distance_max)
+			{
+				out=electrode_size + (fine_size - electrode_size)*(distance_ref/distance_max);
+				out;
+			}
+		}
+  //}	
+
   return out;
 }
