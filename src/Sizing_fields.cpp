@@ -197,7 +197,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
    double distance_ref, distance_max;
    FT out_ref;
    float out_min;
-   std::vector<float> out_options;
+   std::vector<FT> out_options;
    out_options.push_back(out);
    
   for (it=centres.begin(); it<centres.end(); it++)
@@ -213,9 +213,10 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 			}
  }
 
+ for (it = out_options.begin(); it < out_options.end(); it++)
 
 
-  out_min = min_element(out_options.begin(), out_options.end());
+  out_min = std::min_element(out_options.begin(), out_options.end());
   out = out_min;
 
   return out;
