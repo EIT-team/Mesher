@@ -50,9 +50,9 @@ void save_as_dgf (const C3t3& c3t3, std::map<std::string, FT> options, string ou
 		current_point = vertices_iterator->point();
 
 		// Convert x,y,z to metres before writing
-		x = CGAL::to_double(current_point.x() * options["pixel_scale_mm"]) / MM_TO_M;
-		y = CGAL::to_double(current_point.y() * options["pixel_scale_mm"]) / MM_TO_M;
-		z = CGAL::to_double(current_point.z() * options["pixel_scale_mm"]) / MM_TO_M;
+		x = CGAL::to_double(current_point.x() ) / MM_TO_M;
+		y = CGAL::to_double(current_point.y() ) / MM_TO_M;
+		z = CGAL::to_double(current_point.z() ) / MM_TO_M;
 
 		fprintf(dgf_file, "%6.18f %6.18f %6.18f # %d\n", x, y, z, n_node++);
 	}
@@ -210,9 +210,9 @@ void save_matlab (const C3t3& c3t3, std::map<std::string, FT> options, string ou
 		current_point = vertices_iterator->point();
 
 		// Convert x,y,z to metres before writing
-		x = CGAL::to_double(current_point.x() * options["pixel_scale_mm"]) / MM_TO_M;
-		y = CGAL::to_double(current_point.y() * options["pixel_scale_mm"]) / MM_TO_M;
-		z = CGAL::to_double(current_point.z() * options["pixel_scale_mm"]) / MM_TO_M;
+		x = CGAL::to_double(current_point.x() ) / MM_TO_M;
+		y = CGAL::to_double(current_point.y() ) / MM_TO_M;
+		z = CGAL::to_double(current_point.z() ) / MM_TO_M;
 
 		fprintf(vert_file, "%6.18f, %6.18f, %6.18f \n", x, y, z);
 	}
