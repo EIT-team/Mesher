@@ -214,7 +214,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
   for (it=centres.begin(); it<centres.end(); it++)
   {
     Vector pp=(p-*it);
-	distance_ref = CGAL::sqrt( pp.squared_length() -e_R );
+	distance_ref = CGAL::sqrt( pp.squared_length() )-e_R;
 	distance_max = 6*e_R;
 
 		if ( distance_ref <= distance_max)
