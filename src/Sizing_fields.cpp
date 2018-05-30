@@ -196,7 +196,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
    
    double distance_ref, distance_max;
    FT out_ref;
-   std::vector<float> out_options;
+   std::vector<FT> out_options;
    out_options.push_back(out);
    
   for (it=centres.begin(); it<centres.end(); it++)
