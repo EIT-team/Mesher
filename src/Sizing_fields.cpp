@@ -92,23 +92,6 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
 
 
-  double distance_ref, distance_max;
-
- //   for (it=centres.begin(); it<centres.end(); it++)
-  //{
-   // Vector pp=(p-*it);
-	//distance_ref = CGAL::sqrt( pp.squared_length() )
-	//distance_max = 3*e_R;
-
-		//if ( distance_ref <= distance_max)
-			//{
-				//out=electrode_size + (fine_size - electrode_size)*(distance_ref/distance_max);
-				//return out;
-			//}
-		//}
-  //}
-  
-
   double distance, distance_x, distance_y, distance_z;
   // Do some additional refienments if turned on in parameter file
   // Need to use MAP.at("x") rather than MAP["x"] to be const safe
@@ -210,7 +193,12 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
   }
 
-
+   
+   double distance_ref, distance_max;
+   FT out_ref;
+   std::vector<float> out_options;
+   out_options.push_back(out);
+   
   for (it=centres.begin(); it<centres.end(); it++)
   {
     Vector pp=(p-*it);
@@ -219,10 +207,14 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
 		if ( distance_ref <= distance_max)
 			{
-				out=electrode_size + (fine_size - electrode_size)*(distance_ref/distance_max);
-							}
-		}
-  	
+				out_ref = electrode_size + (fine_size - electrode_size)*(distance_ref/distance_max);
+				out_options.push_back(out_ref);
+			}
+ }
+
+
+
+  out = min_element(out_options.begin(), out_options.end());
 
   return out;
 }

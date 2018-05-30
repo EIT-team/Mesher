@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <map>
 #include <vector>
+#include <algorithm>
 #include <climits>
 
 #include <time.h>
