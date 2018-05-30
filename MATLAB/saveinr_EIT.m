@@ -1,6 +1,6 @@
-function saveinr(vol,fname, vxyz)
+function saveinr_EIT(vol,fname, vxyz)
 %
-% saveinr(vol,fname)
+% saveinr_EIT(vol,fname, vxyz)
 %
 % save a surface mesh to INR Format
 %
@@ -10,7 +10,7 @@ function saveinr(vol,fname, vxyz)
 % input:
 %      vol: input, a binary volume
 %      fname: output file name
-%      vxyz: 3 element array with  mesh spacing in x, y and  z dimensions.
+%      vxyz: 3 element array with  mesh spacing in x, y and z dimensions.
 %      Values default to 1 if not supplied.
 % -- this function is part of iso2mesh toolbox (http://iso2mesh.sf.neta)
 %
