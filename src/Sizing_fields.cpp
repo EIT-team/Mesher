@@ -121,8 +121,9 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
   if (options.at("square_refinement") ) {
 
-  std::vector<FT> out_ref;
+  std::vector<FT> out_refine;
   FT sum;
+  FT out_ref;
     // Refine a sphere around a specificed point.
 
     Point square_centre(  options.at("square_centre_x"),
@@ -154,12 +155,12 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 		out_refine.push_back(out_ref);
 	}
 
-	for (int i; i < out_ref.size(); i++){
+	for (int i; i < out_refine.size(); i++){
 	
 		sum = sum + out_refine(i);
 	}
 
-	out = sum/out_ref.size();
+	out = sum/out_refine.size();
 
 	
 	else if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
