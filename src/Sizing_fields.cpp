@@ -122,6 +122,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
   if (options.at("square_refinement") ) {
 
   std::vector<FT> out_refine;
+  std::vector<FT>::iterator ind;
   FT sum = 0;
   FT out_ref;
     // Refine a sphere around a specificed point.
@@ -156,9 +157,9 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 	}
 
 	if (out_refine.size() >= 1) {
-		for (it=out_refine.begin(); it<out_refine.end(); it++) 
+		for (ind=out_refine.begin(); ind<out_refine.end(); ind++) 
 		{
-				sum = sum+ *it;
+				sum = sum + (*ind);
 		}
 
 	out = sum/out_refine.size();
