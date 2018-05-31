@@ -134,8 +134,8 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
     distance_x = CGAL::abs(p.x()- square_centre.x());
 	distance_y = CGAL::abs(p.y()- square_centre.y());
 	distance_z = CGAL::abs(p.z()- square_centre.z());
-	distance = CGAL::sqrt( CGAL::squared_distance(p, square_centre) );
-	distance_max = 2*scale_xyz;
+	//distance = CGAL::sqrt( CGAL::squared_distance(p, square_centre) );
+	distance_max = 4/options["pixel_scale_mm"];
 
 
     if ( distance_x > FT(options.at("square_x_extent")) && distance_x < FT(options.at("square_x_extent")) + distance_max )  {
