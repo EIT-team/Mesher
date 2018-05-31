@@ -156,9 +156,9 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 		out_refine.push_back(out_ref);
 	}
 
-
+	if (out_refine.size() >= 1) {
 	out = *std::min_element(out_refine.begin(), out_refine.end());
-
+	}
 	//if (out_refine.size() >= 1) {
 		//for (ind=out_refine.begin(); ind<out_refine.end(); ind++) 
 		//{
