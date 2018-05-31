@@ -136,7 +136,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 	distance_z = CGAL::abs(p.z()- square_centre.z());
 	//distance = CGAL::sqrt( CGAL::squared_distance(p, square_centre) );
 	//distance_max = 8*scale_xyz;
-	distance_max = options.at("square_x_extent");
+	distance_max = options.at("square_x_extent")*4;
 
 
     //if ( distance_x >= FT(options.at("square_x_extent")) && distance_x < (FT(options.at("square_x_extent")) + distance_max) )  {
@@ -153,10 +153,15 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 		//out = out_ref
 	//}
 
-	if ( distance_z - FT(options.at("square_z_extent")) <  distance_max )  {
+	if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
+
+      out = options.at("square_cell_size");
+    }
+
+	else if ( distance_z > FT(options.at("square_z_extent"))  {
 		distance = distance_z - FT(options.at("square_z_extent"));
 		out_ref = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance/distance_max);
-		out_refine.push_back(out_ref);
+		//out_refine.push_back(out_ref);
 		out = out_ref;
 	}
 
@@ -173,10 +178,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 	//}
 
 	
-	else if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
 
-      out = options.at("square_cell_size");
-    }
 	
 	else {
 		out = coarse_size;
