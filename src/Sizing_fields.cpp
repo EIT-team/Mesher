@@ -155,16 +155,17 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 		out_refine.push_back(out_ref);
 	}
 
-	for (int i; i < out_refine.size(); i++) 
-	{
-	
-		sum = sum + *out_refine(i);
-	}
+	if (out_refine.size >= 1) {
+		for (int i= 0; i < out_refine.size(); i++) 
+		{
+				sum = *out_refine(i);
+		}
 
 	out = sum/out_refine.size();
+	}
 
 	
-	else if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
+	if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
 
       out = options.at("square_cell_size");
     }
