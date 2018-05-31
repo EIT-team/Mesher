@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
 
   // Loads image
   CGAL::Image_3 image;
-  std::cout<<"\n Reading the Image file... ";
+  std::cout<<"Reading the Image file... " << endl;
 
   image.read(path_image);
   cout << "Dimensions of image: " << image.xdim() << endl;
@@ -156,7 +156,7 @@ int main(int argc, char* argv[])
   cell_radius_edge_ratio=options["cell_radius_edge_ratio"], cell_size=sizing_field);
 
   // Meshing
-  std::cout<<"\n Creating initial mesh..." << endl;
+  std::cout<< endl << "Creating initial mesh..." << endl;
   C3t3_EIT c3t3;
 
   c3t3= CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
@@ -169,37 +169,46 @@ int main(int argc, char* argv[])
 
   //Optimisation - this is the preferred order to run the optimisations in
   //according to CGAL documentation.
-  if (int(options["odt_opt"])==1) {
-    std::cout<<"\n ODT... ";
-    CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit=options["time_limit_sec"]);
+
+  if ((int(options["odt_opt"]) == 1) || (int(options["lloyd_opt"]) == 1) || (int(options["perturb_opt"]) == 1) || (int(options["exude_opt"]) == 1))
+  {
+	  std::cout << endl << "Optimising Mesh" << endl; 
+	  if (int(options["odt_opt"]) == 1) {
+		  std::cout << "ODT... \n";
+		  CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
+	  }
+
+	  if (int(options["lloyd_opt"]) == 1) {
+		  std::cout << "Lloyd... \n";
+		  CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
+	  }
+
+	  if (int(options["perturb_opt"]) == 1) {
+		  std::cout << "Perturb... \n";
+		  CGAL::perturb_mesh_3(c3t3, domain, sliver_bound = 10, time_limit = options["time_limit_sec"]);
+	  }
+
+
+	  if (int(options["exude_opt"]) == 1) {
+		  std::cout << "Exude... \n";
+		  CGAL::exude_mesh_3(c3t3, sliver_bound = 10, time_limit = options["time_limit_sec"]);
+	  }
+
+	  // check mesh quality again to show improvement
+	  check_mesh_quality(c3t3);
+
   }
 
-  if (int(options["lloyd_opt"])==1) {
-    std::cout<<"\n Lloyd... ";
-    CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit=options["time_limit_sec"]);
-  }
-
-  if (int(options["perturb_opt"])==1) {
-    std::cout<<"\n Perturb... ";
-    CGAL::perturb_mesh_3(c3t3, domain,sliver_bound=10, time_limit=options["time_limit_sec"]);
-  }
-
-
-  if (int(options["exude_opt"])==1)  {
-    std::cout<<"\n Exude... ";
-    CGAL::exude_mesh_3(c3t3, sliver_bound=10, time_limit=options["time_limit_sec"]);
-  }
-
-  check_mesh_quality(c3t3);
 
   // Generate reference electrode location and append to elecrtode list
+  cout << endl;
   Point reference_electrode = c3t3.set_reference_electrode();
   sizing_field.centres.push_back(reference_electrode);
 
   Point ground_electrode = c3t3.set_ground_electrode();
 
   if (options["move_electrodes"]) {
-    cout << "Moving electrodes to closest facets: " << endl;
+    cout << endl << "Moving electrodes to closest facets: " << endl;
 
     int outer_tissue_index = options["outermost_tissue"];
     for(int i = 0; i < sizing_field.centres.size(); ++i) {
