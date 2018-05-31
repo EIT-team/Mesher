@@ -210,6 +210,21 @@ int main(int argc, char* argv[])
   // Put together parameters
   std::map<std::string, std::string> parameters;
 
+ // Add all options to the parameter map
+
+  for (auto elem : options	)
+  {
+	  //cout << elem.first << " " << elem.second << endl; // print the parameters and the values
+	  //parameters[elem.first] = to_string(elem.second); 
+
+	  // make the stream object - this makes nicer strings that to_string (although that might be because I dont know how to use it well)
+	  std::ostringstream currentVal;
+	  currentVal << elem.second;
+	  parameters[elem.first] = currentVal.str(); // save into the parameters map
+
+  }
+
+
   parameters["ground.hsquared"] = string("1.5e-5");
 
   // Need to convert double to string before adding to parameter map
@@ -222,6 +237,7 @@ int main(int argc, char* argv[])
   parameters["groundposition.x"] = gndposx.str();
   parameters["groundposition.y"] = gndposy.str();
   parameters["groundposition.z"] = gndposz.str();
+
 
   // Base filenames for electrode positions and parameters
   output_base_file = output_dir + output_mesh_name;

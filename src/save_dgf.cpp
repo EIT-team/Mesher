@@ -108,17 +108,40 @@ void save_parameters(map<string, string> parameters, string output_file)
 	cout << "Writing parameter file: " << output_file << '\n';
 
 	// Use stream for writing output file, easier to use with map data structure that fprintf
-	fstream parameter_file;
-	parameter_file.open(output_file.c_str(), fstream::out);
+	ofstream parameter_file;
+	parameter_file.open(output_file.c_str());
 
-	map<string, string>::iterator it;
-
-	for (it = parameters.begin(); it != parameters.end(); it++)
+	if (parameter_file.is_open())
 	{
-		parameter_file << it->first << ": " << it->second << endl << endl;
+		parameter_file << "# Mesher parameters" << endl ;
+
+		//map<string, string>::iterator it;
+
+		/*
+		for (it = parameters.begin(); it != parameters.end(); it++)
+		{
+			//parameter_file << it->first << ": " << it->second << endl;
+			//cout << it->first << ": " << it->second << endl;
+		}
+		*/
+
+		for (auto param_elem : parameters)
+		{
+			//cout << elem.first << ": " << elem.second << endl; // print the parameters and the values
+			parameter_file << param_elem.first << ": " << param_elem.second << endl; // print the parameters and the values
+		}
+
+		parameter_file.close();
+	}
+	else
+	{
+		cout << "Unable to open parameter file";
 	}
 
-	parameter_file.close();
+
+
+
+
 
 }
 
