@@ -121,8 +121,8 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
   if (options.at("square_refinement") ) {
 
-  std::vector<FT> out_refine;
-  FT sum
+  std::vector<FT> out_ref;
+  FT sum;
     // Refine a sphere around a specificed point.
 
     Point square_centre(  options.at("square_centre_x"),
@@ -139,27 +139,27 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
     if ( distance_x > FT(options.at("square_x_extent")) && distance_x < FT(options.at("square_x_extent")) + distance_max )  {
 		distance = distance_x - FT(options.at("square_x_extent"));
 		out_ref = fine_size + (coarse_size - fine_size)*(distance/distance_max);
-		out_refine.pushback(out_ref);
+		out_refine.push_back(out_ref);
 	}
 
 	if ( distance_y > FT(options.at("square_y_extent")) && distance_y < FT(options.at("square_y_extent")) + distance_max )  {
 		distance = distance_y - FT(options.at("square_y_extent"));
 		out_ref = fine_size + (coarse_size - fine_size)*(distance/distance_max);
-		out_refine.pushback(out_ref);
+		out_refine.push_back(out_ref);
 	}
 
 	if ( distance_z > FT(options.at("square_z_extent")) && distance_x < FT(options.at("square_z_extent")) + distance_max )  {
 		distance = distance_x - FT(options.at("square_z_extent"));
 		out_ref = fine_size + (coarse_size - fine_size)*(distance/distance_max);
-		out_refine.pushback(out_ref);
+		out_refine.push_back(out_ref);
 	}
 
-	for (int i; int < out_refine.size(); i++){
+	for (int i; i < out_ref.size(); i++){
 	
 		sum = sum + out_refine(i);
 	}
 
-	out = sum/out_refine.size();
+	out = sum/out_ref.size();
 
 	
 	else if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
