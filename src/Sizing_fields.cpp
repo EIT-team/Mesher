@@ -155,9 +155,10 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 		out_refine.push_back(out_ref);
 	}
 
-	for (int i; i < out_refine.size(); i++){
+	for (int i; i < out_refine.size(); i++) 
+	{
 	
-		sum = sum + out_refine(i);
+		sum = sum + *out_refine(i);
 	}
 
 	out = sum/out_refine.size();
