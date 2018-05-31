@@ -155,10 +155,10 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 		out_refine.push_back(out_ref);
 	}
 
-	if (out_refine.size >= 1) {
-		for (int i= 0; i < out_refine.size(); i++) 
+	if (out_refine.size() >= 1) {
+		for (it=out_refine.begin(); it<out_refine.end(); it++) 
 		{
-				sum = *out_refine(i);
+				sum = sum+ *it;
 		}
 
 	out = sum/out_refine.size();
@@ -230,7 +230,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
   }
 
    
-   double distance_ref, distance_max;
+   double distance_ref;
    FT out_ref;
    FT out_min;
    std::vector<FT> out_options;
