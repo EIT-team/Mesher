@@ -156,7 +156,7 @@ int main(int argc, char* argv[])
   cell_radius_edge_ratio=options["cell_radius_edge_ratio"], cell_size=sizing_field);
 
   // Meshing
-  std::cout<< endl << "Creating initial mesh..." << endl;
+  std::cout<< endl << "Creating initial mesh...";
   C3t3_EIT c3t3;
 
   c3t3= CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
@@ -164,6 +164,8 @@ int main(int argc, char* argv[])
   CGAL::parameters::no_odt(),
   CGAL::parameters::no_perturb(),
   CGAL::parameters::no_exude()                         );
+
+  cout << "number of tetra: " << c3t3.number_of_cells_in_complex() << endl;
 
   check_mesh_quality(c3t3);
 
@@ -196,8 +198,13 @@ int main(int argc, char* argv[])
 
 	  // check mesh quality again to show improvement
 	  check_mesh_quality(c3t3);
+	  cout << "Number of tetra after optimisation: " << c3t3.number_of_cells_in_complex() << endl;
 
   }
+
+  // print number of cells
+
+
 
 
   // Generate reference electrode location and append to elecrtode list
@@ -274,6 +281,8 @@ if (int(options["save_nodes_tetra"])==1) {
   if (int(options["save_vtk"])==1) {
     int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
   }
+  // add this here again so its easier to see in terminal 
+  cout << "All done! Created mesh with " << c3t3.number_of_cells_in_complex() << " elements" << endl;
 
 
   return 0;

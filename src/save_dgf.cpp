@@ -115,16 +115,6 @@ void save_parameters(map<string, string> parameters, string output_file)
 	{
 		parameter_file << "# Mesher parameters" << endl ;
 
-		//map<string, string>::iterator it;
-
-		/*
-		for (it = parameters.begin(); it != parameters.end(); it++)
-		{
-			//parameter_file << it->first << ": " << it->second << endl;
-			//cout << it->first << ": " << it->second << endl;
-		}
-		*/
-
 		for (auto param_elem : parameters)
 		{
 			//cout << elem.first << ": " << elem.second << endl; // print the parameters and the values
