@@ -153,8 +153,8 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 		//out = out_ref
 	//}
 
-	if ( distance_z >= FT(options.at("square_z_extent")) && distance_x < (FT(options.at("square_z_extent")) + distance_max) )  {
-		distance = distance_x - FT(options.at("square_z_extent"));
+	if ( distance_z - FT(options.at("square_z_extent")) <  distance_max) )  {
+		distance = distance_z - FT(options.at("square_z_extent"));
 		out_ref = fine_size + (coarse_size - fine_size)*(distance/distance_max);
 		out_refine.push_back(out_ref);
 		out = out_ref;
