@@ -92,7 +92,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
 
 
-  double distance, distance_x, distance_y, distance_z;
+  double distance, distance_x, distance_y, distance_z, distance_max;
   // Do some additional refienments if turned on in parameter file
   // Need to use MAP.at("x") rather than MAP["x"] to be const safe
 
@@ -120,6 +120,9 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
   }
 
   if (options.at("square_refinement") ) {
+
+  std::vector<FT> out_refine;
+  FT sum
     // Refine a sphere around a specificed point.
 
     Point square_centre(  options.at("square_centre_x"),
@@ -129,16 +132,46 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
     distance_x = CGAL::abs(p.x()- square_centre.x());
 	distance_y = CGAL::abs(p.y()- square_centre.y());
 	distance_z = CGAL::abs(p.z()- square_centre.z());
+	distance = CGAL::sqrt( CGAL::squared_distance(p, square_centre) );
+	distance_max = 2*scale_xyz;
 
-    if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
+
+    if ( distance_x > FT(options.at("square_x_extent")) && distance_x < FT(options.at("square_x_extent")) + distance_max )  {
+		distance = distance_x - FT(options.at("square_x_extent"));
+		out_ref = fine_size + (coarse_size - fine_size)*(distance/distance_max);
+		out_refine.pushback(out_ref);
+	}
+
+	if ( distance_y > FT(options.at("square_y_extent")) && distance_y < FT(options.at("square_y_extent")) + distance_max )  {
+		distance = distance_y - FT(options.at("square_y_extent"));
+		out_ref = fine_size + (coarse_size - fine_size)*(distance/distance_max);
+		out_refine.pushback(out_ref);
+	}
+
+	if ( distance_z > FT(options.at("square_z_extent")) && distance_x < FT(options.at("square_z_extent")) + distance_max )  {
+		distance = distance_x - FT(options.at("square_z_extent"));
+		out_ref = fine_size + (coarse_size - fine_size)*(distance/distance_max);
+		out_refine.pushback(out_ref);
+	}
+
+	for (int i; int < out_refine.size(); i++){
+	
+		sum = sum + out_refine(i);
+	}
+
+	out = sum/out_refine.size();
+
+	
+	else if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
 
       out = options.at("square_cell_size");
     }
+	
+	else {
+		out = coarse_size;
+	}
 
-    else {
-      out = coarse_size;
-    }
-
+ 
   }
 
   else if (options.at("planar_refinement"))   {
