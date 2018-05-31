@@ -155,7 +155,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
 	if ( distance_z - FT(options.at("square_z_extent")) <  distance_max )  {
 		distance = distance_z - FT(options.at("square_z_extent"));
-		out_ref = fine_size + (coarse_size - fine_size)*(distance/distance_max);
+		out_ref = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance/distance_max);
 		out_refine.push_back(out_ref);
 		out = out_ref;
 	}
@@ -173,7 +173,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 	//}
 
 	
-	if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
+	else if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
 
       out = options.at("square_cell_size");
     }
