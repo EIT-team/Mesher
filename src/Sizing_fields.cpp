@@ -92,7 +92,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
 
 
-  double distance, distance_x, distance_y, distance_z, distance_max, distance_ref, distance_x2, distance_y2, distance_z2;
+  double distance, distance_x, distance_y, distance_z, distance_max, distance_ref_x, distance_ref_y, distance_ref_z, distance_x2, distance_y2, distance_z2;
   // Do some additional refienments if turned on in parameter file
   // Need to use MAP.at("x") rather than MAP["x"] to be const safe
 
@@ -135,77 +135,82 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 	distance_y = CGAL::abs(p.y()- square_centre.y());
 	distance_z = CGAL::abs(p.z()- square_centre.z());
 
-	distance = double(options.at("square_x_extent"));
-	distance_ref = double(options.at("square_x_extent"))*2;
+	distance_ref_x = double(options.at("square_x_extent"))*1.5; 
+	distance_ref_y = double(options.at("square_y_extent"))*1.5; 
+	distance_ref_z = double(options.at("square_z_extent"))*1.5; 
+	//distance = double(options.at("square_x_extent"));
+	distance = double(options.at("square_x_extent"))*1.5 - double(options.at("square_x_extent"));
+
+	//distance_ref = double(options.at("square_x_extent"))*2;
 	
-   	 if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_x_extent")) && distance_z < FT(options.at("square_x_extent"))) {
+   	 if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
 
       		out = options.at("square_cell_size");
 
 			}
 
-	else if ( distance_x > FT(options.at("square_x_extent")) && distance_x < distance_ref && distance_y > FT(options.at("square_x_extent")) && distance_y < distance_ref && distance_z > FT(options.at("square_x_extent")) && distance_z < distance_ref)
+	else if ( distance_x > FT(options.at("square_x_extent")) && distance_x < distance_ref_x && distance_y > FT(options.at("square_y_extent")) && distance_y < distance_ref_y && distance_z > FT(options.at("square_z_extent")) && distance_z < distance_ref_z)
 	{
-		distance_x2 = distance_x - distance;
-		distance_y2 = distance_y - distance;
-		distance_z2 = distance_z - distance;
+		distance_x2 = distance_x - double(options.at("square_x_extent"));
+		distance_y2 = distance_y - double(options.at("square_y_extent"));
+		distance_z2 = distance_z - double(options.at("square_z_extent"));
 
-		out_x = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_x2/distance_ref); 
-		out_y = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_y2/distance_ref); 
-		out_z = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_z2/distance_ref); 
+		out_x = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_x2/distance); 
+		out_y = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_y2/distance); 
+		out_z = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_z2/distance); 
 
-		out = (out_x+ out_y + out_z)/3;
+		out = (out_x + out_y + out_z)/3;
 		}
 		
 		
-	else if (distance_x > FT(options.at("square_x_extent")) && distance_x < distance_ref && distance_y < FT(options.at("square_x_extent")) && distance_z < FT(options.at("square_x_extent")) ) {
-			distance_x2 = distance_x - distance;
-			out = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_x2/distance_ref); 
+	else if (distance_x > FT(options.at("square_x_extent")) && distance_x < distance_ref_x && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent")) ) {
+			distance_x2 = distance_x - double(options.at("square_x_extent"));
+			out = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_x2/distance); 
 		
 	}
 		
 
-	else if (distance_y > FT(options.at("square_x_extent")) && distance_y < distance_ref && distance_x < FT(options.at("square_x_extent")) && distance_z < FT(options.at("square_x_extent")) ) {
-			distance_y2 = distance_y - distance;
-			out = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_y2/distance_ref); 
+	else if (distance_y > FT(options.at("square_y_extent")) && distance_y < distance_ref_y && distance_x < FT(options.at("square_x_extent")) && distance_z < FT(options.at("square_z_extent")) ) {
+			distance_y2 = distance_y - double(options.at("square_y_extent"));
+			out = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_y2/distance); 
 		
 	}
 
-	else if (distance_z > FT(options.at("square_x_extent")) && distance_z < distance_ref && distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_x_extent")) ) {
-			distance_z2 = distance_z - distance;
-			out = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_z2/distance_ref); 
+	else if (distance_z > FT(options.at("square_z_extent")) && distance_z < distance_ref_z && distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) ) {
+			distance_z2 = distance_z - double(options.at("square_z_extent"));
+			out = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_z2/distance); 
 		
 	}
 
-	else if ( distance_x > FT(options.at("square_x_extent")) && distance_x < distance_ref && distance_y > FT(options.at("square_x_extent")) && distance_y < distance_ref && distance_z < FT(options.at("square_x_extent")) )
+	else if ( distance_x > FT(options.at("square_x_extent")) && distance_x < distance_ref_x && distance_y > FT(options.at("square_y_extent")) && distance_y < distance_ref_y && distance_z < FT(options.at("square_z_extent")) )
 	{
-		distance_x2 = distance_x - distance;
-		distance_y2 = distance_y - distance;
+		distance_x2 = distance_x - double(options.at("square_x_extent"));
+		distance_y2 = distance_y - double(options.at("square_y_extent"));
 		
-		out_x = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_x2/distance_ref); 
-		out_y = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_y2/distance_ref); 
+		out_x = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_x2/distance); 
+		out_y = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_y2/distance); 
 		
-		out = (out_x+ out_y)/2;
+		out = (out_x + out_y)/2;
 		}
 
-			else if ( distance_x > FT(options.at("square_x_extent")) && distance_x < distance_ref && distance_z > FT(options.at("square_x_extent")) && distance_z <distance_ref && distance_y < FT(options.at("square_x_extent")) )
+			else if ( distance_x > FT(options.at("square_x_extent")) && distance_x < distance_ref_x && distance_z > FT(options.at("square_z_extent")) && distance_z <distance_ref_z && distance_y < FT(options.at("square_y_extent")) )
 	{
-		distance_x2 = distance_x - distance;
-		distance_z2 = distance_z - distance;
+		distance_x2 = distance_x - double(options.at("square_x_extent"));
+		distance_z2 = distance_z - double(options.at("square_z_extent"));
 		
-		out_x = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_x2/distance_ref); 
-		out_z = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_z2/distance_ref); 
+		out_x = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_x2/distance); 
+		out_z = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_z2/distance); 
 		
-		out = (out_x+ out_z)/2;
+		out = (out_x + out_z)/2;
 		}
 
-	else if ( distance_y > FT(options.at("square_x_extent")) && distance_y < distance_ref && distance_z > FT(options.at("square_x_extent")) && distance_z < distance_ref && distance_x < FT(options.at("square_x_extent")) )
+	else if ( distance_y > FT(options.at("square_y_extent")) && distance_y < distance_ref_y && distance_z > FT(options.at("square_z_extent")) && distance_z < distance_ref_z && distance_x < FT(options.at("square_x_extent")) )
 	{
-		distance_y2 = distance_y - distance;
-		distance_z2 = distance_z - distance;
+		distance_y2 = distance_y - double(options.at("square_y_extent"));
+		distance_z2 = distance_z - double(options.at("square_z_extent"));
 		
-		out_y = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_y2/distance_ref); 
-		out_z = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_z2/distance_ref); 
+		out_y = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_y2/distance); 
+		out_z = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_z2/distance); 
 		
 		out = (out_y + out_z)/2;
 		}
@@ -271,7 +276,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
   }
 
    
-   //double distance_ref;
+   double distance_ref;
    FT out_ref;
    FT out_min;
    std::vector<FT> out_options;
@@ -281,7 +286,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
   {
     Vector pp=(p-*it);
 	distance_ref = CGAL::sqrt( pp.squared_length() )-e_R;
-	distance_max = 2*e_R;
+	distance_max = 6*e_R;
 
 		if ( distance_ref <= distance_max)
 			{
