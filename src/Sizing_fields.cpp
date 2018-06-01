@@ -92,7 +92,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
 
 
-  double distance, distance_x, distance_y, distance_z, distance_max;
+  double distance, distance_x, distance_y, distance_z, distance_max, distance_ref, distance_x2, distance_y2, distance_z2;
   // Do some additional refienments if turned on in parameter file
   // Need to use MAP.at("x") rather than MAP["x"] to be const safe
 
@@ -124,7 +124,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
   std::vector<FT> out_refine;
   std::vector<FT>::iterator ind;
   FT sum = 0;
-  FT out_ref;
+  FT out_ref, out_x, out_y, out_z;
     // Refine a sphere around a specificed point.
 
     Point square_centre(  options.at("square_centre_x"),
@@ -134,57 +134,88 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
     distance_x = CGAL::abs(p.x()- square_centre.x());
 	distance_y = CGAL::abs(p.y()- square_centre.y());
 	distance_z = CGAL::abs(p.z()- square_centre.z());
-	//distance = CGAL::sqrt( CGAL::squared_distance(p, square_centre) );
-	//distance_max = 8*scale_xyz;
-	distance_max = options.at("square_x_extent")*4;
 
+	distance = double(options.at("square_x_extent"));
+	distance_ref = double(options.at("square_x_extent"))*2;
+	
+   	 if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_x_extent")) && distance_z < FT(options.at("square_x_extent"))) {
 
-    //if ( distance_x >= FT(options.at("square_x_extent")) && distance_x < (FT(options.at("square_x_extent")) + distance_max) )  {
-		//distance = distance_x - FT(options.at("square_x_extent"));
-		//out_ref = fine_size + (coarse_size - fine_size)*(distance/distance_max);
-		//out_refine.push_back(out_ref);
-		//out = out_ref;
-	//}
+      		out = options.at("square_cell_size");
 
-	//if ( distance_y >= FT(options.at("square_y_extent")) && distance_y < (FT(options.at("square_y_extent")) + distance_max) )  {
-		//distance = distance_y - FT(options.at("square_y_extent"));
-		//out_ref = fine_size + (coarse_size - fine_size)*(distance/distance_max);
-		//out_refine.push_back(out_ref);
-		//out = out_ref
-	//}
+			}
 
-	if ( distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent"))) {
+	else if ( distance_x > FT(options.at("square_x_extent")) && distance_x < distance_ref && distance_y > FT(options.at("square_x_extent")) && distance_y < distance_ref && distance_z > FT(options.at("square_x_extent")) && distance_z < distance_ref)
+	{
+		distance_x2 = distance_x - distance;
+		distance_y2 = distance_y - distance;
+		distance_z2 = distance_z - distance;
 
-      out = options.at("square_cell_size");
-    }
+		out_x = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_x2/distance_ref); 
+		out_y = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_y2/distance_ref); 
+		out_z = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_z2/distance_ref); 
 
-	else if ( distance_z > FT(options.at("square_z_extent"))  {
-		distance = distance_z - FT(options.at("square_z_extent"));
-		out_ref = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance/distance_max);
-		//out_refine.push_back(out_ref);
-		out = out_ref;
+		out = (out_x+ out_y + out_z)/3;
+		}
+		
+		
+	else if (distance_x > FT(options.at("square_x_extent")) && distance_x < distance_ref && distance_y < FT(options.at("square_x_extent")) && distance_z < FT(options.at("square_x_extent")) ) {
+			distance_x2 = distance_x - distance;
+			out = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_x2/distance_ref); 
+		
+	}
+		
+
+	else if (distance_y > FT(options.at("square_x_extent")) && distance_y < distance_ref && distance_x < FT(options.at("square_x_extent")) && distance_z < FT(options.at("square_x_extent")) ) {
+			distance_y2 = distance_y - distance;
+			out = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_y2/distance_ref); 
+		
 	}
 
-	//if (out_refine.size() >= 1) {
-	//out = *std::min_element(out_refine.begin(), out_refine.end());
-	//}
-	//if (out_refine.size() >= 1) {
-		//for (ind=out_refine.begin(); ind<out_refine.end(); ind++) 
-		//{
-				//sum = sum + (*ind);
-		//}
+	else if (distance_z > FT(options.at("square_x_extent")) && distance_z < distance_ref && distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_x_extent")) ) {
+			distance_z2 = distance_z - distance;
+			out = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_z2/distance_ref); 
+		
+	}
 
-	//out = sum/out_refine.size();
-	//}
+	else if ( distance_x > FT(options.at("square_x_extent")) && distance_x < distance_ref && distance_y > FT(options.at("square_x_extent")) && distance_y < distance_ref && distance_z < FT(options.at("square_x_extent")) )
+	{
+		distance_x2 = distance_x - distance;
+		distance_y2 = distance_y - distance;
+		
+		out_x = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_x2/distance_ref); 
+		out_y = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_y2/distance_ref); 
+		
+		out = (out_x+ out_y)/2;
+		}
 
-	
+			else if ( distance_x > FT(options.at("square_x_extent")) && distance_x < distance_ref && distance_z > FT(options.at("square_x_extent")) && distance_z <distance_ref && distance_y < FT(options.at("square_x_extent")) )
+	{
+		distance_x2 = distance_x - distance;
+		distance_z2 = distance_z - distance;
+		
+		out_x = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_x2/distance_ref); 
+		out_z = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_z2/distance_ref); 
+		
+		out = (out_x+ out_z)/2;
+		}
 
-	
+	else if ( distance_y > FT(options.at("square_x_extent")) && distance_y < distance_ref && distance_z > FT(options.at("square_x_extent")) && distance_z < distance_ref && distance_x < FT(options.at("square_x_extent")) )
+	{
+		distance_y2 = distance_y - distance;
+		distance_z2 = distance_z - distance;
+		
+		out_y = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_y2/distance_ref); 
+		out_z = options.at("square_cell_size") + (coarse_size - options.at("square_cell_size"))*(distance_z2/distance_ref); 
+		
+		out = (out_y + out_z)/2;
+		}
+
+
+
 	else {
 		out = coarse_size;
 	}
 
- 
   }
 
   else if (options.at("planar_refinement"))   {
@@ -240,7 +271,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
   }
 
    
-   double distance_ref;
+   //double distance_ref;
    FT out_ref;
    FT out_min;
    std::vector<FT> out_options;
