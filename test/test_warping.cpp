@@ -108,7 +108,7 @@ TEST_CASE("Neighbouring elements to last corner") {
 }
 
 
-TEST_CASE("Neighboruing elements to centre") {
+TEST_CASE("Neighbouring elements to centre") {
 
   Deform_Volume warper;
   int dims = 5;
@@ -159,7 +159,7 @@ TEST_CASE ("Dilation") {
 
     SECTION ("Dilate central elment") {
 
-      // Set centrla elemnt to 1
+      // Set central element to 1
       test_input[central_element] = layer_1;
 
       warper.dilate_layer(1, 1);
@@ -190,7 +190,7 @@ TEST_CASE ("Dilation") {
     SECTION ("Dilate by 2 pixels") {
       test_input[central_element] = layer_1;
 
-      // This should set all elments to 1
+      // This should set all elements to 1
       warper.dilate_layer(1, 2);
 
       // Check all elements are 1
@@ -204,7 +204,7 @@ TEST_CASE ("Dilation") {
 
 TEST_CASE ("Defined deformations of unit cube") {
   /* Do some defined (as opposed to random) deformations on a unit cube
-   and check the reslting mesh is as expected */
+   and check the resulting mesh is as expected */
 
   // Unit cube (dimensions 1 x 1 x 1) centred around 0.5,0.5,0.5
 
@@ -248,7 +248,7 @@ TEST_CASE ("Defined deformations of unit cube") {
         cout << "Creating mesh" << endl;
 
         Mesh_domain domain(image);
-        //  TODO: Pick some objective values for facet_size etc. Just geussing at the moment
+        //  TODO: Pick some objective values for facet_size etc. Just guessing at the moment
         Mesh_criteria criteria(facet_angle=30, facet_size=0.03, facet_distance=1, cell_radius_edge_ratio=3, cell_size=0.03);
 
         C3t3_EIT c3t3;
@@ -280,7 +280,7 @@ TEST_CASE ("Defined deformations of unit cube") {
       cout << "Creating mesh" << endl;
 
       Mesh_domain domain(image);
-      //TODO: Pick some objective values for facet_size etc. Just geussing at the moment
+      //TODO: Pick some objective values for facet_size etc. Just guessing at the moment
       Mesh_criteria criteria(facet_angle=30, facet_size=0.03, facet_distance=1, cell_radius_edge_ratio=3, cell_size=0.03);
 
       C3t3_EIT c3t3;
@@ -311,7 +311,7 @@ TEST_CASE ("Defined deformations of unit cube") {
       cout << "Creating mesh" << endl;
 
       Mesh_domain domain(image);
-      //TODO: Pick some objective values for facet_size etc. Just geussing at the moment
+      //TODO: Pick some objective values for facet_size etc. Just guessing at the moment
       Mesh_criteria criteria(facet_angle=30, facet_size=0.03, facet_distance=1, cell_radius_edge_ratio=3, cell_size=0.03);
 
       C3t3_EIT c3t3;

@@ -29,15 +29,15 @@ int main(int argc, char* argv[])
 {
 
   //TODO: If the inr file has units of mm, the output mesh will also be in mme.
-  //Forward solever wants metres, so need to convert. Doing this expilcity at the moment with
+  //Forward solever wants metres, so need to convert. Doing this explicitlty at the moment with
   // MM_TO_M, but is there a nicer way
 
   int opt;
   //TODO: can these all be strings? Think chars are used as file handles later
-  // Input file locations (required as arugments)
+  // Input file locations (required as arguments)
   char *path_image, *path_electrode, *path_parameter;
   bool image_path_set = false, elec_path_set = false, param_path_set = false;
-  // Default values, can be changed with command line arugments
+  // Default values, can be changed with command line arguments
   string output_dir = "./output/";
   string input_mesh_name = "new_mesh";
 
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
   // Read input file with parameters
   std::map<std::string, FT> options =  load_file_idx(path_parameter);
 
-  // Sset some additional parameters if deforming the mesh
+  // Set some additional parameters if deforming the mesh
   //  if (options["do_deformation"]) {
 
   //int n_deformations = options["num_deformations"];
@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
   // Set to default value
   output_mesh_name = input_mesh_name;
 
-  // Do the strech in input file
+  // Do the stretch in input file
   if (options["do_deformation"]) {
 
     cout << "Deforming mesh." << endl;
@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
 
 
 
-  // Generate reference electrode location and append to elecrtode list
+  // Generate reference electrode location and append to electrode list
   cout << endl;
   Point reference_electrode = c3t3.set_reference_electrode();
   sizing_field.centres.push_back(reference_electrode);
