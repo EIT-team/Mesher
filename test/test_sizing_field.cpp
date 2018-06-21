@@ -45,7 +45,7 @@ TEST_CASE ("Sizing Fields on Unit Cube") {
 
       Sizing_field sizing_field (origin,path_electrode,options);
 
-      cout << "Creating mesh with sperical refinement" << endl;
+      cout << "Creating mesh with spherical refinement" << endl;
 
       Mesh_domain domain(image);
       Mesh_criteria criteria( facet_angle=options["facet_angle_deg"],

@@ -68,7 +68,7 @@ TEST_CASE("Stretchingtest_stretching") {
 
     // Use some stretch parameters that are out of bounds/result in no stretching
 
-    // Don't want to do a strech
+    // Don't want to do a stretch
     Stretch_Info dont_stretch(-1,distance, anchor, dims);
     REQUIRE( dont_stretch.check_valid_points() == false);
     REQUIRE( dont_stretch.active == false);
@@ -76,7 +76,7 @@ TEST_CASE("Stretchingtest_stretching") {
     REQUIRE (dont_stretch.end_iterate == dims);
     REQUIRE( dont_stretch.stretch_description() == "0.0.0");
 
-    //New point just outisde bounds on right
+    //New point just outside bounds on right
     Stretch_Info stretch_too_big_pos(0, 1, anchor, dims);
     REQUIRE( stretch_too_big_pos.check_valid_points() == false);
     REQUIRE( stretch_too_big_pos.active == false);
