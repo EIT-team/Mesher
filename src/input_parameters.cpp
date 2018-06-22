@@ -64,7 +64,7 @@ std::map<std::string, FT> load_file_idx(char* file_name_input)
 
 vector< vector<double> > load_deformations(const char* file_name_input) {
 
-  /* Read in a series of deformation parmaters from a file
+  /* Read in a series of deformation paramters from a file
   Each line of the file should contain 3 doubles (x/y/z deformation in mm)
   */
 

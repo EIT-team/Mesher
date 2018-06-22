@@ -5,7 +5,7 @@ using namespace std;
 
 Stretch_Info::Stretch_Info(int point, int dist, int anch, int dim) {
 
-//TODO: tidy this up, shouldn't need to reallcoate straight away
+//TODO: tidy this up, shouldn't need to reallocate straight away
 point_to_move = point;
 distance = dist;
 anchor = anch;
@@ -54,7 +54,7 @@ bool Stretch_Info::check_valid_points() {
     return false;
   }
 
-  //The new move point will end up outisde the bounds of array
+  //The new move point will end up outside the bounds of array
   if ( ( point_to_move > anchor ) && (point_to_move + distance) > dims) {
     cout << "New points will be outside bounds of array (too big), setting to 0." << endl;
     return false;
@@ -62,7 +62,7 @@ bool Stretch_Info::check_valid_points() {
 
   // Remaingin case,  point to move must be < anchor
   if ( ( point_to_move - distance) < 0 ) {
-    cout << "New points will be outisde bounds of array (too small), setting to 0." << endl;
+    cout << "New points will be outside bounds of array (too small), setting to 0." << endl;
     return false;
   }
 

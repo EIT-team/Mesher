@@ -28,7 +28,7 @@ long Deform_Volume::get_array_index(int x, int y, int z) {
   /* Image data is represented (to humans) as 3D voxel data e.g. array[x][y][z]. To CGAL,
   it is just a one dimensional array which contains all of the voxels.
 
-  Return the one dimensinoal array location corresponding to a
+  Return the one dimensional array location corresponding to a
   particular voxel in the image.
   */
 
@@ -96,7 +96,7 @@ void Deform_Volume::dilate_layer(int layer_index, int n_pixels) {
 }
 
 vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
-  /* Calculate the indexes of elements neighbouring a partiuclar voxel in 3D array
+  /* Calculate the indexes of elements neighbouring a particular voxel in 3D array
   */
 
   int x,y,z; //Indexes of voxel
@@ -155,7 +155,7 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     A positive/negative value stretches to the right/left respectively.
     */
     int n_dims = distance_mm.size();
-    // Check inputs, should be 3 elments, one for each dimension
+    // Check inputs, should be 3 elements, one for each dimension
     if (n_dims != 3) {
 
       cout << "Invalid number of values passed, should be 3, one for each dimension" << endl;
@@ -170,11 +170,11 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     double xdist = distance_mm[0];
 
     if (xdist> 0) point = xmax; //stretch right
-    else if (xdist < 0) point = xmin; //stretcg left
+    else if (xdist < 0) point = xmin; //stretch left
     else point = -1; //Do nothing
 
     anchor = xmid;
-    // Covert distance in mm to number of voxels, basxed on the distance for each voxel.
+    // Covert distance in mm to number of voxels, based on the distance for each voxel.
     voxel_distance = round (abs( xdist / vx));
 
     stretch.push_back(point);
@@ -185,7 +185,7 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     double ydist = distance_mm[1];
 
     if (ydist> 0) point = ymax; //stretch right
-    else if (ydist < 0) point = ymin; //stretcg left
+    else if (ydist < 0) point = ymin; //stretch left
     else point = -1; //Do nothing
 
     anchor = ymid;
@@ -199,7 +199,7 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     double zdist = distance_mm[2];
 
     if (zdist> 0) point = zmax; //stretch right
-    else if (zdist < 0) point = zmin; //stretcg left
+    else if (zdist < 0) point = zmin; //stretch left
     else point = -1; //Do nothing
 
     anchor = zmid;
@@ -217,7 +217,7 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
   void Deform_Volume::stretch_array(vector<int> stretch) {
     /* Stretch the image
-    vector<int> stretch: 9 element vector (3 for x, 3 for y, 3 for z) that gives the paremetners
+    vector<int> stretch: 9 element vector (3 for x, 3 for y, 3 for z) that gives the parameters
     of the stretch to be performed. For each dimension:
       1st element - point at which stretch starts
       2nd element - distance this point will be moved
@@ -290,7 +290,7 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
   }
 
   void Deform_Volume::modify_image() {
-    //TODO: Don;t use hard coded values for probabilities of operations below
+    //TODO: Don't use hard coded values for probabilities of operations below
     std::cout << std::endl << "MODIFYING IMAGE DATA" << endl;
 
     string stretch_info = "";
@@ -300,7 +300,7 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
     // Do at least one deformation
     random_stretch();
 
-    // 50% chance of cotinuing
+    // 50% chance of continuing
      while (rand() % 2); {
 
       //50% chance of stretch
@@ -420,7 +420,7 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
   void Deform_Volume::get_layers() {
     // Placeholder for function to loop through array and return a vector of all the unique values
-    // TODO: implment properly
+    // TODO: implement properly
 
     for (int i = 1; i <= 7; i++) {
       layers.push_back(i);
@@ -431,7 +431,7 @@ vector<long> Deform_Volume::neighbouring_elements (long voxel_index) {
 
   void Deform_Volume::find_mesh_bounds() {
     // Find the first/last non 0 element along each dimensional
-    // by looping over all elments
+    // by looping over all elements
 
     // reset bounds
     xmax = INT_MIN, ymax = INT_MIN, zmax = INT_MIN;
