@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
       {
         cout << "time limit reached"; 
       }
-      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::ALL_VERTICES_FROZEN) || (opt_code == CGAL::CONVERGENCE_REACHED) )
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED) )
       {
         cout << "done, cannot improve anymore"; 
       }
@@ -212,7 +212,7 @@ int main(int argc, char* argv[])
       {
         cout << "time limit reached"; 
       }
-      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::ALL_VERTICES_FROZEN) || (opt_code == CGAL::CONVERGENCE_REACHED) )
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED) )
       {
         cout << "done, cannot improve anymore"; 
       }
@@ -232,7 +232,7 @@ int main(int argc, char* argv[])
       {
         cout << "time limit reached"; 
       }
-      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::ALL_VERTICES_FROZEN) || (opt_code == CGAL::CONVERGENCE_REACHED) )
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED) )
       {
         cout << "done, cannot improve anymore"; 
       }
@@ -253,7 +253,7 @@ int main(int argc, char* argv[])
       {
         cout << "time limit reached"; 
       }
-      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::ALL_VERTICES_FROZEN) || (opt_code == CGAL::CONVERGENCE_REACHED) )
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED) )
       {
         cout << "done, cannot improve anymore"; 
       }
