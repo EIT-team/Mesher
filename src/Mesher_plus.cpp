@@ -143,8 +143,7 @@ int main(int argc, char* argv[])
     cout << "New mesh name: " << output_mesh_name << endl;
   }
 
-  cout<< endl << "Creating initial mesh..." << flush; // moved this here as it wasn't appearing until after the mesh was done 
-
+  
 
   Mesh_domain domain(image);
 
@@ -163,6 +162,8 @@ int main(int argc, char* argv[])
 
   // Meshing
 
+  cout<< endl << "Creating initial mesh..." << flush; 
+
   C3t3_EIT c3t3;
 
   c3t3= CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
@@ -180,26 +181,88 @@ int main(int argc, char* argv[])
 
   if ((int(options["odt_opt"]) == 1) || (int(options["lloyd_opt"]) == 1) || (int(options["perturb_opt"]) == 1) || (int(options["exude_opt"]) == 1))
   {
-	  std::cout << endl << "Optimising Mesh" << endl; 
+	  
+    CGAL::Mesh_optimization_return_code opt_code;
+    cout << endl << "Optimising Mesh" << endl; 
 	  if (int(options["odt_opt"]) == 1) {
-		  std::cout << "ODT... \n";
-		  CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
+		  std::cout << "ODT... " << flush;
+		  opt_code = CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
+
+      if (opt_code == CGAL::TIME_LIMIT_REACHED)
+      {
+        cout << "time limit reached"; 
+      }
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::ALL_VERTICES_FROZEN) || (opt_code == CGAL::CONVERGENCE_REACHED) )
+      {
+        cout << "done, cannot improve anymore"; 
+      }
+      else
+      {
+        cout << "done";
+      }
+
+      cout << endl ; 
 	  }
 
 	  if (int(options["lloyd_opt"]) == 1) {
-		  std::cout << "Lloyd... \n";
-		  CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
+		  cout << "Lloyd... " << flush;
+		  opt_code = CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
+
+     if (opt_code == CGAL::TIME_LIMIT_REACHED)
+      {
+        cout << "time limit reached"; 
+      }
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::ALL_VERTICES_FROZEN) || (opt_code == CGAL::CONVERGENCE_REACHED) )
+      {
+        cout << "done, cannot improve anymore"; 
+      }
+      else
+      {
+        cout << "done";
+      }
+
+      cout << endl ; 
 	  }
 
 	  if (int(options["perturb_opt"]) == 1) {
-		  std::cout << "Perturb... \n";
-		  CGAL::perturb_mesh_3(c3t3, domain, sliver_bound = 10, time_limit = options["time_limit_sec"]);
+		  cout << "Perturb... " << flush;
+		  opt_code = CGAL::perturb_mesh_3(c3t3, domain, sliver_bound = 10, time_limit = options["time_limit_sec"]);
+
+      if (opt_code == CGAL::TIME_LIMIT_REACHED)
+      {
+        cout << "time limit reached"; 
+      }
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::ALL_VERTICES_FROZEN) || (opt_code == CGAL::CONVERGENCE_REACHED) )
+      {
+        cout << "done, cannot improve anymore"; 
+      }
+      else
+      {
+        cout << "done";
+      }
+
+      cout << endl ; 
 	  }
 
 
 	  if (int(options["exude_opt"]) == 1) {
-		  std::cout << "Exude... \n";
-		  CGAL::exude_mesh_3(c3t3, sliver_bound = 10, time_limit = options["time_limit_sec"]);
+		  cout << "Exude... " << flush;
+		  opt_code = CGAL::exude_mesh_3(c3t3, sliver_bound = 10, time_limit = options["time_limit_sec"]);
+
+      if (opt_code == CGAL::TIME_LIMIT_REACHED)
+      {
+        cout << "time limit reached"; 
+      }
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::ALL_VERTICES_FROZEN) || (opt_code == CGAL::CONVERGENCE_REACHED) )
+      {
+        cout << "done, cannot improve anymore"; 
+      }
+      else
+      {
+        cout << "done";
+      }
+
+      cout << endl ; 
 	  }
 
 	  // check mesh quality again to show improvement
