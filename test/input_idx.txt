@@ -24,7 +24,7 @@ facet_angle_deg = 30
 facet_distance_mm = 0.05
 cell_radius_edge_ratio = 3
 cell_fine_size_mm = 0.02
-cell_coarse_size_mm = 05
+cell_coarse_size_mm = 0.05
 electrode_radius_mm = 0.15
 cell_size_electrodes_mm = 0.02
 
