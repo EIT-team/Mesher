@@ -44,6 +44,9 @@ int main(int argc, char* argv[])
   //Used if deforming mesh, to modify the output name
   string  output_mesh_name, output_base_file;
 
+  // store mesh quality metrics
+  vector<double> mesh_quality_metrics(3);
+
   // Process input parameters
   while((opt = getopt(argc, argv, "i:e:p:o:d:"))!=-1)
   {
@@ -97,10 +100,10 @@ int main(int argc, char* argv[])
 
   // Loads image
   CGAL::Image_3 image;
-  std::cout<<"Reading the Image file... " << endl;
+  cout<<"Reading the Image file... " << endl;
 
   image.read(path_image);
-  cout << "Dimensions of image: " << image.xdim() << endl;
+  cout << "Dimensions of image: " << image.xdim() << " | " << image.ydim() << " | " << image.zdim() << endl;
 
   options["vx"] = image.vx();
   options["vy"] = image.vy();
@@ -129,7 +132,7 @@ int main(int argc, char* argv[])
 
     warper.defined_stretch(single_deformation);
 
-    //TODO: is thes needed? If so, make it more streamlined to do lost of deformations
+    //TODO: is this needed? If so, make it more streamlined to do lost of deformations
     // Also do some random deformation
     //warper.min_stretch = options["min_stretch_distance"];
     //warper.max_stretch = options["max_stretch_distance"];
@@ -139,6 +142,9 @@ int main(int argc, char* argv[])
     output_mesh_name = input_mesh_name + warper.deformation_info;
     cout << "New mesh name: " << output_mesh_name << endl;
   }
+
+  cout<< endl << "Creating initial mesh..." << flush; // moved this here as it wasn't appearing until after the mesh was done 
+
 
   Mesh_domain domain(image);
 
@@ -156,7 +162,7 @@ int main(int argc, char* argv[])
   cell_radius_edge_ratio=options["cell_radius_edge_ratio"], cell_size=sizing_field);
 
   // Meshing
-  std::cout<< endl << "Creating initial mesh...";
+
   C3t3_EIT c3t3;
 
   c3t3= CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
@@ -167,7 +173,7 @@ int main(int argc, char* argv[])
 
   cout << "number of tetra: " << c3t3.number_of_cells_in_complex() << endl;
 
-  check_mesh_quality(c3t3);
+  mesh_quality_metrics=check_mesh_quality(c3t3);
 
   //Optimisation - this is the preferred order to run the optimisations in
   //according to CGAL documentation.
@@ -197,7 +203,7 @@ int main(int argc, char* argv[])
 	  }
 
 	  // check mesh quality again to show improvement
-	  check_mesh_quality(c3t3);
+	  mesh_quality_metrics=check_mesh_quality(c3t3);
 	  cout << "Number of tetra after optimisation: " << c3t3.number_of_cells_in_complex() << endl;
 
   }
@@ -279,10 +285,11 @@ if (int(options["save_nodes_tetra"])==1) {
   string vtk_file_path = output_base_file + ".vtu";
 
   if (int(options["save_vtk"])==1) {
+    cout << "Writing vtu file" << vtk_file_path <<  endl;
     int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
   }
   // add this here again so its easier to see in terminal 
-  cout << "All done! Created mesh with " << c3t3.number_of_cells_in_complex() << " elements" << endl;
+  cout << "All done! Created mesh with " << c3t3.number_of_cells_in_complex() << " elements, and " << mesh_quality_metrics.at(2) << " average quality" << endl;
 
 
   return 0;
