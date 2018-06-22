@@ -62,7 +62,7 @@ Sizing_field::Sizing_field(Point& origin_in, string path_electrode, std::map<std
     while(!feof(F))
     {
       float x,y,z;
-      fscanf(F,"%f,%f,%f\n",&x,&y,&z);
+      int count = fscanf(F,"%f,%f,%f\n",&x,&y,&z);
       Point pt(x*scale_xyz,y*scale_xyz,z*scale_xyz);
       centres.push_back(pt);
     }

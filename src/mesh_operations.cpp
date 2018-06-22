@@ -219,7 +219,7 @@ vector<Point> load_electrode_locations(FILE *F, FT scale) {
         while(!feof(F))
         {
             float x,y,z;
-            fscanf(F,"%f,%f,%f\n",&x,&y,&z);
+            int count = fscanf(F,"%f,%f,%f\n",&x,&y,&z);
             Point pt(x*scale,y*scale,z*scale);
             electrode_locations.push_back(pt);
         }
