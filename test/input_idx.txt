@@ -21,12 +21,12 @@ refine_electrodes = 0
 pixel_scale_mm = 20
 
 facet_angle_deg = 30
-facet_distance_mm = 1
+facet_distance_mm = 0.05
 cell_radius_edge_ratio = 3
-cell_fine_size_mm = 0.4
-cell_coarse_size_mm = 1
-electrode_radius_mm = 3
-cell_size_electrodes_mm = 0.4
+cell_fine_size_mm = 0.02
+cell_coarse_size_mm = 05
+electrode_radius_mm = 0.15
+cell_size_electrodes_mm = 0.02
 
 # Optimisation (1 - yes, 0 - no)
 lloyd_opt = 0

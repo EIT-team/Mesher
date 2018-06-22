@@ -16,7 +16,7 @@ TEST_CASE ("2-Domain Unit Cube") {
 
 
     Mesh_domain domain(image);
-    //TODO: Pick some objective values for facet_size etc. Just geussing at the moment
+    //TODO: Pick some objective values for facet_size etc. Just guessing at the moment
     char *path_parameter = (char*)"./input_idx.txt";
     std::map<std::string, FT> options =  load_file_idx(path_parameter);
 
@@ -80,7 +80,7 @@ TEST_CASE ("Unit Cube") {
 
     check_mesh_quality(c3t3);
 
-    //TODO: Choose sensible amrgin
+    //TODO: Choose sensible margin
     double margin = 0.2; // Margin of error in results
 
 
