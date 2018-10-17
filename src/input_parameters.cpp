@@ -38,7 +38,7 @@ std::map<std::string, FT> load_file_idx(char* file_name_input)
   //Scale everything so that it is in mm
 
 //TODO: Set pixel scale automatically by reading the value from the inr file
-  FT unit = options["pixel_scale_mm"]; //Scaling units - mm per pixel
+  FT unit = options["pixel_scale_mm"]; //Scaling units - voxels per mm 
   //options["facet_distance_mm"]/=unit;
   // options["cell_fine_size_mm"]/=unit;
   // options["cell_coarse_size_mm"]/=unit;
