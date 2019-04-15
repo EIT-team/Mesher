@@ -59,7 +59,7 @@ Point C3t3_EIT::closest_element(Point target_p, int target_domain) {
                 }
             }
 
-            //Calcualte centre of the facet
+            //Calculate centre of the facet
             Point centre_of_facet = CGAL::centroid(facet_points[0], facet_points[1], facet_points[2]);
             //cout << "Centre: " << centre_of_facet <<endl;
 
@@ -86,7 +86,7 @@ Point C3t3_EIT::closest_element(Point target_p, int target_domain) {
 
 int C3t3_EIT::get_outer_layer_domain() {
     /* Return the domain of the outermost layer in the mesh by looking for the
-    element with the largest x corodinate */
+    element with the largest x coordinate */
 
     double max_x = -DBL_MAX;
     int outer_domain;
@@ -122,7 +122,7 @@ int C3t3_EIT::get_outer_layer_domain() {
 
 Point C3t3_EIT::set_reference_electrode()
 {
-    // Add a sufficently large vector to the centre of the mesh,
+    // Add a sufficiently large vector to the centre of the mesh,
     // should result in a point outside of the mesh.
     // This particular vector should come out of the front of the forehead
     // for human head
@@ -134,7 +134,7 @@ Point C3t3_EIT::set_reference_electrode()
     Vector far_away(0,-150,50); 	//Extend from centre of forehead
 
     // Only want to use facets that are in the outermost layer i.e. the skin
-    //TODO: Don't hardcode tihs value?
+    //TODO: Don't hardcode this value?
     int skin_tissue_index = get_outer_layer_domain();
     cout << "Domain of outer layer is " << skin_tissue_index << endl;
     Point outside_mesh = centre_of_mesh() + far_away;
@@ -166,7 +166,7 @@ Point C3t3_EIT::set_ground_electrode()
         current_vertex = vit->point();
         current_y = CGAL::to_double(current_vertex.y());
 
-        // Check if current value is the largest and updtate if so
+        // Check if current value is the largest and update if so
         if (current_y > furthest) {
             furthest = current_y;
             gnd_electrode = current_vertex;
@@ -196,7 +196,7 @@ void C3t3_EIT::find_mesh_bounds() {
         y = CGAL::to_double(current_vertex.y());
         z = CGAL::to_double(current_vertex.z());
 
-        // Check if current value is the bigger/smaller than current and updtate if so
+        // Check if current value is the bigger/smaller than current and update if so
         if (x > x_max) x_max = x;
         if (x < x_min) x_min = x;
         if (y > y_max) y_max = y;
@@ -219,7 +219,7 @@ vector<Point> load_electrode_locations(FILE *F, FT scale) {
         while(!feof(F))
         {
             float x,y,z;
-            fscanf(F,"%f,%f,%f\n",&x,&y,&z);
+            int count = fscanf(F,"%f,%f,%f\n",&x,&y,&z);
             Point pt(x*scale,y*scale,z*scale);
             electrode_locations.push_back(pt);
         }
@@ -285,7 +285,7 @@ double tetra_squared_edge_length(vector<Point> vertices) {
 
 
 double tetra_quality(vector<Point> vertices) {
-/* Calculate the Joe-Liu quality of a tertrahedral element */
+/* Calculate the Joe-Liu quality of a tetrahedral element */
 
   double volume, edge_length, quality;
 

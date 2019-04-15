@@ -44,6 +44,9 @@ int main(int argc, char* argv[])
   //Used if deforming mesh, to modify the output name
   string  output_mesh_name, output_base_file;
 
+  // store mesh quality metrics
+  vector<double> mesh_quality_metrics(3);
+
   // Process input parameters
   while((opt = getopt(argc, argv, "i:e:p:o:d:"))!=-1)
   {
@@ -97,10 +100,10 @@ int main(int argc, char* argv[])
 
   // Loads image
   CGAL::Image_3 image;
-  std::cout<<"Reading the Image file... " << endl;
+  cout<<"Reading the Image file... " << endl;
 
   image.read(path_image);
-  cout << "Dimensions of image: " << image.xdim() << endl;
+  cout << "Dimensions of image: " << image.xdim() << " | " << image.ydim() << " | " << image.zdim() << endl;
 
   options["vx"] = image.vx();
   options["vy"] = image.vy();
@@ -129,7 +132,7 @@ int main(int argc, char* argv[])
 
     warper.defined_stretch(single_deformation);
 
-    //TODO: is thes needed? If so, make it more streamlined to do lost of deformations
+    //TODO: is this needed? If so, make it more streamlined to do lost of deformations
     // Also do some random deformation
     //warper.min_stretch = options["min_stretch_distance"];
     //warper.max_stretch = options["max_stretch_distance"];
@@ -139,6 +142,8 @@ int main(int argc, char* argv[])
     output_mesh_name = input_mesh_name + warper.deformation_info;
     cout << "New mesh name: " << output_mesh_name << endl;
   }
+
+  
 
   Mesh_domain domain(image);
 
@@ -156,7 +161,9 @@ int main(int argc, char* argv[])
   cell_radius_edge_ratio=options["cell_radius_edge_ratio"], cell_size=sizing_field);
 
   // Meshing
-  std::cout<< endl << "Creating initial mesh...";
+
+  cout<< endl << "Creating initial mesh..." << flush; 
+
   C3t3_EIT c3t3;
 
   c3t3= CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
@@ -167,37 +174,99 @@ int main(int argc, char* argv[])
 
   cout << "number of tetra: " << c3t3.number_of_cells_in_complex() << endl;
 
-  check_mesh_quality(c3t3);
+  mesh_quality_metrics=check_mesh_quality(c3t3);
 
   //Optimisation - this is the preferred order to run the optimisations in
   //according to CGAL documentation.
 
   if ((int(options["odt_opt"]) == 1) || (int(options["lloyd_opt"]) == 1) || (int(options["perturb_opt"]) == 1) || (int(options["exude_opt"]) == 1))
   {
-	  std::cout << endl << "Optimising Mesh" << endl; 
+	  
+    CGAL::Mesh_optimization_return_code opt_code;
+    cout << endl << "Optimising Mesh" << endl; 
 	  if (int(options["odt_opt"]) == 1) {
-		  std::cout << "ODT... \n";
-		  CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
+		  std::cout << "ODT... " << flush;
+		  opt_code = CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
+
+      if (opt_code == CGAL::TIME_LIMIT_REACHED)
+      {
+        cout << "time limit reached"; 
+      }
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED) )
+      {
+        cout << "done, cannot improve anymore"; 
+      }
+      else
+      {
+        cout << "done";
+      }
+
+      cout << endl ; 
 	  }
 
 	  if (int(options["lloyd_opt"]) == 1) {
-		  std::cout << "Lloyd... \n";
-		  CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
+		  cout << "Lloyd... " << flush;
+		  opt_code = CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
+
+     if (opt_code == CGAL::TIME_LIMIT_REACHED)
+      {
+        cout << "time limit reached"; 
+      }
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED) )
+      {
+        cout << "done, cannot improve anymore"; 
+      }
+      else
+      {
+        cout << "done";
+      }
+
+      cout << endl ; 
 	  }
 
 	  if (int(options["perturb_opt"]) == 1) {
-		  std::cout << "Perturb... \n";
-		  CGAL::perturb_mesh_3(c3t3, domain, sliver_bound = 10, time_limit = options["time_limit_sec"]);
+		  cout << "Perturb... " << flush;
+		  opt_code = CGAL::perturb_mesh_3(c3t3, domain, sliver_bound = 10, time_limit = options["time_limit_sec"]);
+
+      if (opt_code == CGAL::TIME_LIMIT_REACHED)
+      {
+        cout << "time limit reached"; 
+      }
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED) )
+      {
+        cout << "done, cannot improve anymore"; 
+      }
+      else
+      {
+        cout << "done";
+      }
+
+      cout << endl ; 
 	  }
 
 
 	  if (int(options["exude_opt"]) == 1) {
-		  std::cout << "Exude... \n";
-		  CGAL::exude_mesh_3(c3t3, sliver_bound = 10, time_limit = options["time_limit_sec"]);
+		  cout << "Exude... " << flush;
+		  opt_code = CGAL::exude_mesh_3(c3t3, sliver_bound = 10, time_limit = options["time_limit_sec"]);
+
+      if (opt_code == CGAL::TIME_LIMIT_REACHED)
+      {
+        cout << "time limit reached"; 
+      }
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED) )
+      {
+        cout << "done, cannot improve anymore"; 
+      }
+      else
+      {
+        cout << "done";
+      }
+
+      cout << endl ; 
 	  }
 
 	  // check mesh quality again to show improvement
-	  check_mesh_quality(c3t3);
+	  mesh_quality_metrics=check_mesh_quality(c3t3);
 	  cout << "Number of tetra after optimisation: " << c3t3.number_of_cells_in_complex() << endl;
 
   }
@@ -279,10 +348,11 @@ if (int(options["save_nodes_tetra"])==1) {
   string vtk_file_path = output_base_file + ".vtu";
 
   if (int(options["save_vtk"])==1) {
+    cout << "Writing vtu file" << vtk_file_path <<  endl;
     int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
   }
   // add this here again so its easier to see in terminal 
-  cout << "All done! Created mesh with " << c3t3.number_of_cells_in_complex() << " elements" << endl;
+  cout << "All done! Created mesh with " << c3t3.number_of_cells_in_complex() << " elements, and " << mesh_quality_metrics.at(2) << " average quality" << endl;
 
 
   return 0;

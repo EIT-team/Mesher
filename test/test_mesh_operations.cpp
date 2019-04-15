@@ -9,14 +9,14 @@ using namespace std;
 
 #include "write_c3t3_to_vtk_xml_file.h"
 TEST_CASE ("2-Domain Unit Cube") {
-    char* inr_path_2_domains = "../test/unit_cube_2_domains.inr";
+    const char* inr_path_2_domains = "../test/unit_cube_2_domains.inr";
 
     CGAL::Image_3 image;
     image.read(inr_path_2_domains);
 
 
     Mesh_domain domain(image);
-    //TODO: Pick some objective values for facet_size etc. Just geussing at the moment
+    //TODO: Pick some objective values for facet_size etc. Just guessing at the moment
     char *path_parameter = (char*)"./input_idx.txt";
     std::map<std::string, FT> options =  load_file_idx(path_parameter);
 
@@ -44,7 +44,7 @@ TEST_CASE ("Unit Cube") {
 
     // Unit cube (dimensions 1 x 1 x 1) centred around 0.5,0.5,0.5
 
-    char* inr_path = "../test/unit_cube.inr";
+    const char* inr_path = "../test/unit_cube.inr";
 
     CGAL::Image_3 image;
     image.read(inr_path);
@@ -80,7 +80,7 @@ TEST_CASE ("Unit Cube") {
 
     check_mesh_quality(c3t3);
 
-    //TODO: Choose sensible amrgin
+    //TODO: Choose sensible margin
     double margin = 0.2; // Margin of error in results
 
 

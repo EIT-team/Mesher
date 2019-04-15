@@ -14,7 +14,7 @@ sphere_centre_z = 17.9
 sphere_cell_size = 0.5
 
 
-square_refinement = 1
+square_refinement = 0
 square_x_extent = 4
 square_y_extent = 6
 square_z_extent = 4
@@ -28,12 +28,12 @@ refine_electrodes = 0
 pixel_scale_mm = 0.025
 
 facet_angle_deg = 30
-facet_distance_mm = 2
+facet_distance_mm = 5
 cell_radius_edge_ratio = 3
-cell_fine_size_mm = 0.5
-cell_coarse_size_mm = 0.5
-electrode_radius_mm = 0.15
-cell_size_electrodes_mm = 0.015
+cell_fine_size_mm = 5
+cell_coarse_size_mm = 5
+electrode_radius_mm = 1
+cell_size_electrodes_mm = 5
 
 # Optimisation (1 - yes, 0 - no)
 lloyd_opt = 0

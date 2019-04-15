@@ -38,12 +38,12 @@ std::map<std::string, FT> load_file_idx(char* file_name_input)
   //Scale everything so that it is in mm
 
 //TODO: Set pixel scale automatically by reading the value from the inr file
-  FT unit = options["pixel_scale_mm"]; //Scaling units - mm per pixel
-  options["facet_distance_mm"]/=unit;
-  options["cell_fine_size_mm"]/=unit;
-  options["cell_coarse_size_mm"]/=unit;
-  options["cell_size_electrodes_mm"]/=unit;
-  options["electrode_radius_mm"]/=unit;
+  FT unit = options["pixel_scale_mm"]; //Scaling units - voxels per mm 
+  //options["facet_distance_mm"]/=unit;
+  // options["cell_fine_size_mm"]/=unit;
+  // options["cell_coarse_size_mm"]/=unit;
+  // options["cell_size_electrodes_mm"]/=unit;
+  // options["electrode_radius_mm"]/=unit;
   options["sphere_radius"]/=unit;
   options["sphere_centre_x"]/=unit;
   options["sphere_centre_y"]/=unit;
@@ -64,7 +64,7 @@ std::map<std::string, FT> load_file_idx(char* file_name_input)
 
 vector< vector<double> > load_deformations(const char* file_name_input) {
 
-  /* Read in a series of deformation parmaters from a file
+  /* Read in a series of deformation paramters from a file
   Each line of the file should contain 3 doubles (x/y/z deformation in mm)
   */
 

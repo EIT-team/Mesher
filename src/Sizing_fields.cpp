@@ -62,7 +62,7 @@ Sizing_field::Sizing_field(Point& origin_in, string path_electrode, std::map<std
     while(!feof(F))
     {
       float x,y,z;
-      fscanf(F,"%f,%f,%f\n",&x,&y,&z);
+      int count = fscanf(F,"%f,%f,%f\n",&x,&y,&z);
       Point pt(x*scale_xyz,y*scale_xyz,z*scale_xyz);
       centres.push_back(pt);
     }
@@ -91,7 +91,7 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
   }
 
   double distance, distance_x, distance_y, distance_z;
-  // Do some additional refienments if turned on in parameter file
+  // Do some additional refinements if turned on in parameter file
   // Need to use MAP.at("x") rather than MAP["x"] to be const safe
 
   if (options.at("sphere_refinement") ) {
@@ -176,10 +176,10 @@ FT Sizing_field::operator()(const Point& p, const int, const Index&) const
 
     //TODO: Not sure if this algorithm is legit
     // Cartersian distance from centre of the mesh
-    Vector distance_eliptic = p - origin;
-    FT distance_percent = CGAL::sqrt(     (distance_eliptic.x()/origin.x()) * (distance_eliptic.x()/origin.x()) +
-                                          (distance_eliptic.y()/origin.y()) * (distance_eliptic.y()/origin.y()) +
-                                          (distance_eliptic.z()/origin.z()) * (distance_eliptic.z()/origin.z())  );
+    Vector distance_elliptic = p - origin;
+    FT distance_percent = CGAL::sqrt(     (distance_elliptic.x()/origin.x()) * (distance_elliptic.x()/origin.x()) +
+                                          (distance_elliptic.y()/origin.y()) * (distance_elliptic.y()/origin.y()) +
+                                          (distance_elliptic.z()/origin.z()) * (distance_elliptic.z()/origin.z())  );
 
     if (distance_percent >= 1-FT(preserve)/100) {
       out=fine_size + (coarse_size-fine_size) * (1-distance_percent);
