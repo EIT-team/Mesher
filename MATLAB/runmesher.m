@@ -5,11 +5,6 @@ function [status,cmdout] = runmesher(inrfile,electrodesfile,parameterfile,outdir
 
 %% Mesher location
 
-% ./bin/mesher -i inputs/input.inr -e inputs/Electrodes.txt -p inputs/input_idx.txt
-
-[status,cmdout]=system('wsl pwd','-echo');
-
-
 % use the default MesherRoot if one is not specified - the root of the
 % current function.
 if exist('MesherRoot','var') == 0 || isempty(MesherRoot)
@@ -42,12 +37,9 @@ PARAMSTR = parameterfile;
 % [MesherRoot 'inputs/input_idx.txt'];
 
 
-CMDSTR = [];
-
 CMDSTR = [MesherRoot MesherDir ' -i ' INRSTR ' -e ' ELECSTR ' -p ', PARAMSTR];
 
 %% Optional inputs
-
 
 % output directory
 
@@ -59,16 +51,14 @@ if exist('outdir','var') == 1 && ~isempty(outdir)
     
     DIRSTR=outdir;
     
-    CMDSTR=[CMDSTR ' -d ' DIRSTR];
-    
+    CMDSTR=[CMDSTR ' -d ' DIRSTR];  
 end
 
 %Mesh name
 if exist('outname','var') == 1 && ~isempty(outname)
     
     NAMESTR=outname;
-    CMDSTR=[CMDSTR ' -o ' NAMESTR];
-    
+    CMDSTR=[CMDSTR ' -o ' NAMESTR];   
 end
 
 %% Finally call mesher
@@ -80,8 +70,5 @@ disp('Calling Mesher with command string:');
 disp(CMDSTR);
 
 [status,cmdout]=system(CMDSTR,'-echo');
-
-
-
 end
 
