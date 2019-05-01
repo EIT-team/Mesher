@@ -82,6 +82,8 @@ hold off
 
 %% save stuff for mesher
 
+full_mask=uint8(full_mask); % inr files need uint8
+
 %save the volumetric data for both skull and no skull cases
 saveinr_EIT(uint8(full_mask),'HamlynPad.inr',vol_res*[1 1 1]);
 % save the electrode locations in the coordinates of the inr
