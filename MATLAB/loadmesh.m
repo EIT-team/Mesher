@@ -15,14 +15,16 @@ tetra=csvread([fname '_tetra.csv']);
 pfid=fopen([fname '.parameters']);
 
 t=textscan(pfid,'%s','Delimiter','\n');
+
+fclose(pfid);
+
+% find the ground position 
 t=t{1};
 t=cellstr(t);
 
 x_idx=contains(t,'groundposition.x:');
 y_idx=contains(t,'groundposition.y:');
 z_idx=contains(t,'groundposition.z:');
-
-
 
 gndx=sscanf(t{x_idx}(19:end),'%g');
 gndy=sscanf(t{y_idx}(19:end),'%g');

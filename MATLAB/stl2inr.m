@@ -57,9 +57,6 @@ elec_pos_new_sc=elec_pos_new*pixel_scale; % scale the electrode positions
 
 %% Check alignment of mask and electrodes
 
-%these masks are xy flipped, but this is what we want as saving to .inr
-%also flips them or something.
-
 %compare electrode positions
 
 [node,elem]=binsurface(full_mask,4); % get just the surface of the binary mask
@@ -67,10 +64,7 @@ elec_pos_new_sc=elec_pos_new*pixel_scale; % scale the electrode positions
 figure
 title('Elecs on new isosurface - check alignment here!');
 hold on
-
-
-
-patch('Vertices',node,'faces',elem,'FaceColor','none','EdgeAlpha',0.5);
+patch('Vertices',node,'faces',elem,'FaceColor','none','EdgeAlpha',0.2);
 
 plot3(elec_pos_new_sc(:,1),elec_pos_new_sc(:,2),elec_pos_new_sc(:,3),'.','MarkerSize',30);
 
@@ -84,10 +78,12 @@ hold off
 
 full_mask=uint8(full_mask); % inr files need uint8
 
+[savepath,savename]=fileparts(stlfile);
+
 %save the volumetric data for both skull and no skull cases
-saveinr_EIT(uint8(full_mask),'HamlynPad.inr',vol_res*[1 1 1]);
+saveinr_EIT(uint8(full_mask),[savepath filesep savename '.inr'],vol_res*[1 1 1]);
 % save the electrode locations in the coordinates of the inr
-dlmwrite('HamlynPadPosINR.txt',elec_pos_new_sc);
+dlmwrite([savepath filesep savename '_elecINRpos.txt'],elec_pos_new_sc);
 
 
 end

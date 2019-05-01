@@ -43,22 +43,26 @@ CMDSTR = [MesherRoot MesherDir ' -i ' INRSTR ' -e ' ELECSTR ' -p ', PARAMSTR];
 
 % output directory
 
-% Check out directory exists
 if exist('outdir','var') == 1 && ~isempty(outdir)
-    if ~isfolder(outdir)
-        mkdir(outdir);
-    end
+    
     
     DIRSTR=outdir;
     
-    CMDSTR=[CMDSTR ' -d ' DIRSTR];  
+    CMDSTR=[CMDSTR ' -d ' DIRSTR];
+else
+    outdir='./output/';
+end
+
+% Check out directory exists
+if ~isfolder(outdir)
+    mkdir(outdir);
 end
 
 %Mesh name
 if exist('outname','var') == 1 && ~isempty(outname)
     
     NAMESTR=outname;
-    CMDSTR=[CMDSTR ' -o ' NAMESTR];   
+    CMDSTR=[CMDSTR ' -o ' NAMESTR];
 end
 
 %% Finally call mesher
