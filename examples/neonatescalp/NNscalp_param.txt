@@ -1,0 +1,71 @@
+# Mesher parameter file 01-May-2019 16:32:54
+#Planar refinment (1 - yes, 0 -no)
+planar_refinement = 0
+height = 1.000
+planar_xyz = 3.000
+elements_with_fine_sizing_field_percentage = 50.000
+
+
+#Spherical refinment (1 - yes, 0 - no)
+#Distances in mm
+sphere_refinement = 0
+sphere_radius = 2.000
+sphere_centre_x = 13.500
+sphere_centre_y = 13.200
+sphere_centre_z = 17.900
+sphere_cell_size = 0.500
+
+
+#Square refinement
+square_refinement = 0
+square_x_extent = 4.000
+square_y_extent = 6.000
+square_z_extent = 4.000
+square_centre_x = 13.900
+square_centre_y = 13.200
+square_centre_z = 17.900
+square_cell_size = 0.090
+
+
+#Standard refinement parameters
+refine_electrodes = 0
+pixel_scale_mm = 1.000
+facet_angle_deg = 30.000
+facet_distance_mm = 2.000
+cell_radius_edge_ratio = 3.000
+cell_fine_size_mm = 3.000
+cell_coarse_size_mm = 8.000
+electrode_radius_mm = 3.000
+cell_size_electrodes_mm = 2.000
+
+
+#Optimisation (1 - yes, 0 - no)
+lloyd_opt = 1
+odt_opt = 1
+exude_opt = 1
+perturb_opt = 1
+time_limit_sec = 300
+
+
+#Save a vtu file of the mesh?
+save_vtk = 1
+#Save cell centres as csv?
+save_cell_centres = 0
+#Save nodes and tetra as csv?
+save_nodes_tetra = 0
+
+
+#Deform the mesh?
+do_deformation = 0
+deform_x = 0.000
+deform_y = 0.000
+deform_z = 0.000
+num_deformations = 5
+min_stretch_distance = 5.000
+max_stretch_distance = 50.000
+
+
+#Move electrodes to the closest facet in the mesh? Useful is electrodes not exactly on the mesh
+#Will move electrode to the nearest facet with tissue type equal to outermost_tissue
+move_electrodes = 0
+outermost_tissue = 1
