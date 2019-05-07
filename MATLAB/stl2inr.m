@@ -1,11 +1,12 @@
 function [ full_mask,elec_pos_new_sc ] = stl2inr( stlfile,pixel_scale,elec_pos )
 %STL2INR Convert stl file to inr for meshing
 %   Detailed explanation goes here
-% requires iso2mesh and stlTools https://uk.mathworks.com/matlabcentral/fileexchange/51200-stltools
+% requires iso2mesh and stlTools
+% https://uk.mathworks.com/matlabcentral/fileexchange/51200-stltools or
+% inside this folder
 
 %% check inputs
 % resolution of output volumetric image
-% vol_res=0.25; % size of voxels in mm
 % pixel_scale = 1/vol_res; % THIS IS WHAT MUST MATCH IN THE MESHER SETTINGS
 vol_res=1/pixel_scale;
 
@@ -13,7 +14,6 @@ vol_res=1/pixel_scale;
 %% Loading stls
 disp('Loading Stl meshes');
 [stlsurf.vertices,stlsurf.faces,stlsurf.normals,stlsurf.name] = stlRead(stlfile);
-% stlPlot(stlsurf.vertices,stlsurf.faces,stlsurf.name);
 
 figure;
 hold on
@@ -31,8 +31,6 @@ mask_range= [floor(min([ stlsurf.vertices]))-vol_res; ceil(max([stlsurf.vertices
 
 %find the middle for plotting the slices
 mask_mid_idx = round(((mask_range(2,:) - mask_range(1,:))/2)/vol_res) ;
-mask_mid = mask_mid_idx + mask_range(1,:);
-
 
 %convert to binary mask mask
 [stlsurf.mask, stlsurf.transform] =surf2vol(stlsurf.vertices,stlsurf.faces,mask_range(1,1):vol_res:mask_range(2,1),mask_range(1,2):vol_res:mask_range(2,2),mask_range(1,3):vol_res:mask_range(2,3),'fill',1);
@@ -71,9 +69,6 @@ plot3(elec_pos_new_sc(:,1),elec_pos_new_sc(:,2),elec_pos_new_sc(:,3),'.','Marker
 daspect([1,1,1])
 
 hold off
-
-
-
 %% save stuff for mesher
 
 full_mask=uint8(full_mask); % inr files need uint8
