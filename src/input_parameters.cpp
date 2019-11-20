@@ -2,6 +2,10 @@
 
 using namespace std;
 
+/** Read mesher parameters from file.
+ * Takes file name as parameter.
+ * Returns map of parameters.
+ **/
 map<string, FT> read_params_from_file(char *file_name_input)
 {
   map<string, FT> options;
@@ -57,12 +61,12 @@ map<string, FT> read_params_from_file(char *file_name_input)
   return options;
 }
 
+/** Read in a series of deformation paramters from a file
+   *  Each line of the file should contain 3 doubles (x/y/z deformation in mm)
+   *  Returns vector of x/y/z deformations.
+   **/
 vector<vector<double>> load_deformations(const char *file_name_input)
 {
-
-  /* Read in a series of deformation paramters from a file
-  Each line of the file should contain 3 doubles (x/y/z deformation in mm)
-  */
 
   vector<vector<double>> deformations;
 
