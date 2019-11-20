@@ -1,7 +1,7 @@
 #Planar refinment (1 - yes, 0 -no)
 planar_refinement = 0
 height = 0
-planar_xyz = 2
+planar_direction_xyz = 2
 elements_with_fine_sizing_field_percentage = 50
 
 #Spherical refinment (1 - yes, 0 - no)
