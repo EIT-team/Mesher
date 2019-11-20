@@ -2,87 +2,83 @@
 
 using namespace std;
 
-std::map<std::string, FT> load_file_idx(char* file_name_input)
+map<string, FT> read_params_from_file(char *file_name_input)
 {
-  std::map<std::string, FT> options;
+  map<string, FT> options;
 
-  std::ifstream cfgfile(file_name_input, std::ifstream::in); // = std::ifstream::open(file_name_input);
-  if (!cfgfile) perror ("\n Error opening input parameters file");
+  ifstream cfgfile(file_name_input, ifstream::in);
+  if (!cfgfile)
+    perror("\n Error opening input parameters file");
 
   string line;
 
   cout << "Reading parameters from: " << file_name_input << endl;
 
-  std::string id, eq;
+  sstring id, eq;
   FT val;
 
-  //while(cfgfile >> id >> eq >> val)
-  while (getline( cfgfile, line) )
+  while (getline(cfgfile, line))
 
   {
-    stringstream ss (line);
+    stringstream ss(line);
 
-    if ( ss.peek() == '#') continue; // skip comments
+    if (ss.peek() == '#')
+      continue; // skip comments
 
     ss >> id >> eq >> val;
 
-    if (eq != "=") {
-     throw std::runtime_error("Input parameters file parse error: has to be variable[space]=[space]value");
-}
+    if (eq != "=")
+    {
+      throw runtime_error("Input parameters file parse error: has to be variable[space]=[space]value");
+    }
 
     options[id] = val;
-    //std::cout << id <<" = "<< options[id] << "\n";
   }
 
   //The voxel size in the input mesh can vary,
   //Scale everything so that it is in mm
 
-//TODO: Set pixel scale automatically by reading the value from the inr file
-  FT unit = options["pixel_scale_mm"]; //Scaling units - voxels per mm 
-  //options["facet_distance_mm"]/=unit;
-  // options["cell_fine_size_mm"]/=unit;
-  // options["cell_coarse_size_mm"]/=unit;
-  // options["cell_size_electrodes_mm"]/=unit;
-  // options["electrode_radius_mm"]/=unit;
-  options["sphere_radius"]/=unit;
-  options["sphere_centre_x"]/=unit;
-  options["sphere_centre_y"]/=unit;
-  options["sphere_centre_z"]/=unit;
-  options["sphere_cell_size"]/=unit;
-  options["square_x_extent"]/=unit;
-  options["square_y_extent"]/=unit;
-  options["square_z_extent"]/=unit;
-  options["square_centre_x"]/=unit;
-  options["square_centre_y"]/=unit;
-  options["square_centre_z"]/=unit;
-  options["square_cell_size"]/=unit;
+  //TODO: Set pixel scale automatically by reading the value from the inr file
+  FT unit = options["pixel_scale_mm"]; //Scaling units - voxels per mm
 
-    return options;
+  options["sphere_radius"] /= unit;
+  options["sphere_centre_x"] /= unit;
+  options["sphere_centre_y"] /= unit;
+  options["sphere_centre_z"] /= unit;
+  options["sphere_cell_size"] /= unit;
+  options["square_x_extent"] /= unit;
+  options["square_y_extent"] /= unit;
+  options["square_z_extent"] /= unit;
+  options["square_centre_x"] /= unit;
+  options["square_centre_y"] /= unit;
+  options["square_centre_z"] /= unit;
+  options["square_cell_size"] /= unit;
 
-
+  return options;
 }
 
-vector< vector<double> > load_deformations(const char* file_name_input) {
+vector<vector<double>> load_deformations(const char *file_name_input)
+{
 
   /* Read in a series of deformation paramters from a file
   Each line of the file should contain 3 doubles (x/y/z deformation in mm)
   */
 
-  vector< vector<double> > deformations;
+  vector<vector<double>> deformations;
 
-  ifstream deform_file("list_of_deformations.txt", std::ifstream::in);
-  if (!deform_file) {
-    perror ("\n Error opening deformations file");
+  ifstream deform_file("list_of_deformations.txt", ifstream::in);
+  if (!deform_file)
+  {
+    perror("\n Error opening deformations file");
   }
 
   cout << "Reading deformations from fie." << endl;
 
-
   double dist_x, dist_y, dist_z;
 
-  while(deform_file >> dist_x >> dist_y >> dist_z)
+  while (deform_file >> dist_x >> dist_y >> dist_z)
   {
-    cout << dist_x << " " << dist_y << " " << dist_z <<endl;
+    cout << dist_x << " " << dist_y << " " << dist_z << endl;
     //TODO: Check sensible values
 
     vector<double> this_deform;
@@ -91,9 +87,7 @@ vector< vector<double> > load_deformations(const char* file_name_input) {
     this_deform.push_back(dist_z);
 
     deformations.push_back(this_deform);
-
   }
 
   return deformations;
-
 }
