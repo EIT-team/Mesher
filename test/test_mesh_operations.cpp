@@ -88,7 +88,7 @@ TEST_CASE("Unit Cube")
     {
 
         // Centre of mesh should be approx 1,1,1. Exact values depend on complexity of mesh
-        Point centre = c3t3.centre_of_mesh();
+        Point centre = c3t3.find_centre_of_mesh();
         int expected_centre = 1;
         //centre should be within 'margin' of expected value
         REQUIRE(expected_centre == Approx(CGAL::to_double(centre.x())).margin(margin));
@@ -112,13 +112,13 @@ TEST_CASE("Unit Cube")
         int expected_domain = 1;
         REQUIRE(target_domain == expected_domain);
 
-        Point closest_to_min = c3t3.closest_element(min_elem, target_domain);
+        Point closest_to_min = c3t3.find_closest_element(min_elem, target_domain);
 
         CHECK(expected_min_close == Approx(CGAL::to_double(closest_to_min.x())).margin(margin));
         CHECK(expected_min_close == Approx(CGAL::to_double(closest_to_min.y())).margin(margin));
         CHECK(expected_min_close == Approx(CGAL::to_double(closest_to_min.z())).margin(margin));
 
-        Point closest_to_max = c3t3.closest_element(max_elem, target_domain);
+        Point closest_to_max = c3t3.find_closest_element(max_elem, target_domain);
 
         CHECK(expected_max_close == Approx(CGAL::to_double(closest_to_max.x())).margin(margin));
         CHECK(expected_max_close == Approx(CGAL::to_double(closest_to_max.y())).margin(margin));
@@ -144,7 +144,7 @@ TEST_CASE("Unit Cube")
     SECTION("Check reference electrode location")
     {
 
-        Point ref_electrode = c3t3.set_reference_electrode();
+        Point ref_electrode = c3t3.set_reference_electrode_human();
         double expected_ref_x_z = 1.5;
         double expected_ref_y = 0.5;
 
