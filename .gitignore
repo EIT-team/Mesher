@@ -1,3 +1,5 @@
 **.asv
 test/*.vtu
+test/run_tests
+test/Testing
 build/

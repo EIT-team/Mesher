@@ -51,8 +51,8 @@ add_executable(run_tests  "run_tests.cpp"
                           "../src/Sizing_fields.cpp"
                            "../src/mesh_operations.cpp"
                            "test_stretching.cpp"
-                           "../src/warp_mesh.cpp"
-                           "../src/stretch_info.cpp"
+                           "../src/deform_volume.cpp"
+                           "../src/mesh_stretcher.cpp"
                            "../src/input_parameters.cpp")
 
 set_target_properties(run_tests PROPERTIES

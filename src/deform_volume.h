@@ -2,7 +2,7 @@
 #ifndef WARP_H
 #define WARP_H
 
-#include "stretch_info.h"
+#include "mesh_stretcher.h"
 #include "CGAL_include.h" // for Image_3
 
 #include <vector>
@@ -11,11 +11,11 @@
 #include <math.h>
 using namespace std;
 
-class Deform_Volume {
+class Deform_Volume
+{
 
 public:
-
-  unsigned char * image_data;
+  unsigned char *image_data;
   int dims;
   double vx, vy, vz; // Size of a voxel along each axis
 
@@ -30,17 +30,17 @@ public:
   int min_stretch;
   int max_stretch;
 
-// For stretching
-int point_to_move, distance_to_move, anchor;
+  // For stretching
+  int point_to_move, distance_to_move, anchor;
 
   // Store the parameters of the deformation
   string deformation_info;
 
   Deform_Volume();
-  Deform_Volume(CGAL::Image_3*);
+  Deform_Volume(CGAL::Image_3 *);
 
   //Deform_Volume(CGAL::Image_3);
-  void dilate_layer( int, int);
+  void dilate_layer(int, int);
   void stretch_array(vector<int>);
 
   bool check_valid_points();
@@ -58,8 +58,6 @@ int point_to_move, distance_to_move, anchor;
   vector<long> neighbouring_elements(long voxel_index);
   void get_layers();
   void find_mesh_bounds();
-
-
 };
 
 #endif
