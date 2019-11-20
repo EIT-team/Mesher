@@ -13,6 +13,8 @@
 using namespace CGAL::parameters;
 using namespace std;
 
+/** Print correct command line usage.
+ **/
 void printusage(void)
 {
   printf("Usage:  ./mesher -i INPUT_INR -e INPUT_ELECTRODES -p INPUT_PARAMETERS");
@@ -78,14 +80,14 @@ int main(int argc, char *argv[])
   }
 
   // Output file names for sanity check
-  std::cout << "Input file: " << path_image << "\n";
-  std::cout << "Electrode file: " << path_electrode << "\n";
-  std::cout << "Parameter file: " << path_parameter << "\n";
-  std::cout << "Output directory: " << output_dir << "\n";
-  std::cout << "Output mesh name: " << input_mesh_name << "\n\n";
+  cout << "Input file: " << path_image << "\n";
+  cout << "Electrode file: " << path_electrode << "\n";
+  cout << "Parameter file: " << path_parameter << "\n";
+  cout << "Output directory: " << output_dir << "\n";
+  cout << "Output mesh name: " << input_mesh_name << "\n\n";
 
   // Read input file with parameters
-  std::map<std::string, FT> options = read_params_from_file(path_parameter);
+  map<string, FT> options = read_params_from_file(path_parameter);
 
   // Set some additional parameters if deforming the mesh
   //  if (options["do_deformation"]) {
@@ -187,7 +189,7 @@ int main(int argc, char *argv[])
          << "Optimising Mesh" << endl;
     if (int(options["odt_opt"]) == 1)
     {
-      std::cout << "ODT... " << flush;
+      cout << "ODT... " << flush;
       opt_code = CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
 
       if (opt_code == CGAL::TIME_LIMIT_REACHED)
@@ -296,7 +298,7 @@ int main(int argc, char *argv[])
   }
 
   // Put together parameters
-  std::map<std::string, std::string> parameters;
+  map<string, string> parameters;
 
   // Add all options to the parameter map
 
@@ -306,7 +308,7 @@ int main(int argc, char *argv[])
     //parameters[elem.first] = to_string(elem.second);
 
     // make the stream object - this makes nicer strings that to_string (although that might be because I dont know how to use it well)
-    std::ostringstream currentVal;
+    ostringstream currentVal;
     currentVal << elem.second;
     parameters[elem.first] = currentVal.str(); // save into the parameters map
   }
@@ -314,8 +316,8 @@ int main(int argc, char *argv[])
   parameters["ground.hsquared"] = string("1.5e-5");
 
   // Need to convert double to string before adding to parameter map
-  // using std::ostringstream to do this
-  std::ostringstream gndposx, gndposy, gndposz;
+  // using ostringstream to do this
+  ostringstream gndposx, gndposy, gndposz;
   gndposx << CGAL::to_double(ground_electrode.x()) / MM_TO_M;
   gndposy << CGAL::to_double(ground_electrode.y()) / MM_TO_M;
   gndposz << CGAL::to_double(ground_electrode.z()) / MM_TO_M;
@@ -363,7 +365,7 @@ int main(int argc, char *argv[])
 // do {
 //   // Loads image
 //   CGAL::Image_3 image;
-//   std::cout<<"\n Reading the Image file... ";
+//   cout<<"\n Reading the Image file... ";
 //
 //   image.read(path_image);
 //   cout << "Dimensions of image: " << image.xdim() << endl;

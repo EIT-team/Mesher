@@ -339,7 +339,7 @@ double tetra_quality(vector<Point> vertices)
  * 
  * Returns vector containing the number of low//high quality elements, and the average quality value.
  **/
-std::vector<double> check_mesh_quality(C3t3_EIT &c3t3)
+vector<double> check_mesh_quality(C3t3_EIT &c3t3)
 {
 
   cout << "Checking mesh quality" << endl;
