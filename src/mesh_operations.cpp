@@ -337,7 +337,7 @@ double tetra_quality(vector<Point> vertices)
 
 /** Checks the quality of a mesh by calculatng the quality of each element.
  * 
- * Returns vector containing the number of low/medium/high quality elements.
+ * Returns vector containing the number of low//high quality elements, and the average quality value.
  **/
 std::vector<double> check_mesh_quality(C3t3_EIT &c3t3)
 {
@@ -346,6 +346,8 @@ std::vector<double> check_mesh_quality(C3t3_EIT &c3t3)
   Cell_iterator cell_iterator;
   long num_cells = c3t3.number_of_cells_in_complex();
   double quality;
+
+  double low_threshold = 0.1, high_threshold = 0.9;
   double low_quality = 0, high_quality = 0;
   double sum_quality = 0, average_quality = 0;
 
@@ -364,12 +366,12 @@ std::vector<double> check_mesh_quality(C3t3_EIT &c3t3)
     quality = tetra_quality(vertices);
     sum_quality += quality;
 
-    if (quality < 0.1)
+    if (quality < low_threshold)
     {
       low_quality += 1;
       //cout << quality << endl;
 
-      if (quality > 0.9)
+      if (quality > high_threshold)
       {
         high_quality += 1;
       }
