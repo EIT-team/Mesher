@@ -7,7 +7,7 @@ function [P] = getmesherparam()
 %Planar refinment (1 - yes, 0 -no)
 P.planar.planar_refinement = 0;
 P.planar.height = 1;
-P.planar.planar_xyz = 3;
+P.planar.planar_direction_xyz = 3;
 P.planar.elements_with_fine_sizing_field_percentage = 50;
 
 %Spherical refinment (1 - yes, 0 - no)

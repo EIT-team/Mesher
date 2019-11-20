@@ -19,7 +19,7 @@ fprintf(fid,'\r\n');
 fprintf(fid,'#Planar refinment (1 - yes, 0 -no)\r\n');
 fprintf(fid,'planar_refinement = %d\r\n',P.planar.planar_refinement);
 fprintf(fid,'height = %.3f\r\n',P.planar.height);
-fprintf(fid,'planar_xyz = %.3f\r\n',P.planar.planar_xyz);
+fprintf(fid,'planar_direction_xyz = %.3f\r\n',P.planar.planar_direction_xyz);
 fprintf(fid,'elements_with_fine_sizing_field_percentage = %.3f\r\n',P.planar.elements_with_fine_sizing_field_percentage);
 fprintf(fid,'\r\n\r\n');
 
