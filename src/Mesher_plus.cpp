@@ -278,10 +278,10 @@ int main(int argc, char *argv[])
 
   // Generate reference electrode location and append to electrode list
   cout << endl;
-  Point reference_electrode = c3t3.set_reference_electrode();
+  Point reference_electrode = c3t3.set_reference_electrode_human();
   sizing_field.centres.push_back(reference_electrode);
 
-  Point ground_electrode = c3t3.set_ground_electrode();
+  Point ground_electrode = c3t3.set_ground_electrode_human();
 
   if (options["move_electrodes"])
   {
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
     int outer_tissue_index = options["outermost_tissue"];
     for (int i = 0; i < sizing_field.centres.size(); ++i)
     {
-      sizing_field.centres[i] = c3t3.closest_element(sizing_field.centres[i], outer_tissue_index);
+      sizing_field.centres[i] = c3t3.find_closest_element(sizing_field.centres[i], outer_tissue_index);
     }
   }
 
