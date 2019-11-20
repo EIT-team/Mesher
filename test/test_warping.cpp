@@ -1,6 +1,6 @@
 #include "catch.hpp"
 
-#include "warp_mesh.h"
+#include "deform_volume.h"
 #include "mesh_operations.h"
 
 #include "write_c3t3_to_vtk_xml_file.h"

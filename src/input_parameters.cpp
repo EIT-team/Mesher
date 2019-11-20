@@ -18,7 +18,7 @@ map<string, FT> read_params_from_file(char *file_name_input)
 
   cout << "Reading parameters from: " << file_name_input << endl;
 
-  sstring id, eq;
+  string id, eq;
   FT val;
 
   while (getline(cfgfile, line))
