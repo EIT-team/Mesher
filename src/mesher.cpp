@@ -182,84 +182,68 @@ int main(int argc, char *argv[])
     CGAL::Mesh_optimization_return_code opt_code;
     cout << endl
          << "Optimising Mesh" << endl;
-    if (int(options["odt_opt"]) == 1)
-    {
+    if (int(options["odt_opt"]) == 1)  {
       cout << "ODT... " << flush;
       opt_code = CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
 
-      if (opt_code == CGAL::TIME_LIMIT_REACHED)
-      {
+      if (opt_code == CGAL::TIME_LIMIT_REACHED)  {
         cout << "time limit reached";
       }
-      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))
-      {
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))  {
         cout << "done, cannot improve anymore";
       }
-      else
-      {
+      else   {
         cout << "done";
       }
 
       cout << endl;
     }
 
-    if (int(options["lloyd_opt"]) == 1)
-    {
+    if (int(options["lloyd_opt"]) == 1)  {
       cout << "Lloyd... " << flush;
       opt_code = CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
 
-      if (opt_code == CGAL::TIME_LIMIT_REACHED)
-      {
+      if (opt_code == CGAL::TIME_LIMIT_REACHED)   {
         cout << "time limit reached";
       }
-      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))
-      {
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))   {
         cout << "done, cannot improve anymore";
       }
-      else
-      {
+      else {
         cout << "done";
       }
 
       cout << endl;
     }
 
-    if (int(options["perturb_opt"]) == 1)
-    {
+    if (int(options["perturb_opt"]) == 1)  {
       cout << "Perturb... " << flush;
       opt_code = CGAL::perturb_mesh_3(c3t3, domain, sliver_bound = 10, time_limit = options["time_limit_sec"]);
 
-      if (opt_code == CGAL::TIME_LIMIT_REACHED)
-      {
+      if (opt_code == CGAL::TIME_LIMIT_REACHED)  {
         cout << "time limit reached";
       }
-      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))
-      {
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))  {
         cout << "done, cannot improve anymore";
       }
-      else
-      {
+      else   {
         cout << "done";
       }
 
       cout << endl;
     }
 
-    if (int(options["exude_opt"]) == 1)
-    {
+    if (int(options["exude_opt"]) == 1)  {
       cout << "Exude... " << flush;
       opt_code = CGAL::exude_mesh_3(c3t3, sliver_bound = 10, time_limit = options["time_limit_sec"]);
 
-      if (opt_code == CGAL::TIME_LIMIT_REACHED)
-      {
+      if (opt_code == CGAL::TIME_LIMIT_REACHED)  {
         cout << "time limit reached";
       }
-      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))
-      {
+      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))  {
         cout << "done, cannot improve anymore";
       }
-      else
-      {
+      else   {
         cout << "done";
       }
 
