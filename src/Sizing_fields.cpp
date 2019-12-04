@@ -194,7 +194,6 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
   else
   { //refine centre of mesh more than outside
 
-    //TODO: Not sure if this algorithm is legit
     // Cartersian distance from centre of the mesh
     Vector distance_elliptic = p - origin;
     FT distance_percent = CGAL::sqrt((distance_elliptic.x() / origin.x()) * (distance_elliptic.x() / origin.x()) +

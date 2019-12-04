@@ -6,8 +6,8 @@
 
 struct Sizing_field
 {
-  //TODO: compiler error if below line is removed, but not entirely sure why
-  // ::FT means the global value of FT is used.....
+  // ::FT means the global value of FT is used. We need to do this to avoid
+  // Compiler error, but not entirely sure why...
   typedef ::FT FT;
   std::map<std::string, FT> options;
   Point origin;

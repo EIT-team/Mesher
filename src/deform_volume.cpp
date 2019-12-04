@@ -174,7 +174,6 @@ void Deform_Volume::defined_stretch(vector<double> distance_mm)
   // Check inputs, should be 3 elements, one for each dimension
   if (n_dims != 3)
   {
-
     cout << "Invalid number of values passed, should be 3, one for each dimension" << endl;
   }
   //TODO: Tidy up here, too messy/repeated
