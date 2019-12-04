@@ -176,62 +176,42 @@ void Deform_Volume::defined_stretch(vector<double> distance_mm)
   {
     cout << "Invalid number of values passed, should be 3, one for each dimension" << endl;
   }
-  //TODO: Tidy up here, too messy/repeated
 
   vector<int> stretch;
   int point, anchor, voxel_distance;
 
-  //x data
-  double xdist = distance_mm[0];
+  //Group some values together to allow us to loop over them.
+  double voxel_distances[n_dims] = {vx, vy, vz};
+  int maxes[n_dims] = {xmax, ymax, zmax};
+  int mins[n_dims] = {xmin, ymin, zmin};
+  int mids[n_dims] = {xmid, ymid, zmid};
 
-  if (xdist > 0)
-    point = xmax; //stretch right
-  else if (xdist < 0)
-    point = xmin; //stretch left
-  else
-    point = -1; //Do nothing
+// Calculate the stretch parameter for each dimension (X,Y,Z)
+  for (int i = 0; i < n_dims; i++) {
 
-  anchor = xmid;
-  // Covert distance in mm to number of voxels, based on the distance for each voxel.
-  voxel_distance = round(abs(xdist / vx));
+    double dist = distance_mm[i];
+    double voxel_distance = voxel_distances[i];
+    int max = maxes[i];
+    int min = mins[i];
+    int mid = mids[i];
 
-  stretch.push_back(point);
-  stretch.push_back(voxel_distance);
-  stretch.push_back(anchor);
+    if (dist > 0)
+      point = max; //stretch right
+    else if (dist < 0)
+      point = xmin; //stretch left
+    else
+      point = -1; //do nothing
 
-  //y data
-  double ydist = distance_mm[1];
+    anchor = mid;
 
-  if (ydist > 0)
-    point = ymax; //stretch right
-  else if (ydist < 0)
-    point = ymin; //stretch left
-  else
-    point = -1; //Do nothing
+    // Covert distance in mm to number of voxels, based on the distance for each voxel.
+    voxel_distance = round(abs(dist / voxel_distance));
 
-  anchor = ymid;
-  voxel_distance = round(abs(ydist) / vy);
+    stretch.push_back(point);
+    stretch.push_back(voxel_distance);
+    stretch.push_back(anchor);
+  }
 
-  stretch.push_back(point);
-  stretch.push_back(voxel_distance);
-  stretch.push_back(anchor);
-
-  //z data
-  double zdist = distance_mm[2];
-
-  if (zdist > 0)
-    point = zmax; //stretch right
-  else if (zdist < 0)
-    point = zmin; //stretch left
-  else
-    point = -1; //Do nothing
-
-  anchor = zmid;
-  voxel_distance = round(abs(zdist) / vz);
-
-  stretch.push_back(point);
-  stretch.push_back(voxel_distance);
-  stretch.push_back(anchor);
 
   // Do the stretch
   stretch_array(stretch);
