@@ -157,6 +157,7 @@ TEST_CASE ("Dilation") {
       test_input[i] = layer_0;
     }
 
+
     SECTION ("Dilate central elment") {
 
       // Set central element to 1
@@ -202,6 +203,36 @@ TEST_CASE ("Dilation") {
 
   }
 
+TEST_CASE ("Identify unique layers in unit cube") {
+  /* Check that get_layers() function is working correctly */
+
+  const char* inr_path = "../test/unit_cube.inr";
+  CGAL::Image_3 image;
+  image.read(inr_path);
+
+  Deform_Volume warper(&image);
+
+  warper.get_layers();
+  std::vector<int> expected = {1};
+  REQUIRE (warper.layers == expected);
+
+  // Change one of the elments to a new layer
+  int new_layer = 2;
+  warper.image_data[5] = new_layer;
+  warper.get_layers();
+  expected.push_back(new_layer);
+
+  REQUIRE (warper.layers == expected);
+
+  new_layer = 5;
+  warper.image_data[7] = new_layer;
+  warper.get_layers();
+  expected.push_back(new_layer);
+
+  REQUIRE (warper.layers == expected);
+
+}
+
 TEST_CASE ("Defined deformations of unit cube") {
   /* Do some defined (as opposed to random) deformations on a unit cube
    and check the resulting mesh is as expected */
@@ -211,8 +242,6 @@ TEST_CASE ("Defined deformations of unit cube") {
   cout << "Saving some stretches performed on the unit cube" << endl;
 
   const char* inr_path = "../test/unit_cube.inr";
-
-
 
       vector< vector<double> > deformations;
 
