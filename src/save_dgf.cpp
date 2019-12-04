@@ -8,7 +8,6 @@ using namespace std;
 /** Write Mesh as Dune Grid Format file.
  *  Inputs: mesh, vector of parementers, and output file name.
  **/
-//TODO: Update so that it correctly references C3t3_EIT, not C3t3
 void save_as_dgf(const C3t3 &c3t3, std::map<std::string, FT> options, string output_file)
 {
 	output_file += ".dgf";
