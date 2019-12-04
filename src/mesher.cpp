@@ -34,7 +34,6 @@ int main(int argc, char *argv[])
   // MM_TO_M, but is there a nicer way
 
   int opt;
-  //TODO: can these all be strings? Think chars are used as file handles later
   // Input file locations (required as arguments)
   char *path_image, *path_electrode, *path_parameter;
   bool image_path_set = false, elec_path_set = false, param_path_set = false;

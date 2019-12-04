@@ -43,7 +43,7 @@ TEST_CASE("2-Domain Unit Cube")
 TEST_CASE("Unit Cube")
 {
 
-    // Unit cube (dimensions 1 x 1 x 1) centred around 0.5,0.5,0.5
+    // Unit cube (dimensions 1 x 1 x 1) centred around 1.0, 1.0, 1.0
 
     const char *inr_path = "../test/unit_cube.inr";
 
@@ -131,6 +131,7 @@ TEST_CASE("Unit Cube")
         c3t3.find_mesh_bounds();
         double expected_max_bound = 1.5;
         double expected_min_bound = 0.5;
+        double expected_mid_point = 1;
 
         REQUIRE(c3t3.x_min == Approx(expected_min_bound).margin(margin));
         REQUIRE(c3t3.y_min == Approx(expected_min_bound).margin(margin));
@@ -139,19 +140,23 @@ TEST_CASE("Unit Cube")
         REQUIRE(c3t3.x_max == Approx(expected_max_bound).margin(margin));
         REQUIRE(c3t3.y_max == Approx(expected_max_bound).margin(margin));
         REQUIRE(c3t3.z_max == Approx(expected_max_bound).margin(margin));
+
+        REQUIRE(c3t3.x_mid == Approx(expected_mid_point).margin(margin));
+        REQUIRE(c3t3.y_mid == Approx(expected_mid_point).margin(margin));
+        REQUIRE(c3t3.z_mid == Approx(expected_mid_point).margin(margin));
     }
 
-    SECTION("Check reference electrode location")
+    SECTION("Check human reference electrode location")
     {
 
         Point ref_electrode = c3t3.set_reference_electrode_human();
-        double expected_ref_x_z = 1.5;
-        double expected_ref_y = 0.5;
+        double expected_ref_z = 1.5;
+        double expected_ref_y = 1.5;
 
-        //TODO: This is failing, as currently not adding a vector in the x/first dimension when calculating the ref electrode location
-        //CHECK (expected_ref_x_z == Approx(CGAL::to_double( ref_electrode.x() )).margin(margin) );
+        // Don't check the x direction, as we project along the y/z plane to set the
+        // reference electrode position.
         CHECK(expected_ref_y == Approx(CGAL::to_double(ref_electrode.y())).margin(margin));
-        CHECK(expected_ref_x_z == Approx(CGAL::to_double(ref_electrode.z())).margin(margin));
+        CHECK(expected_ref_z == Approx(CGAL::to_double(ref_electrode.z())).margin(margin));
     }
 }
 

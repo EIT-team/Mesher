@@ -144,16 +144,14 @@ int C3t3_EIT::get_outer_layer_domain()
 Point C3t3_EIT::set_reference_electrode_human()
 {
 
-  // TODO: Combine this with Deform_Volume class to allow accessing of mesh_bounds?
-  // Then won't need to guestimate a point outside of the mesh.
   cout << "Generating reference electrode location\n";
 
-  Vector far_away(0, -150, 50); //Extend from centre of forehead
+  find_mesh_bounds();
 
   // Only want to use facets that are in the outermost layer i.e. the skin
   int skin_tissue_index = get_outer_layer_domain();
   cout << "Domain of outer layer is " << skin_tissue_index << endl;
-  Point outside_mesh = find_centre_of_mesh() + far_away;
+  Point outside_mesh(x_max, y_max + 10, z_max + 10);
   Point reference = find_closest_element(outside_mesh, skin_tissue_index);
 
   cout << "Reference located at: " << reference << endl;
@@ -222,15 +220,21 @@ void C3t3_EIT::find_mesh_bounds()
       x_max = x;
     if (x < x_min)
       x_min = x;
+
     if (y > y_max)
       y_max = y;
     if (y < y_min)
       y_min = y;
+
     if (z > z_max)
       z_max = z;
     if (z < z_min)
       z_min = z;
   }
+
+  x_mid = (x_min + x_max) / 2;
+  y_mid = (y_min + y_max) / 2;
+  z_mid = (z_min + z_max) / 2;
 }
 
 /**
