@@ -42,7 +42,6 @@ map<string, FT> read_params_from_file(char *file_name_input)
   //The voxel size in the input mesh can vary,
   //Scale everything so that it is in mm
 
-  //TODO: Set pixel scale automatically by reading the value from the inr file
   FT unit = options["pixel_scale_mm"]; //Scaling units - voxels per mm
 
   options["sphere_radius"] /= unit;
@@ -70,7 +69,7 @@ vector<vector<double>> load_deformations(const char *file_name_input)
 
   vector<vector<double>> deformations;
 
-  ifstream deform_file("list_of_deformations.txt", ifstream::in);
+  ifstream deform_file(file_name_input, ifstream::in);
   if (!deform_file)
   {
     perror("\n Error opening deformations file");

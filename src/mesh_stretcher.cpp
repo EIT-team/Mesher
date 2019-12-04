@@ -5,7 +5,6 @@ using namespace std;
 Mesh_Stretcher::Mesh_Stretcher(int point, int dist, int anch, int dim)
 {
 
-  //TODO: tidy this up, shouldn't need to reallocate straight away
   point_to_move = point;
   distance = dist;
   anchor = anch;

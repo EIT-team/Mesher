@@ -480,9 +480,9 @@ void Deform_Volume::find_mesh_bounds()
       for (z = 0; z < dims; z++)
       {
 
-        // TODO: dimensions of inr data are assumed to be in z,y,x order here
-        // Not necessarily true in all cases?
-
+        // Dimensions of inr data are assumed to be in z,y,x order here
+        // Not 100% sure this will be true in all cases?
+        
         idx = get_array_index(z, y, x);
         // Is this element non 0 i.e. not background
         // if so check if the min/max values should be updated
