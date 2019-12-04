@@ -429,16 +429,35 @@ void Deform_Volume::random_dilate()
   dilate_layer(layer, dilate_amount);
 }
 
-/** Placeholder for function to loop through array and return a vector of all the unique values
-  TODO: implement properly
+/** Loop through data array and populate a vector of all the unique values
   **/
 void Deform_Volume::get_layers()
 {
 
-  for (int i = 1; i <= 7; i++)
-  {
-    layers.push_back(i);
+  layers.clear(); // Empty the layers vector, so that elements aren't added twice.
+  
+  // Set maximum number of layers to some unreasonably high value, so that
+  // we always have space.
+  int max_layers = 100;
+  int layer_seen[max_layers] = {0};
+
+  // Loop over all elements in mesh. Use hash map to keep track of layers
+  // that we have seen.
+  int current_layer;
+  long total_elements = dims*dims*dims;
+
+  for (int i = 0; i < total_elements; i++) {
+    current_layer = image_data[i];
+    layer_seen[current_layer] = 1;
+    }
+
+  // Add all layers that we have seen to the 'layers' vector.
+  // Start at 1 as 0 is the 'empty' layer
+  for (int i = 1; i < max_layers; i++) {
+    if (layer_seen[i] == 1)
+      layers.push_back(i);
   }
+
 }
 
 /** Find the first/last non 0 element along each dimensional
