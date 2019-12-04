@@ -23,19 +23,16 @@ void printusage(void)
   printf("        -p parameter file\n");
   printf("        -o output mesh name (default = new_mesh)\n");
   printf("        -d output directory (default = output/)\n");
+  printf("        -w deformation file (optional)\n");
   exit(EXIT_FAILURE);
 }
 
 int main(int argc, char *argv[])
 {
 
-  //TODO: If the inr file has units of mm, the output mesh will also be in mme.
-  //Forward solever wants metres, so need to convert. Doing this explicitlty at the moment with
-  // MM_TO_M, but is there a nicer way
-
   int opt;
   // Input file locations (required as arguments)
-  char *path_image, *path_electrode, *path_parameter;
+  char *path_image, *path_electrode, *path_parameter, *deformation_file;
   bool image_path_set = false, elec_path_set = false, param_path_set = false;
   // Default values, can be changed with command line arguments
   string output_dir = "./output/";
@@ -70,6 +67,8 @@ int main(int argc, char *argv[])
     case 'o':
       input_mesh_name = optarg;
       break;
+    case 'w':
+      deformation_file = optarg;
     }
   }
 
@@ -88,16 +87,13 @@ int main(int argc, char *argv[])
   // Read input file with parameters
   map<string, FT> options = read_params_from_file(path_parameter);
 
-  // Set some additional parameters if deforming the mesh
-  //  if (options["do_deformation"]) {
+  //Set some additional parameters if deforming the mesh
+   if (options["do_deformation"]) {
 
-  //int n_deformations = options["num_deformations"];
-  //cout << "Mesh deformation turned on. " <<  n_deformations << " meshes will be generated" << endl;
-
-  //const char * deformation_file = "./list_of_deformations.txt"; //TODO@ Don't hardcode
-  //vector< vector<double> > deformations = load_deformations(deformation_file);
-  //num_meshes_to_make = deformations.size();
-  //}
+    int n_deformations = options["num_deformations"];
+    cout << "Mesh deformation turned on. " <<  n_deformations << " meshes will be generated" << endl;
+    vector< vector<double> > deformations = load_deformations(deformation_file);
+  }
 
   // Loads image
   CGAL::Image_3 image;
