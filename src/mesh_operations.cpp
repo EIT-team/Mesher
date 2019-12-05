@@ -13,14 +13,13 @@ Point C3t3_EIT::find_centre_of_mesh()
   double n_vertex = tr.number_of_vertices();
 
   double mean_vtx[3] = {0};
-
+  Point p;
   map<Vertex_handle, int> V;
   int inum = 1;
-  Point p;
 
   for (Finite_vertices_iterator vit = tr.finite_vertices_begin(); vit != tr.finite_vertices_end(); ++vit)
   {
-    p = vit->point();
+    p = Point(vit->point());
     mean_vtx[0] += CGAL::to_double(p.x());
     mean_vtx[1] += CGAL::to_double(p.y());
     mean_vtx[2] += CGAL::to_double(p.z());
@@ -65,7 +64,7 @@ Point C3t3_EIT::find_closest_element(Point target_p, int target_domain)
         // ->second gives the index of the vertex opposite to the facet, which is the one we don't want
         if (i != facet_iterator->second)
         {
-          facet_points.push_back(facet_iterator->first->vertex(i)->point());
+          facet_points.push_back(Point(facet_iterator->first->vertex(i)->point()));
         }
       }
 
@@ -116,7 +115,7 @@ int C3t3_EIT::get_outer_layer_domain()
 
       if (i != facet_iterator->second)
       {
-        this_point = facet_iterator->first->vertex(i)->point();
+        this_point = Point(facet_iterator->first->vertex(i)->point());
       }
     }
 
@@ -179,14 +178,14 @@ Point C3t3_EIT::set_ground_electrode_human()
   for (Finite_vertices_iterator vit = tr.finite_vertices_begin(); vit != tr.finite_vertices_end(); ++vit)
   {
 
-    current_vertex = vit->point();
+    current_vertex = Point(vit->point());
     current_y = CGAL::to_double(current_vertex.y());
 
     // Check if current value is the largest and update if so
     if (current_y > furthest)
     {
       furthest = current_y;
-      gnd_electrode = current_vertex;
+      gnd_electrode = Point(current_vertex);
     }
   }
 
@@ -203,14 +202,13 @@ void C3t3_EIT::find_mesh_bounds()
 
   const Tr &tr = triangulation();
   double n_vertex = tr.number_of_vertices();
-  Point current_vertex;
   double x, y, z;
 
   // Iterate through all vertices
   for (Finite_vertices_iterator vit = tr.finite_vertices_begin(); vit != tr.finite_vertices_end(); ++vit)
   {
 
-    current_vertex = vit->point();
+    auto current_vertex = vit->point();
     x = CGAL::to_double(current_vertex.x());
     y = CGAL::to_double(current_vertex.y());
     z = CGAL::to_double(current_vertex.z());
@@ -288,7 +286,7 @@ vector<Point> tetra_cell_to_points(Cell_handle cell)
   // Put vertices in vector
   for (int i = 0; i < 4; i++)
   {
-    vertices.push_back(cell->vertex(i)->point());
+    vertices.push_back(Point(cell->vertex(i)->point()));
   }
 
   return vertices;

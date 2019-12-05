@@ -48,7 +48,7 @@ void save_as_dgf(const C3t3 &c3t3, std::map<std::string, FT> options, string out
 		// Store vertex info in vertex_handle to vertex map
 		vertex_map[vertices_iterator] = n_tetra++;
 
-		current_point = vertices_iterator->point();
+		current_point = Point(vertices_iterator->point());
 
 		// Convert x,y,z to metres before writing
 		x = CGAL::to_double(current_point.x()) / MM_TO_M;
@@ -163,7 +163,7 @@ void write_centres(C3t3 &c3t3, string output_file)
 
 		for (int i = 0; i < num_vertices; i++)
 		{
-			p = cell_iterator->vertex(i)->point();
+			p = Point(cell_iterator->vertex(i)->point());
 
 			centre[0] += CGAL::to_double(p.x());
 			centre[1] += CGAL::to_double(p.y());
@@ -225,7 +225,7 @@ void save_matlab(const C3t3 &c3t3, std::map<std::string, FT> options, string out
 		// Store vertex info in vertex_handle to vertex map
 		vertex_map[vertices_iterator] = n_tetra++;
 
-		current_point = vertices_iterator->point();
+		current_point = Point(vertices_iterator->point());
 
 		// Convert x,y,z to metres before writing
 		x = CGAL::to_double(current_point.x()) / MM_TO_M;
