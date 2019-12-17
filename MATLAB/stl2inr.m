@@ -5,6 +5,21 @@ function [ full_mask,elec_pos_new_sc ] = stl2inr( stlfile,pixel_scale,elec_pos )
 % https://uk.mathworks.com/matlabcentral/fileexchange/51200-stltools or
 % inside this folder
 
+%% check dependencies
+
+%stl reader
+if isempty(which('stlRead'))
+    p=mfilename('fullpath');
+    p=fileparts(p);
+    addpath([p filesep 'stlTools']);
+end
+
+% iso2mesh is needed 
+if (isempty(which('plotmesh')) || isempty(which('surf2vol')) || isempty(which('binsurface'))) 
+    error('stl2inr needs iso2mesh');
+    
+end
+
 %% check inputs
 % resolution of output volumetric image
 % pixel_scale = 1/vol_res; % THIS IS WHAT MUST MATCH IN THE MESHER SETTINGS
