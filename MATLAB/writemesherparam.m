@@ -93,5 +93,7 @@ fprintf(fid,'#Move electrodes to the closest facet in the mesh? Useful is electr
 fprintf(fid,'move_electrodes = %d\r\n',P.move.move_electrodes);
 fprintf(fid,'outermost_tissue = %d\r\n',P.move.outermost_tissue);
 
+fclose(fid);
+
 end
 
