@@ -1,8 +1,14 @@
 function [ full_mask,elec_pos_new_sc ] = stl2inr( stlfile,pixel_scale,elec_pos )
-%STL2INR Convert stl file to inr for meshing
-%   Detailed explanation goes here
-% requires iso2mesh and stlTools
-% https://uk.mathworks.com/matlabcentral/fileexchange/51200-stltools or
+%STL2INR Convert stl file to inr format for meshing
+%   STL files output from solidworks, are converted into volumetric mask. 
+%   Electrode positions in original STL coordinates are converted to the
+%   inr coordinates. User specifies the pixel_scale, higher creates a
+%   denser inr mask
+
+
+% Dependencies:
+% iso2mesh http://iso2mesh.sourceforge.net/cgi-bin/index.cgi
+% stlTools https://uk.mathworks.com/matlabcentral/fileexchange/51200-stltools or
 % inside this folder
 
 %% check dependencies
