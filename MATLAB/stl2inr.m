@@ -1,4 +1,4 @@
-function [ full_mask,elec_pos_new_sc ] = stl2inr( stlfile,pixel_scale,elec_pos )
+function [ full_mask,elec_pos_new_sc,transform ] = stl2inr( stlfile,pixel_scale,elec_pos,plotflag )
 %STL2INR Convert stl file to inr for meshing
 %   Detailed explanation goes here
 % requires iso2mesh and stlTools
@@ -10,18 +10,33 @@ function [ full_mask,elec_pos_new_sc ] = stl2inr( stlfile,pixel_scale,elec_pos )
 % pixel_scale = 1/vol_res; % THIS IS WHAT MUST MATCH IN THE MESHER SETTINGS
 vol_res=1/pixel_scale;
 
+if exist('plotflag','var') == 0 || isempty(plotflag)
+    plotflag =1;
+end
+
+
+
 
 %% Loading stls
-disp('Loading Stl meshes');
-[stlsurf.vertices,stlsurf.faces,stlsurf.normals,stlsurf.name] = stlRead(stlfile);
 
-figure;
-hold on
-plotmesh(stlsurf.vertices,stlsurf.faces,'facealpha',0)
-plot3(elec_pos(:,1),elec_pos(:,2),elec_pos(:,3),'.','MarkerSize',30);
-hold off
-title(sprintf('Stl file %s, elecs in original positions',stlfile));
-drawnow
+if isstruct(stlfile)
+    stlsurf.vertices = stlfile.vtx;
+    stlsurf.faces = stlfile.tri;
+    stlfile = stlfile.name;
+else
+    disp('Loading Stl meshes');
+    [stlsurf.vertices,stlsurf.faces,stlsurf.normals,stlsurf.name] = stlRead(stlfile);
+end
+
+if plotflag
+    figure;
+    hold on
+    plotmesh(stlsurf.vertices,stlsurf.faces,'facealpha',0)
+    plot3(elec_pos(:,1),elec_pos(:,2),elec_pos(:,3),'.','MarkerSize',30);
+    hold off
+    title(sprintf('Stl file %s, elecs in original positions',stlfile),'Interpreter','none');
+    drawnow
+end
 %% convert to binary mask
 
 disp('Making binary masks')
@@ -39,11 +54,12 @@ stlsurf.mask_sc=stlsurf.mask;
 % combine masks
 full_mask = stlsurf.mask_sc;
 
-figure
-imagesc(full_mask(:,:,mask_mid_idx(3)));daspect([1,1,1])
-title('Z slice through centre of binary mask');
-drawnow
-
+if plotflag
+    figure
+    imagesc(full_mask(:,:,mask_mid_idx(3)));daspect([1,1,1])
+    title('Z slice through centre of binary mask');
+    drawnow
+end
 %% convert electode positions
 %adjust positons based on the affine transform output from surf2vol
 newx=elec_pos(:,1) -stlsurf.transform(1,4);
@@ -58,27 +74,38 @@ elec_pos_new_sc=elec_pos_new*pixel_scale; % scale the electrode positions
 %compare electrode positions
 
 [node,elem]=binsurface(full_mask,4); % get just the surface of the binary mask
-
-figure
-title('Elecs on new isosurface - check alignment here!');
-hold on
-patch('Vertices',node,'faces',elem,'FaceColor','none','EdgeAlpha',0.2);
-
-plot3(elec_pos_new_sc(:,1),elec_pos_new_sc(:,2),elec_pos_new_sc(:,3),'.','MarkerSize',30);
-
-daspect([1,1,1])
-
-hold off
+if plotflag
+    figure
+    title('Elecs on new isosurface - check alignment here!');
+    hold on
+    patch('Vertices',node,'faces',elem,'FaceColor','none','EdgeAlpha',0.2);
+    
+    plot3(elec_pos_new_sc(:,1),elec_pos_new_sc(:,2),elec_pos_new_sc(:,3),'.','MarkerSize',30);
+    
+    daspect([1,1,1])
+    
+    hold off
+end
 %% save stuff for mesher
 
 full_mask=uint8(full_mask); % inr files need uint8
 
 [savepath,savename]=fileparts(stlfile);
 
+if isempty(savepath)
+    savefullpath=[savename];
+else
+    savefullpath=[savepath filesep savename];
+end
+
+
+
 %save the volumetric data for both skull and no skull cases
-saveinr_EIT(uint8(full_mask),[savepath filesep savename '.inr'],vol_res*[1 1 1]);
+saveinr_EIT(uint8(full_mask),[savefullpath '.inr'],vol_res*[1 1 1]);
 % save the electrode locations in the coordinates of the inr
-dlmwrite([savepath filesep savename '_elecINRpos.txt'],elec_pos_new_sc);
+dlmwrite([savefullpath '_elecINRpos.txt'],elec_pos_new_sc);
+
+transform=stlsurf.transform;
 
 
 end
