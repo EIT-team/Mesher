@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   int opt;
   // Input file locations (required as arguments)
   char *path_image, *path_electrode, *path_parameter, *deformation_file;
-  bool image_path_set = false, elec_path_set = false, param_path_set = false;
+  bool image_path_set = false, elec_path_set = false, param_path_set = false, deform_path_set = false;
   // Default values, can be changed with command line arguments
   string output_dir = "./output/";
   string input_mesh_name = "new_mesh";
@@ -69,6 +69,7 @@ int main(int argc, char *argv[])
       break;
     case 'w':
       deformation_file = optarg;
+      deform_path_set - true;
     }
   }
 
@@ -83,6 +84,8 @@ int main(int argc, char *argv[])
   cout << "Parameter file: " << path_parameter << "\n";
   cout << "Output directory: " << output_dir << "\n";
   cout << "Output mesh name: " << input_mesh_name << "\n\n";
+  if (deform_path_set)
+    cout << "Deformation file: " << deformation_file << "\n\n";
 
   // Read input file with parameters
   map<string, FT> options = read_params_from_file(path_parameter);
