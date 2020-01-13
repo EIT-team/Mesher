@@ -38,10 +38,10 @@ electrode_radius_mm = 1
 cell_size_electrodes_mm = 5
 
 # Optimisation (1 - yes, 0 - no)
-lloyd_opt = 0
-odt_opt = 0
-exude_opt = 0
-perturb_opt = 0
+lloyd_opt = 1
+odt_opt = 1
+exude_opt = 1
+perturb_opt = 1
 time_limit_sec = 300
 #Save a vtu file of the mesh?
 save_vtk = 1

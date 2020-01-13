@@ -37,5 +37,7 @@ double tetra_volume(std::vector<Point>);
 double tetra_squared_edge_length(std::vector<Point>);
 double tetra_quality(std::vector<Point>);
 std::vector<double> check_mesh_quality(C3t3_EIT &);
+void check_CGAL_opt_code(CGAL::Mesh_optimization_return_code);
+void optimise_mesh(C3t3_EIT &, Mesh_domain &, map<string, FT>);
 
 #endif

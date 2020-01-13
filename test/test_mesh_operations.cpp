@@ -31,6 +31,16 @@ TEST_CASE("2-Domain Unit Cube")
                                        CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
                                        CGAL::parameters::no_perturb(), CGAL::parameters::no_exude());
 
+    SECTION("Optimise mesh")
+    {
+        options["odt_opt"] = 1;
+        options["lloyd_opt"] = 1;
+        options["perturb_opt"] = 1;
+        options["exude_opt"] = 1;
+
+        optimise_mesh(c3t3, domain, options);
+    }
+
     SECTION("Check outer domain")
     {
 

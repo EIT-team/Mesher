@@ -1,6 +1,7 @@
 #include "mesh_operations.h"
 #include "CGAL_include.h"
 
+using namespace CGAL::parameters;
 using namespace std;
 
 /**
@@ -392,4 +393,65 @@ vector<double> check_mesh_quality(C3t3_EIT &c3t3)
   cout << "Average quality of elements: " << average_quality << endl;
 
   return metrics;
+}
+
+void check_CGAL_opt_code(CGAL::Mesh_optimization_return_code opt_code)
+{
+  if (opt_code == CGAL::TIME_LIMIT_REACHED)
+  {
+    cout << "time limit reached";
+  }
+  else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))
+  {
+    cout << "done, cannot improve anymore";
+  }
+  else
+  {
+    cout << "done";
+  }
+
+  cout << endl;
+}
+
+/* Run mesh optimsation */
+void optimise_mesh(C3t3_EIT &c3t3, Mesh_domain &domain, map<string, FT> options)
+{
+  CGAL::Mesh_optimization_return_code opt_code;
+  cout << "Optimising Mesh" << endl;
+
+  vector<double> mesh_quality_metrics(3);
+  mesh_quality_metrics = check_mesh_quality(c3t3);
+  cout << "Number of tetra before optimisation: " << c3t3.number_of_cells_in_complex() << endl;
+
+  if (int(options["odt_opt"]) == 1)
+  {
+    cout << "ODT... " << flush;
+    opt_code = CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
+    check_CGAL_opt_code(opt_code);
+  }
+
+  if (int(options["lloyd_opt"]) == 1)
+  {
+    cout << "Lloyd... " << flush;
+    opt_code = CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
+    check_CGAL_opt_code(opt_code);
+  }
+
+  if (int(options["perturb_opt"]) == 1)
+  {
+    cout << "Perturb... " << flush;
+    opt_code = CGAL::perturb_mesh_3(c3t3, domain, sliver_bound = 10, time_limit = options["time_limit_sec"]);
+    check_CGAL_opt_code(opt_code);
+  }
+
+  if (int(options["exude_opt"]) == 1)
+  {
+    cout << "Exude... " << flush;
+    opt_code = CGAL::exude_mesh_3(c3t3, sliver_bound = 10, time_limit = options["time_limit_sec"]);
+    check_CGAL_opt_code(opt_code);
+  }
+
+  // check mesh quality again to show improvement
+  mesh_quality_metrics = check_mesh_quality(c3t3);
+  cout << "Number of tetra after optimisation: " << c3t3.number_of_cells_in_complex() << endl;
 }

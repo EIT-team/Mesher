@@ -91,11 +91,12 @@ int main(int argc, char *argv[])
   map<string, FT> options = read_params_from_file(path_parameter);
 
   //Set some additional parameters if deforming the mesh
-   if (options["do_deformation"]) {
+  if (options["do_deformation"])
+  {
 
     int n_deformations = options["num_deformations"];
-    cout << "Mesh deformation turned on. " <<  n_deformations << " meshes will be generated" << endl;
-    vector< vector<double> > deformations = load_deformations(deformation_file);
+    cout << "Mesh deformation turned on. " << n_deformations << " meshes will be generated" << endl;
+    vector<vector<double>> deformations = load_deformations(deformation_file);
   }
 
   // Loads image
@@ -119,7 +120,6 @@ int main(int argc, char *argv[])
   // Do the stretch in input file
   if (options["do_deformation"])
   {
-
     cout << "Deforming mesh." << endl;
 
     // Multiple deformations could be defined in needed, only using 1 for now
@@ -174,91 +174,16 @@ int main(int argc, char *argv[])
 
   cout << "number of tetra: " << c3t3.number_of_cells_in_complex() << endl;
 
-  mesh_quality_metrics = check_mesh_quality(c3t3);
-
   //Optimisation - this is the preferred order to run the optimisations in
   //according to CGAL documentation.
 
-  if ((int(options["odt_opt"]) == 1) || (int(options["lloyd_opt"]) == 1) || (int(options["perturb_opt"]) == 1) || (int(options["exude_opt"]) == 1))
+  if ((int(options["odt_opt"]) == 1) ||
+      (int(options["lloyd_opt"]) == 1) ||
+      (int(options["perturb_opt"]) == 1) ||
+      (int(options["exude_opt"]) == 1))
   {
-
-    CGAL::Mesh_optimization_return_code opt_code;
-    cout << endl
-         << "Optimising Mesh" << endl;
-    if (int(options["odt_opt"]) == 1)  {
-      cout << "ODT... " << flush;
-      opt_code = CGAL::odt_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
-
-      if (opt_code == CGAL::TIME_LIMIT_REACHED)  {
-        cout << "time limit reached";
-      }
-      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))  {
-        cout << "done, cannot improve anymore";
-      }
-      else   {
-        cout << "done";
-      }
-
-      cout << endl;
-    }
-
-    if (int(options["lloyd_opt"]) == 1)  {
-      cout << "Lloyd... " << flush;
-      opt_code = CGAL::lloyd_optimize_mesh_3(c3t3, domain, time_limit = options["time_limit_sec"]);
-
-      if (opt_code == CGAL::TIME_LIMIT_REACHED)   {
-        cout << "time limit reached";
-      }
-      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))   {
-        cout << "done, cannot improve anymore";
-      }
-      else {
-        cout << "done";
-      }
-
-      cout << endl;
-    }
-
-    if (int(options["perturb_opt"]) == 1)  {
-      cout << "Perturb... " << flush;
-      opt_code = CGAL::perturb_mesh_3(c3t3, domain, sliver_bound = 10, time_limit = options["time_limit_sec"]);
-
-      if (opt_code == CGAL::TIME_LIMIT_REACHED)  {
-        cout << "time limit reached";
-      }
-      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))  {
-        cout << "done, cannot improve anymore";
-      }
-      else   {
-        cout << "done";
-      }
-
-      cout << endl;
-    }
-
-    if (int(options["exude_opt"]) == 1)  {
-      cout << "Exude... " << flush;
-      opt_code = CGAL::exude_mesh_3(c3t3, sliver_bound = 10, time_limit = options["time_limit_sec"]);
-
-      if (opt_code == CGAL::TIME_LIMIT_REACHED)  {
-        cout << "time limit reached";
-      }
-      else if ((opt_code == CGAL::CANT_IMPROVE_ANYMORE) || (opt_code == CGAL::CONVERGENCE_REACHED))  {
-        cout << "done, cannot improve anymore";
-      }
-      else   {
-        cout << "done";
-      }
-
-      cout << endl;
-    }
-
-    // check mesh quality again to show improvement
-    mesh_quality_metrics = check_mesh_quality(c3t3);
-    cout << "Number of tetra after optimisation: " << c3t3.number_of_cells_in_complex() << endl;
+    optimise_mesh(c3t3, domain, options);
   }
-
-  // print number of cells
 
   // Generate reference electrode location and append to electrode list
   cout << endl;
@@ -286,10 +211,7 @@ int main(int argc, char *argv[])
 
   for (auto elem : options)
   {
-    //cout << elem.first << " " << elem.second << endl; // print the parameters and the values
-    //parameters[elem.first] = to_string(elem.second);
-
-    // make the stream object - this makes nicer strings that to_string (although that might be because I dont know how to use it well)
+    // make the stream object - this makes nicer strings that to_string
     ostringstream currentVal;
     currentVal << elem.second;
     parameters[elem.first] = currentVal.str(); // save into the parameters map
@@ -338,6 +260,9 @@ int main(int argc, char *argv[])
     cout << "Writing vtu file" << vtk_file_path << endl;
     int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
   }
+
+  mesh_quality_metrics = check_mesh_quality(c3t3);
+
   // add this here again so its easier to see in terminal
   cout << "All done! Created mesh with " << c3t3.number_of_cells_in_complex() << " elements, and " << mesh_quality_metrics.at(2) << " average quality" << endl;
 
