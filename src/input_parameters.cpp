@@ -82,15 +82,30 @@ vector<vector<double>> load_deformations(const char *file_name_input)
   while (deform_file >> dist_x >> dist_y >> dist_z)
   {
     cout << dist_x << " " << dist_y << " " << dist_z << endl;
-    //TODO: Check sensible values
 
-    vector<double> this_deform;
-    this_deform.push_back(dist_x);
-    this_deform.push_back(dist_y);
-    this_deform.push_back(dist_z);
+    if check_distances_ok(x, y, z) {
+      vector<double> this_deform;
+      this_deform.push_back(dist_x);
+      this_deform.push_back(dist_y);
+      this_deform.push_back(dist_z);
 
-    deformations.push_back(this_deform);
+      deformations.push_back(this_deform);
+      }
+    
+    else {
+      cout << "Skiping deformation as one or more values are negetive" << endl;
+    }
   }
 
   return deformations;
+}
+
+/** Check the deformation distances are positive values **/
+int check_distances_ok(double x, double y, double z)
+{
+  if (x < 0) || (y < 0) || (z < 0) {
+    return 0;
+  }
+
+  return 1;
 }

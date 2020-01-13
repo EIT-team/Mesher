@@ -233,6 +233,20 @@ TEST_CASE ("Identify unique layers in unit cube") {
 
 }
 
+
+TEST_CASE ("Deformation distance validation") {
+
+  double valide = 1.1;
+  double invalid = -1;
+
+  REQUIRE(check_distances_ok(valid, valid, valid) == 1);
+  REQUIRE(check_distances_ok(valid, valid, invalid) == 0);
+  REQUIRE(check_distances_ok(valid, invalid, valid) == 0);
+  REQUIRE(check_distances_ok(invalid, valid, valid) == 0);
+
+}
+
+//TODO: Use function for loading deformations
 TEST_CASE ("Defined deformations of unit cube") {
   /* Do some defined (as opposed to random) deformations on a unit cube
    and check the resulting mesh is as expected */
@@ -277,7 +291,6 @@ TEST_CASE ("Defined deformations of unit cube") {
         cout << "Creating mesh" << endl;
 
         Mesh_domain domain(image);
-        //  TODO: Pick some objective values for facet_size etc. Just guessing at the moment
         Mesh_criteria criteria(facet_angle=30, facet_size=0.03, facet_distance=1, cell_radius_edge_ratio=3, cell_size=0.03);
 
         C3t3_EIT c3t3;
@@ -294,65 +307,3 @@ TEST_CASE ("Defined deformations of unit cube") {
 
 
 }
-/*
-  SECTION( "Y stretch only") {
-
-      double dist_x = 0;
-      double dist_y = 0.25;
-      double dist_z = 0;
-
-      vector<double> direction;
-      direction.push_back(dist_x); direction.push_back(dist_y); direction.push_back(dist_z);
-
-      warper.defined_stretch(direction);
-
-      cout << "Creating mesh" << endl;
-
-      Mesh_domain domain(image);
-      //TODO: Pick some objective values for facet_size etc. Just guessing at the moment
-      Mesh_criteria criteria(facet_angle=30, facet_size=0.03, facet_distance=1, cell_radius_edge_ratio=3, cell_size=0.03);
-
-      C3t3_EIT c3t3;
-      c3t3 = CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
-      CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
-      CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
-
-      int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, "cube_stretch" + to_string(dist_x)
-                                                        + to_string(dist_y) + to_string(dist_z) + ".vtu");
-
-      CHECK(vtk_success == 1);
-
-
-
-  }
-
-  SECTION( "Z stretch only") {
-
-      double dist_x = 0;
-      double dist_y = 0.4;
-      double dist_z = 0.25;
-
-      vector<double> direction;
-      direction.push_back(dist_x); direction.push_back(dist_y); direction.push_back(dist_z);
-
-      warper.defined_stretch(direction);
-
-      cout << "Creating mesh" << endl;
-
-      Mesh_domain domain(image);
-      //TODO: Pick some objective values for facet_size etc. Just guessing at the moment
-      Mesh_criteria criteria(facet_angle=30, facet_size=0.03, facet_distance=1, cell_radius_edge_ratio=3, cell_size=0.03);
-
-      C3t3_EIT c3t3;
-      c3t3 = CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
-      CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
-      CGAL::parameters::no_perturb(),CGAL::parameters::no_exude());
-
-      int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, "cube_stretch" + to_string(dist_x)
-                                                        + to_string(dist_y) + to_string(dist_z) + ".vtu");
-
-      CHECK(vtk_success == 1);
-
-  }
-}
-*/
