@@ -262,7 +262,7 @@ TEST_CASE("Defined deformations of unit cube")
   ifstream deform_file("../test/list_of_deformations.txt", std::ifstream::in);
   if (!deform_file)
     perror("\n Error opening deformations file");
-  cout << "Reading deformations from fie." << endl;
+  cout << "Reading deformations from file." << endl;
 
   double dist_x, dist_y, dist_z;
 

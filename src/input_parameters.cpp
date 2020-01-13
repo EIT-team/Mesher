@@ -75,7 +75,7 @@ vector<vector<double>> load_deformations(const char *file_name_input)
     perror("\n Error opening deformations file");
   }
 
-  cout << "Reading deformations from fie." << endl;
+  cout << "Reading deformations from file." << endl;
 
   double dist_x, dist_y, dist_z;
 
