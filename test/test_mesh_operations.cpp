@@ -8,6 +8,7 @@ using namespace CGAL::parameters;
 using namespace std;
 
 #include "write_c3t3_to_vtk_xml_file.h"
+
 TEST_CASE("2-Domain Unit Cube")
 {
     const char *inr_path_2_domains = "../test/unit_cube_2_domains.inr";
@@ -16,7 +17,6 @@ TEST_CASE("2-Domain Unit Cube")
     image.read(inr_path_2_domains);
 
     Mesh_domain domain(image);
-    //TODO: Pick some objective values for facet_size etc. Just guessing at the moment
     char *path_parameter = (char *)"./input_idx.txt";
     std::map<std::string, FT> options = read_params_from_file(path_parameter);
 
@@ -81,8 +81,7 @@ TEST_CASE("Unit Cube")
 
     check_mesh_quality(c3t3);
 
-    //TODO: Choose sensible margin
-    double margin = 0.2; // Margin of error in results
+    double margin = 0.2; // Margin of error in results. A guesstimate of a sensible value.
 
     SECTION("Check centre of mesh")
     {
