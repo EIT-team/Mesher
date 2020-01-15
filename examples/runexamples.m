@@ -6,7 +6,7 @@ pixel_scale=1;
 % create INR from STL
 elec_pos=dlmread('neonatescalp/NNelecposorig.txt');
 
-[ full_mask,elec_pos_new_sc ] = stl2inr( 'neonatescalp/NNscalp.stl',pixel_scale,elec_pos );
+[ full_mask,elec_pos_new_sc ] = stl2inr('neonatescalp/NNscalp.stl',pixel_scale,elec_pos );
 
 %set parameters
 P=getmesherparam;

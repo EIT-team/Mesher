@@ -167,6 +167,7 @@ if plotflag
     end
     daspect([1,1,1])
     hold off
+    drawnow
 end
 %% save stuff for mesher
 
