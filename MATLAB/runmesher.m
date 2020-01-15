@@ -14,7 +14,7 @@ if exist('MesherRoot','var') == 0 || isempty(MesherRoot)
     
     %If we are using WSL then we want to change to linux path,
     % e.g. 'C:\Users\James\Mesher\MATLAB' to '/mnt/c/Users/James/Mesher/'
-    
+   
     if ispc
         meshrt=strrep(meshrt,'\','/');
         meshrt=strrep(meshrt,':','');
@@ -42,7 +42,6 @@ ELECSTR = electrodesfile;
 
 PARAMSTR = parameterfile;
 % [MesherRoot 'inputs/input_idx.txt'];
-
 
 CMDSTR = [MesherRoot MesherDir ' -i ' INRSTR ' -e ' ELECSTR ' -p ', PARAMSTR];
 
