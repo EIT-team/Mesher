@@ -16,13 +16,13 @@ script:
     - cd ../test/
   - ./run_tests
 
-  - cd ..
+  - cd ../examples
 
-  - ECHO "Running Unit Cube Example"
+  - echo "Running Unit Cube Example"
   - ../bin/mesher -i unitcube/unit_cube.inr -e unitcube/electrodes.txt  -p unitcube/input_idx.txt -o unitcubeexample -d unitcube/output/
 
-  - ECHO "Running Neonate Example"
+  - echo "Running Neonate Example"
   - ../bin/mesher -i  neonatescalp/NNscalp.inr -e neonatescalp/NNscalp_elecINRpos.txt  -p neonatescalp/NNscalp_param.txt -o NNexample -d neonatescalp/output/
 
-  - ECHO "Running Brain Example"
+  - echo "Running Brain Example"
   - ../bin/mesher -i brain/input.inr -e brain/Electrodes.txt -p brain/input_idx.txt -o brainexample -d brain/output/
