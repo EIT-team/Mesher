@@ -54,12 +54,10 @@ save_nodes_tetra = 1
 
 #Deform the mesh?
 do_deformation = 0
-deform_x = 0
-deform_y = 0
-deform_z = 0
-num_deformations = 5
 min_stretch_distance = 5
 max_stretch_distance = 50
+stretch_probability = 0.5
+dilate_probability = 0.33
 
 #Move electrodes to the closest facet in the mesh? Useful is electrodes not exactly on the mesh
 # Will move electrode to the nearest facet with tissue type equal to outermost_tissue
