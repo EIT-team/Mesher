@@ -15,7 +15,10 @@ TEST_CASE("Array indexing")
 {
   Deform_Volume warper;
   int dims = 5;
-  warper.dims = dims; //Length of x,y,z, dimension
+  warper.xdim = dims;
+  warper.ydim = dims;
+  warper.zdim = dims;
+
   //Setup
   int i, j, k;
   long idx;
@@ -40,7 +43,10 @@ TEST_CASE("Array indexing")
     {
       // Test for final elment of typical array size
       int big_dim = 512;
-      warper.dims = big_dim;
+      warper.xdim = big_dim;
+      warper.ydim = big_dim;
+      warper.zdim = big_dim;
+
       int max_array_idx = big_dim - 1; // due to 0 indexing
 
       idx = warper.get_array_index(max_array_idx, max_array_idx, max_array_idx);
@@ -63,8 +69,9 @@ TEST_CASE("Neighbouring elements to first elment")
 
   Deform_Volume warper;
   int dims = 5;
-  warper.dims = dims; //Length of x,y,z, dimension
-
+  warper.xdim = dims;
+  warper.ydim = dims;
+  warper.zdim = dims;
   long idx;
   int expected_neighbours = 7;
 
@@ -88,8 +95,9 @@ TEST_CASE("Neighbouring elements to last corner")
 
   Deform_Volume warper;
   int dims = 5;
-  warper.dims = dims; //Length of x,y,z, dimension
-
+  warper.xdim = dims;
+  warper.ydim = dims;
+  warper.zdim = dims;
   long idx;
 
   int expected_neighbours = 7;
@@ -112,8 +120,9 @@ TEST_CASE("Neighbouring elements to centre")
 
   Deform_Volume warper;
   int dims = 5;
-  warper.dims = dims; //Length of x,y,z, dimension
-
+  warper.xdim = dims;
+  warper.ydim = dims;
+  warper.zdim = dims;
   long idx;
 
   int expected_neighbours = 26;
@@ -139,8 +148,9 @@ TEST_CASE("Dilation")
 
   Deform_Volume warper;
   int dims = 5;
-  warper.dims = dims; //Length of x,y,z, dimension
-
+  warper.xdim = dims;
+  warper.ydim = dims;
+  warper.zdim = dims;
   int total_elements = dims * dims * dims;
 
   unsigned char test_input[dims * dims * dims];
@@ -158,7 +168,7 @@ TEST_CASE("Dilation")
     test_input[i] = layer_0;
   }
 
-  SECTION("Dilate central elment")
+  SECTION("Dilate central element")
   {
 
     // Set central element to 1
@@ -211,7 +221,10 @@ TEST_CASE("Identify unique layers in unit cube")
   CGAL::Image_3 image;
   image.read(inr_path);
 
-  Deform_Volume warper(&image);
+  char *path_parameter = (char *)"./input_idx.txt";
+  std::map<std::string, FT> options = read_params_from_file(path_parameter);
+
+  Deform_Volume warper(&image, options);
 
   warper.get_layers();
   std::vector<int> expected = {1};
@@ -233,19 +246,6 @@ TEST_CASE("Identify unique layers in unit cube")
   REQUIRE(warper.layers == expected);
 }
 
-TEST_CASE("Deformation distance validation")
-{
-
-  double valid = 1.1;
-  double invalid = -1;
-
-  REQUIRE(check_distances_ok(valid, valid, valid) == 1);
-  REQUIRE(check_distances_ok(valid, valid, invalid) == 0);
-  REQUIRE(check_distances_ok(valid, invalid, valid) == 0);
-  REQUIRE(check_distances_ok(invalid, valid, valid) == 0);
-}
-
-//TODO: Use function for loading deformations
 TEST_CASE("Defined deformations of unit cube")
 {
   /* Do some defined (as opposed to random) deformations on a unit cube
@@ -258,6 +258,9 @@ TEST_CASE("Defined deformations of unit cube")
   const char *inr_path = "../test/unit_cube.inr";
 
   vector<vector<double>> deformations;
+
+  char *path_parameter = (char *)"./input_idx.txt";
+  std::map<std::string, FT> options = read_params_from_file(path_parameter);
 
   ifstream deform_file("../test/list_of_deformations.txt", std::ifstream::in);
   if (!deform_file)
@@ -285,7 +288,7 @@ TEST_CASE("Defined deformations of unit cube")
     CGAL::Image_3 image;
     image.read(inr_path);
 
-    Deform_Volume warper(&image);
+    Deform_Volume warper(&image, options);
 
     warper.defined_stretch(deformations[i]);
 
@@ -303,4 +306,32 @@ TEST_CASE("Defined deformations of unit cube")
 
     CHECK(vtk_success == 1);
   }
+}
+
+TEST_CASE("Random deformation on brain mesh")
+{
+  /* Do some random deformations on a brain .inr file, which has
+  different x/y/z dimensions. */
+
+  const char *inr_path = "../examples/brain/input.inr";
+
+  char *path_parameter = (char *)"./input_idx.txt";
+  std::map<std::string, FT> options = read_params_from_file(path_parameter);
+
+  CGAL::Image_3 image;
+  image.read(inr_path);
+
+  Deform_Volume warper(&image, options);
+
+  warper.modify_image();
+
+  cout << "Creating mesh" << endl;
+
+  Mesh_domain domain(image);
+  Mesh_criteria criteria(facet_angle = 30, facet_size = 4, facet_distance = 5, cell_radius_edge_ratio = 3, cell_size = 8);
+
+  C3t3_EIT c3t3;
+  c3t3 = CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
+                                     CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
+                                     CGAL::parameters::no_perturb(), CGAL::parameters::no_exude());
 }

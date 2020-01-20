@@ -7,15 +7,19 @@ Deform_Volume::Deform_Volume()
   ;
 }
 
-Deform_Volume::Deform_Volume(CGAL::Image_3 *image)
+Deform_Volume::Deform_Volume(CGAL::Image_3 *image, map<string, FT> options)
 {
 
-  // Default values, can be changed in mesh input/parameter file
-  min_stretch = 5;
-  max_stretch = 50;
+  min_stretch = options["min_stretch_distance"];
+  max_stretch = options["max_stretch_distance"];
+
+  stretch_probability = options["stretch_probability"];
+  dilate_probability = options["dilate_probability"];
 
   image_data = (unsigned char *)image->data();
-  dims = image->xdim();
+  xdim = image->xdim();
+  ydim = image->ydim();
+  zdim = image->zdim();
 
   vx = image->vx();
   vy = image->vy();
@@ -36,9 +40,9 @@ long Deform_Volume::get_array_index(int x, int y, int z)
 {
 
   long idx;
-  idx = (x * dims + y) * dims + z;
+  idx = (x * xdim + y) * ydim + z;
 
-  if (idx >= dims * dims * dims)
+  if (idx >= xdim * ydim * zdim)
   {
     //std::cout << "Array index too big!" << std::endl;
     return -1;
@@ -64,7 +68,7 @@ void Deform_Volume::dilate_layer(int layer_index, int n_pixels)
 
   unsigned char layer_index_char = (unsigned char)layer_index;
 
-  long n_elements = dims * dims * dims;
+  long n_elements = xdim * ydim * zdim;
   long vector_element, i;
   vector<long> neighbours;
   unordered_set<long> elements_to_change;
@@ -109,9 +113,9 @@ vector<long> Deform_Volume::neighbouring_elements(long voxel_index)
 
   int x, y, z; //Indexes of voxel
 
-  z = voxel_index % dims;
-  y = ((voxel_index - z) / dims) % dims;
-  x = ((voxel_index - z) - y * dims) / (dims * dims);
+  x = voxel_index / (xdim * ydim);
+  y = voxel_index % (ydim * xdim) / ydim;
+  z = voxel_index - ((x * xdim) + y) * ydim;
 
   vector<long> neighbours;
 
@@ -128,7 +132,7 @@ vector<long> Deform_Volume::neighbouring_elements(long voxel_index)
         this_idx = get_array_index(i, j, k);
 
         // Check that voxel is within bounds [0 NDIMS] and that it is not the original voxel
-        if (i >= 0 && i < dims && j >= 0 && j < dims && k >= 0 && k < dims &&
+        if (i >= 0 && i < xdim && j >= 0 && j < ydim && k >= 0 && k < zdim &&
             this_idx != voxel_index)
         {
           neighbours.push_back(this_idx);
@@ -140,29 +144,6 @@ vector<long> Deform_Volume::neighbouring_elements(long voxel_index)
   return neighbours;
 }
 
-/** Check that points are valid and that new point will be within the the bounds of the array.
- * Return true if all valid.
- **/
-bool Deform_Volume::check_valid_points()
-{
-
-  if (point_to_move == anchor)
-  {
-    cout << "Point to move cannot be the same as the anchor point" << endl;
-    return false;
-  }
-
-  bool too_big = (point_to_move + distance_to_move) > dims;
-  bool too_small = (point_to_move - distance_to_move) < 0;
-
-  if (too_big || too_small)
-  {
-    cout << " Distance to move too great, new point outside bounds of array" << endl;
-    return false;
-  }
-
-  return true;
-}
 /* Deform the mesh by a particular amount (disance_mm) in a particular x/y/z direction
     If distance_mm[x/y/z] is 0, no stretch is performed in that direction.
     A positive/negative value stretches to the right/left respectively.
@@ -186,8 +167,9 @@ void Deform_Volume::defined_stretch(vector<double> distance_mm)
   int mins[n_dims] = {xmin, ymin, zmin};
   int mids[n_dims] = {xmid, ymid, zmid};
 
-// Calculate the stretch parameter for each dimension (X,Y,Z)
-  for (int i = 0; i < n_dims; i++) {
+  // Calculate the stretch parameter for each dimension (X,Y,Z)
+  for (int i = 0; i < n_dims; i++)
+  {
 
     double dist = distance_mm[i];
     double voxel_distance = voxel_distances[i];
@@ -211,7 +193,6 @@ void Deform_Volume::defined_stretch(vector<double> distance_mm)
     stretch.push_back(voxel_distance);
     stretch.push_back(anchor);
   }
-
 
   // Do the stretch
   stretch_array(stretch);
@@ -247,9 +228,9 @@ void Deform_Volume::stretch_array(vector<int> stretch)
   double min_stretch_ratio;
 
   // Create stretch objects in each dimension
-  Mesh_Stretcher x(stretch[0], stretch[1], stretch[2], dims);
-  Mesh_Stretcher y(stretch[3], stretch[4], stretch[5], dims);
-  Mesh_Stretcher z(stretch[6], stretch[7], stretch[8], dims);
+  Mesh_Stretcher x(stretch[0], stretch[1], stretch[2], xdim);
+  Mesh_Stretcher y(stretch[3], stretch[4], stretch[5], ydim);
+  Mesh_Stretcher z(stretch[6], stretch[7], stretch[8], zdim);
 
   // Loop over each element that is affected by the stretch
   int x_idx, y_idx, z_idx;
@@ -294,10 +275,10 @@ void Deform_Volume::stretch_array(vector<int> stretch)
   deformation_info += z.stretch_description();
 }
 
+/* Randomly stretch/dilate the data */
 void Deform_Volume::modify_image()
 {
-  //TODO: Don't use hard coded values for probabilities of operations below
-  std::cout << std::endl
+  std::cout << endl
             << "MODIFYING IMAGE DATA" << endl;
 
   string mesh_stretcher = "";
@@ -307,55 +288,53 @@ void Deform_Volume::modify_image()
   // Do at least one deformation
   random_stretch();
 
-  // 50% chance of continuing
-  while (rand() % 2)
-    ;
+  // Do more streches?
+  while ((rand() / double(RAND_MAX)) < stretch_probability)
   {
-
-    //50% chance of stretch
-    if (rand() % 2)
-    {
-      random_stretch();
-    }
-
-    // 1 in 3 % chance of dilation
-    if ((rand() % 3) < 1)
-    {
-      random_dilate();
-    }
-
-    find_mesh_bounds(); //Update edges of object
+    //random_stretch();
   }
+
+  // Do some dilation?
+  while ((rand() / double(RAND_MAX)) < dilate_probability)
+  {
+    //random_dilate();
+  }
+
+  find_mesh_bounds(); //Update edges of object
 }
 
 void Deform_Volume::random_stretch()
 {
-
   vector<int> stretch;
 
   //TODO: point_to_move, distance and anchor are class variables, is this needed anymore?
   //x data
-  point_to_move = random_stretch_point(xmin, xmax);
+  int max_distance;
+
+  point_to_move = random_stretch_point(xmin, xmax, xdim);
   anchor = random_anchor_point(xmin, xmax);
-  distance_to_move = min_stretch + rand() % (min(max_stretch, min(point_to_move, dims - point_to_move)));
+  max_distance = 1 + (min(max_stretch, min(point_to_move, xdim - point_to_move)));
+  distance_to_move = min_stretch + rand() % max_distance;
 
   stretch.push_back(point_to_move);
   stretch.push_back(distance_to_move);
   stretch.push_back(anchor);
 
   //y data
-  point_to_move = random_stretch_point(ymin, ymax);
+  point_to_move = random_stretch_point(ymin, ymax, ydim);
   anchor = random_anchor_point(ymin, ymax);
-  distance_to_move = min_stretch + rand() % (min(max_stretch, min(point_to_move, dims - point_to_move)));
+  max_distance = 1 + (min(max_stretch, min(point_to_move, ydim - point_to_move)));
+  distance_to_move = min_stretch + rand() % max_distance;
 
   stretch.push_back(point_to_move);
   stretch.push_back(distance_to_move);
   stretch.push_back(anchor);
 
   //z data
-  point_to_move = random_stretch_point(zmin, zmax);
+  point_to_move = random_stretch_point(zmin, zmax, zdim);
   anchor = random_anchor_point(zmin, zmax);
-  distance_to_move = min_stretch + rand() % (min(max_stretch, min(point_to_move, dims - point_to_move)));
+  max_distance = 1 + (min(max_stretch, min(point_to_move, ydim - point_to_move)));
+  distance_to_move = min_stretch + rand() % max_distance;
 
   stretch.push_back(point_to_move);
   stretch.push_back(distance_to_move);
@@ -378,21 +357,20 @@ void Deform_Volume::random_stretch()
     stretch[6] = -1; //z
   }
 
-  stretch_array(stretch);
+  //stretch_array(stretch);
 }
 
 /** Return a stretch point that is < idx_min or > idx_max
     Pick  a point 1 voxels away from the maximum/minimum
-    Check it is not outside of the array (> dims or < 0)
+    Check it is not outside of the array (> dim or < 0)
     **/
-int Deform_Volume::random_stretch_point(int idx_min, int idx_max)
+int Deform_Volume::random_stretch_point(int idx_min, int idx_max, int dim)
 {
-
   int upper = idx_max + 1;
   int lower = idx_min - 1;
 
   // Make sure they are within bounds of array
-  upper = min(upper, dims);
+  upper = min(upper, dim);
   lower = max(lower, 0);
 
   if (rand() % 2)
@@ -415,7 +393,6 @@ int Deform_Volume::random_anchor_point(int idx_min, int idx_max)
 
 void Deform_Volume::random_dilate()
 {
-
   int layer, dilate_amount;
   int max_dilate = 1;
 
@@ -433,9 +410,8 @@ void Deform_Volume::random_dilate()
   **/
 void Deform_Volume::get_layers()
 {
-
   layers.clear(); // Empty the layers vector, so that elements aren't added twice.
-  
+
   // Set maximum number of layers to some unreasonably high value, so that
   // we always have space.
   int max_layers = 100;
@@ -444,20 +420,21 @@ void Deform_Volume::get_layers()
   // Loop over all elements in mesh. Use hash map to keep track of layers
   // that we have seen.
   int current_layer;
-  long total_elements = dims*dims*dims;
+  long total_elements = xdim * ydim * zdim;
 
-  for (int i = 0; i < total_elements; i++) {
+  for (int i = 0; i < total_elements; i++)
+  {
     current_layer = image_data[i];
     layer_seen[current_layer] = 1;
-    }
+  }
 
   // Add all layers that we have seen to the 'layers' vector.
   // Start at 1 as 0 is the 'empty' layer
-  for (int i = 1; i < max_layers; i++) {
+  for (int i = 1; i < max_layers; i++)
+  {
     if (layer_seen[i] == 1)
       layers.push_back(i);
   }
-
 }
 
 /** Find the first/last non 0 element along each dimensional
@@ -465,7 +442,6 @@ void Deform_Volume::get_layers()
   **/
 void Deform_Volume::find_mesh_bounds()
 {
-
   // reset bounds
   xmax = INT_MIN, ymax = INT_MIN, zmax = INT_MIN;
   xmin = INT_MAX, ymin = INT_MAX, zmin = INT_MAX;
@@ -473,16 +449,16 @@ void Deform_Volume::find_mesh_bounds()
   int x, y, z;
   long idx;
 
-  for (x = 0; x < dims; x++)
+  for (x = 0; x < xdim; x++)
   {
-    for (y = 0; y < dims; y++)
+    for (y = 0; y < ydim; y++)
     {
-      for (z = 0; z < dims; z++)
+      for (z = 0; z < zdim; z++)
       {
 
         // Dimensions of inr data are assumed to be in z,y,x order here
         // Not 100% sure this will be true in all cases?
-        
+
         idx = get_array_index(z, y, x);
         // Is this element non 0 i.e. not background
         // if so check if the min/max values should be updated
