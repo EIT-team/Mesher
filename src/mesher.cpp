@@ -90,15 +90,6 @@ int main(int argc, char *argv[])
   // Read input file with parameters
   map<string, FT> options = read_params_from_file(path_parameter);
 
-  //Set some additional parameters if deforming the mesh
-  if (options["do_deformation"])
-  {
-
-    int n_deformations = options["num_deformations"];
-    cout << "Mesh deformation turned on. " << n_deformations << " meshes will be generated" << endl;
-    vector<vector<double>> deformations = load_deformations(deformation_file);
-  }
-
   // Loads image
   CGAL::Image_3 image;
   cout << "Reading the Image file... " << endl;
@@ -122,22 +113,9 @@ int main(int argc, char *argv[])
   {
     cout << "Deforming mesh." << endl;
 
-    // Multiple deformations could be defined in needed, only using 1 for now
-    vector<double> single_deformation;
+    Deform_Volume warper(&image, options);
 
-    single_deformation.push_back(options["deform_x"]);
-    single_deformation.push_back(options["deform_y"]);
-    single_deformation.push_back(options["deform_z"]);
-
-    Deform_Volume warper(&image);
-
-    warper.defined_stretch(single_deformation);
-
-    //TODO: is this needed? If so, make it more streamlined to do lost of deformations
-    // Also do some random deformation
-    //warper.min_stretch = options["min_stretch_distance"];
-    //warper.max_stretch = options["max_stretch_distance"];
-    //warper.modify_image();
+    warper.modify_image();
 
     // Append mesh_name with details of deformation
     output_mesh_name = input_mesh_name + warper.deformation_info;
@@ -268,30 +246,3 @@ int main(int argc, char *argv[])
 
   return 0;
 }
-
-// do {
-//   // Loads image
-//   CGAL::Image_3 image;
-//   cout<<"\n Reading the Image file... ";
-//
-//   image.read(path_image);
-//   cout << "Dimensions of image: " << image.xdim() << endl;
-//
-//   // Set to default value
-//   output_mesh_name = input_mesh_name;
-//
-//   if (do_deform) {
-//     cout << "Deformations left: " << n_deformations << endl;
-//     Deform_Volume warper( &image );
-//
-
-//
-//     warper.modify_image();
-//
-//     // Append mesh_name with details of deformation
-//     output_mesh_name = input_mesh_name + warper.deformation_info;
-//     cout << "New mesh name: " << output_mesh_name << endl;
-//
-//   }
-
-// Domain
