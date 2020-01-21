@@ -84,7 +84,7 @@ Sizing_field::Sizing_field(Point &origin_in, string path_electrode, std::map<std
  * Each point in the mesh will be passed to this function, returning the cell size at that point.
  * 
  * Points near to an electrode are always refined.
- * Spherical, square, planar can be set in the parameter file. If none are set, elliptical refinment is
+ * Spherical, cuboid, planar can be set in the parameter file. If none are set, elliptical refinment is
  * used by default, where the cells closer to the centre are refined more than those further away 
  **/
 FT Sizing_field::operator()(const Point &p, const int, const Index &) const
@@ -130,22 +130,22 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
     }
   }
 
-  if (options.at("square_refinement"))
+  if (options.at("cuboid_refinement"))
   {
-    // Refine a square around a specificed point.
+    // Refine a cuboid around a specificed point.
 
-    Point square_centre(options.at("square_centre_x"),
-                        options.at("square_centre_y"),
-                        options.at("square_centre_z"));
+    Point cuboid_centre(options.at("cuboid_centre_x"),
+                        options.at("cuboid_centre_y"),
+                        options.at("cuboid_centre_z"));
 
-    distance_x = CGAL::abs(p.x() - square_centre.x());
-    distance_y = CGAL::abs(p.y() - square_centre.y());
-    distance_z = CGAL::abs(p.z() - square_centre.z());
+    distance_x = CGAL::abs(p.x() - cuboid_centre.x());
+    distance_y = CGAL::abs(p.y() - cuboid_centre.y());
+    distance_z = CGAL::abs(p.z() - cuboid_centre.z());
 
-    if (distance_x < FT(options.at("square_x_extent")) && distance_y < FT(options.at("square_y_extent")) && distance_z < FT(options.at("square_z_extent")))
+    if (distance_x < FT(options.at("cuboid_x_extent")) && distance_y < FT(options.at("cuboid_y_extent")) && distance_z < FT(options.at("cuboid_z_extent")))
     {
 
-      out = options.at("square_cell_size");
+      out = options.at("cuboid_cell_size");
     }
 
     else
