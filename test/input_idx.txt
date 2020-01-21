@@ -13,8 +13,8 @@ sphere_centre_y = 20
 sphere_centre_z = 20
 sphere_cell_size = 0.4
 
-#Square refinment
-square_refinement = 0
+#cuboid refinment
+cuboid_refinement = 0
 
 # Standard refinement parameters
 refine_electrodes = 0

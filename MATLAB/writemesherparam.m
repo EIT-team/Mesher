@@ -34,16 +34,16 @@ fprintf(fid,'sphere_centre_z = %.3f\r\n',P.spherical.sphere_centre_z);
 fprintf(fid,'sphere_cell_size = %.3f\r\n',P.spherical.sphere_cell_size);
 fprintf(fid,'\r\n\r\n');
 
-%square refinement
-fprintf(fid,'#Square refinement\r\n');
-fprintf(fid,'square_refinement = %d\r\n',P.square.square_refinement);
-fprintf(fid,'square_x_extent = %.3f\r\n',P.square.square_x_extent);
-fprintf(fid,'square_y_extent = %.3f\r\n',P.square.square_y_extent);
-fprintf(fid,'square_z_extent = %.3f\r\n',P.square.square_z_extent);
-fprintf(fid,'square_centre_x = %.3f\r\n',P.square.square_centre_x);
-fprintf(fid,'square_centre_y = %.3f\r\n',P.square.square_centre_y);
-fprintf(fid,'square_centre_z = %.3f\r\n',P.square.square_centre_z);
-fprintf(fid,'square_cell_size = %.3f\r\n',P.square.square_cell_size);
+%cuboid refinement
+fprintf(fid,'#cuboid refinement\r\n');
+fprintf(fid,'cuboid_refinement = %d\r\n',P.cuboid.cuboid_refinement);
+fprintf(fid,'cuboid_x_extent = %.3f\r\n',P.cuboid.cuboid_x_extent);
+fprintf(fid,'cuboid_y_extent = %.3f\r\n',P.cuboid.cuboid_y_extent);
+fprintf(fid,'cuboid_z_extent = %.3f\r\n',P.cuboid.cuboid_z_extent);
+fprintf(fid,'cuboid_centre_x = %.3f\r\n',P.cuboid.cuboid_centre_x);
+fprintf(fid,'cuboid_centre_y = %.3f\r\n',P.cuboid.cuboid_centre_y);
+fprintf(fid,'cuboid_centre_z = %.3f\r\n',P.cuboid.cuboid_centre_z);
+fprintf(fid,'cuboid_cell_size = %.3f\r\n',P.cuboid.cuboid_cell_size);
 fprintf(fid,'\r\n\r\n');
 
 % standard parameters
