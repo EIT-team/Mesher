@@ -1,7 +1,7 @@
 #Planar refinment (1 - yes, 0 -no)
 planar_refinement = 0
 height = 0
-planar_xyz = 2
+planar_direction_xyz = 2
 elements_with_fine_sizing_field_percentage = 50
 
 #Spherical refinment (1 - yes, 0 - no)
@@ -13,8 +13,8 @@ sphere_centre_y = 20
 sphere_centre_z = 20
 sphere_cell_size = 0.4
 
-#Square refinment
-square_refinement = 0
+#cuboid refinment
+cuboid_refinement = 0
 
 # Standard refinement parameters
 refine_electrodes = 0
