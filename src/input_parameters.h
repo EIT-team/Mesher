@@ -6,7 +6,6 @@
 #include <fstream>
 #include <sstream>
 
-std::map<std::string, FT>  load_file_idx(char*);
-std::vector< std::vector<double> > load_deformations(const char*);
+std::map<std::string, FT> read_params_from_file(char *);
 
 #endif

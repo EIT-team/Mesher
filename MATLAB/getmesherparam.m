@@ -7,7 +7,7 @@ function [P] = getmesherparam()
 %Planar refinment (1 - yes, 0 -no)
 P.planar.planar_refinement = 0;
 P.planar.height = 1;
-P.planar.planar_xyz = 3;
+P.planar.planar_direction_xyz = 3;
 P.planar.elements_with_fine_sizing_field_percentage = 50;
 
 %Spherical refinment (1 - yes, 0 - no)
@@ -19,15 +19,15 @@ P.spherical.sphere_centre_y = 13.2;
 P.spherical.sphere_centre_z = 17.9;
 P.spherical.sphere_cell_size = 0.5;
 
-% square refinement
-P.square.square_refinement = 0;
-P.square.square_x_extent = 4;
-P.square.square_y_extent = 6;
-P.square.square_z_extent = 4;
-P.square.square_centre_x = 13.9;
-P.square.square_centre_y = 13.2;
-P.square.square_centre_z = 17.9;
-P.square.square_cell_size = 0.09;
+% cuboid refinement
+P.cuboid.cuboid_refinement = 0;
+P.cuboid.cuboid_x_extent = 4;
+P.cuboid.cuboid_y_extent = 6;
+P.cuboid.cuboid_z_extent = 4;
+P.cuboid.cuboid_centre_x = 13.9;
+P.cuboid.cuboid_centre_y = 13.2;
+P.cuboid.cuboid_centre_z = 17.9;
+P.cuboid.cuboid_cell_size = 0.09;
 
 %Standard refinement parameters
 P.refine_electrodes = 0;
