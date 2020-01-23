@@ -166,6 +166,7 @@ if plotflag
         end
     end
     daspect([1,1,1])
+    view(3);
     hold off
     drawnow
 end
