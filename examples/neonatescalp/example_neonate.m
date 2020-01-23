@@ -3,14 +3,14 @@
 % convert the STLs to INR files. Here we are using pixel scale of 1, for
 % example only. In reality we would want to use whatever captures the
 % geometry best. A value of 5 was used in the papers using this phantom
-pixel_scale=1;
+pixel_scale_HR=1;
 
 % load electrode positions - these are in coordinates of the original STL
 % and will be converted to the output INR coordinate system
 elec_pos=dlmread('NNelecposorig.txt');
 % run the conversion to INR. Plotting the figures to check the alignment of
 % the electrodes and the quality of the output
-[ full_mask,elec_pos_new_sc ] = stl2inr({'NNscalp.stl','NNskull_lowpoly.stl'},pixel_scale,elec_pos );
+[ full_mask,elec_pos_new_sc ] = stl2inr({'NNscalp.stl','NNskull_lowpoly.stl'},pixel_scale_HR,elec_pos );
 
 % saveas(1,'figures/NN_stl.png') % save figures for documentation
 % saveas(2,'figures/NN_slice.png')
@@ -22,7 +22,7 @@ elec_pos=dlmread('NNelecposorig.txt');
 
 % Get the parameter structure
 P=getmesherparam;
-P.pixel_scale_mm=pixel_scale;
+P.pixel_scale_mm=pixel_scale_HR;
 P.facet_distance_mm=2;
 P.cell_fine_size_mm=3;
 P.cell_coarse_size_mm=8;
@@ -75,5 +75,44 @@ title('Neonate Mesh Low Res')
 % saveas(gcf,'figures/NN_LowRes.png') 
 
 %% Run Mesher again with realistic parameters
+
+pixel_scale_HR=4;
+elec_pos=dlmread('NNelecposorig.txt');
+[ full_mask,elec_pos_new_sc ] = stl2inr({'NNscalp.stl','NNskull_lowpoly.stl'},pixel_scale_HR,elec_pos );
+
+% Change the meshing parameters to make ~4mln element mesh taking ~30mins
+P=getmesherparam;
+P.pixel_scale_mm=pixel_scale_HR;
+P.facet_distance_mm=2;
+P.cell_fine_size_mm=1; % Overall smaller elements
+P.cell_coarse_size_mm=1.5; % Much higher lower bound of element size
+P.electrode_radius_mm=4; % make the high res area bigger (8mm diam elecs used in the tank)
+P.cell_size_electrodes_mm=0.5; % v high res around the electrodes
+
+% Turn on all optimisations and give them a long time to run
+P.opt.exude_opt=1;
+P.opt.lloyd_opt=1;
+P.opt.odt_opt=1;
+P.opt.perturb_opt=1;
+P.opt.time_limit_sec=86400;
+
+% save the output to csv to load into matlab
+P.save.save_nodes_tetra=1;
+% save VTK to view it paraview
+P.save.save_vtk=1;
+
+% Move the electrode positions to ensure they are placed on the surface.
+% This is less important as with the higher pixel scale they should be
+% less difference between the specified locations and the actual surface
+P.move.move_electrodes=1;
+P.move.outermost_tissue=1;
+
+
+% write parameter file
+writemesherparam('NNscalp_param_HR.txt',P);
+
+% Run mesher - commented to avoid running it by mistake!
+% runmesher('NNscalp.inr','NNscalp_elecINRpos.txt',...
+%     'NNscalp_param_HR.txt','output_HR/','NNexampleHighRes')
 
 
