@@ -24,15 +24,15 @@ facet_angle_deg = 30
 facet_distance_mm = 0.05
 cell_radius_edge_ratio = 3
 cell_fine_size_mm = 0.05
-cell_coarse_size_mm = 0.1
+cell_coarse_size_mm = 0.05
 electrode_radius_mm = 0.15
 cell_size_electrodes_mm = 0.05
 
 # Optimisation (1 - yes, 0 - no)
-lloyd_opt = 0
-odt_opt = 0
-exude_opt = 0
-perturb_opt = 0
+lloyd_opt = 1
+odt_opt = 1
+exude_opt = 1
+perturb_opt = 1
 time_limit_sec = 300
 #Save a vtu file of the mesh?
 save_vtk = 1
@@ -41,7 +41,7 @@ save_vtk = 1
 save_cell_centres = 0
 
 #Save nodes and tetra as csv?
-save_nodes_tetra = 0
+save_nodes_tetra = 1
 
 #Deform the mesh?
 do_deformation = 0
