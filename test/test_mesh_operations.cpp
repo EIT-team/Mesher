@@ -155,18 +155,6 @@ TEST_CASE("Unit Cube")
         REQUIRE(c3t3.z_mid == Approx(expected_mid_point).margin(margin));
     }
 
-    SECTION("Check human reference electrode location")
-    {
-
-        Point ref_electrode = c3t3.set_reference_electrode_human();
-        double expected_ref_z = 1.5;
-        double expected_ref_y = 1.5;
-
-        // Don't check the x direction, as we project along the y/z plane to set the
-        // reference electrode position.
-        CHECK(expected_ref_y == Approx(CGAL::to_double(ref_electrode.y())).margin(margin));
-        CHECK(expected_ref_z == Approx(CGAL::to_double(ref_electrode.z())).margin(margin));
-    }
 }
 
 TEST_CASE("Validate mesh")

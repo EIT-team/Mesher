@@ -133,38 +133,11 @@ int C3t3_EIT::get_outer_layer_domain()
 }
 
 /**
- * Set location of the reference electrode for human head (should be on the forehead)
- * 
- * Do this by adding a large vector to the centre of the mesh, which should result
- * in a point outside of the mesh. Finding the closest mesh element to this new point
- * should provide a point on the forehead.
- * 
- * Returns location of electrode.
- **/
-Point C3t3_EIT::set_reference_electrode_human()
-{
-
-  cout << "Generating reference electrode location\n";
-
-  find_mesh_bounds();
-
-  // Only want to use facets that are in the outermost layer i.e. the skin
-  int skin_tissue_index = get_outer_layer_domain();
-  cout << "Domain of outer layer is " << skin_tissue_index << endl;
-  Point outside_mesh(x_max, y_max + 10, z_max + 10);
-  Point reference = find_closest_element(outside_mesh, skin_tissue_index);
-
-  cout << "Reference located at: " << reference << endl;
-
-  return reference;
-}
-
-/**
  * Place the ground location at the back of the head (For humans).
  * 
  * Returns location of electrode.
  **/
-Point C3t3_EIT::set_ground_electrode_human()
+Point C3t3_EIT::set_ground_node()
 {
 
   const Tr &tr = triangulation();

@@ -163,12 +163,7 @@ int main(int argc, char *argv[])
     optimise_mesh(c3t3, domain, options);
   }
 
-  // Generate reference electrode location and append to electrode list
-  cout << endl;
-  Point reference_electrode = c3t3.set_reference_electrode_human();
-  sizing_field.centres.push_back(reference_electrode);
-
-  Point ground_electrode = c3t3.set_ground_electrode_human();
+  Point ground_node = c3t3.set_ground_node();
 
   if (options["move_electrodes"])
   {
@@ -200,9 +195,9 @@ int main(int argc, char *argv[])
   // Need to convert double to string before adding to parameter map
   // using ostringstream to do this
   ostringstream gndposx, gndposy, gndposz;
-  gndposx << CGAL::to_double(ground_electrode.x()) / MM_TO_M;
-  gndposy << CGAL::to_double(ground_electrode.y()) / MM_TO_M;
-  gndposz << CGAL::to_double(ground_electrode.z()) / MM_TO_M;
+  gndposx << CGAL::to_double(ground_node.x()) / MM_TO_M;
+  gndposy << CGAL::to_double(ground_node.y()) / MM_TO_M;
+  gndposz << CGAL::to_double(ground_node.z()) / MM_TO_M;
 
   parameters["groundposition.x"] = gndposx.str();
   parameters["groundposition.y"] = gndposy.str();

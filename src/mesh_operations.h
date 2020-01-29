@@ -29,7 +29,7 @@ public:
   Point find_centre_of_mesh();
   Point find_closest_element(Point, int);
   Point set_reference_electrode_human();
-  Point set_ground_electrode_human();
+  Point set_ground_node();
 };
 
 std::vector<Point> tetra_cell_to_points(Cell_handle);
