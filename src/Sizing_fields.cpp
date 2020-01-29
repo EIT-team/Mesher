@@ -90,23 +90,28 @@ Sizing_field::Sizing_field(Point &origin_in, string path_electrode, std::map<std
 FT Sizing_field::operator()(const Point &p, const int, const Index &) const
 
 {
-  // Mesh the electrodes
-  FT out;
-  Points::const_iterator it;
-  for (it = centres.begin(); it < centres.end(); it++)
-  {
-    Vector pp = (p - *it);
-    if (pp.squared_length() <= e_R * e_R)
-    {
-
-      out = elem_size_electrodes;
-      return out;
-    }
-  }
 
   double distance, distance_x, distance_y, distance_z;
-  // Do some additional refinements if turned on in parameter file
+
+  FT out = coarse_size; //default value, can be changed by the below sizing fields
+
+  // Do some  refinements if turned on in parameter file
   // Need to use MAP.at("x") rather than MAP["x"] to be const safe
+  if (options.at("electrode_refinement"))
+  {
+
+    Points::const_iterator it;
+    for (it = centres.begin(); it < centres.end(); it++)
+    {
+      Vector pp = (p - *it);
+      if (pp.squared_length() <= e_R * e_R)
+      {
+
+        out = elem_size_electrodes;
+        return out;
+      }
+    }
+  }
 
   if (options.at("sphere_refinement"))
   {
@@ -122,11 +127,6 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
     {
 
       out = options.at("sphere_cell_size");
-    }
-
-    else
-    {
-      out = coarse_size;
     }
   }
 
@@ -147,14 +147,9 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
 
       out = options.at("cuboid_cell_size");
     }
-
-    else
-    {
-      out = coarse_size;
-    }
   }
 
-  else if (options.at("planar_refinement"))
+  if (options.at("planar_refinement"))
   {
 
     if (options.at("planar_direction_xyz") == 1)
@@ -191,7 +186,7 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
     }
   }
 
-  else
+  if (options.at("depth_refinement"))
   { //refine centre of mesh more than outside
 
     // Cartersian distance from centre of the mesh
