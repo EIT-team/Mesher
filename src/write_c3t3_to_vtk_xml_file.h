@@ -95,10 +95,10 @@ bool write_c3t3_to_vtk_xml_file(const C3t3 &c3t3, const std::string &file_name)
         const typename Tr::Vertex_handle v3 = c.vertex(3);
 
         vtk_file << indent;
-        vtk_file << V[Point(v0->point())] << " ";
-        vtk_file << V[Point(v1->point())] << " ";
-        vtk_file << V[Point(v2->point())] << " ";
-        vtk_file << V[Point(v3->point())] << std::endl;
+        vtk_file << V[Point(v0->point())] / MM_TO_M << " ";
+        vtk_file << V[Point(v1->point())] / MM_TO_M << " ";
+        vtk_file << V[Point(v2->point())] / MM_TO_M << " ";
+        vtk_file << V[Point(v3->point())] / MM_TO_M << std::endl;
     }
 
     indent.erase(indent.length() - indent_size, indent_size);

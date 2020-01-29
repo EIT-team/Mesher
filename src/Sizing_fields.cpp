@@ -24,8 +24,6 @@ Sizing_field::Sizing_field(Point &origin_in, string path_electrode, std::map<std
   ub_y = origin.y();
   ub_z = origin.z();
 
-  FT scale_xyz = 1 / options["pixel_scale_mm"];
-
   // Reallocate some parameters to have less verbose names
   coarse_size = options["cell_coarse_size_mm"];
   fine_size = options["cell_fine_size_mm"];
@@ -69,7 +67,7 @@ Sizing_field::Sizing_field(Point &origin_in, string path_electrode, std::map<std
     {
       float x, y, z;
       int count = fscanf(F, "%f,%f,%f\n", &x, &y, &z);
-      Point pt(x * scale_xyz, y * scale_xyz, z * scale_xyz);
+      Point pt(x * options["vx"], y * options["vy"], z * options["vz"]);
       centres.push_back(pt);
     }
   }
@@ -90,71 +88,15 @@ Sizing_field::Sizing_field(Point &origin_in, string path_electrode, std::map<std
 FT Sizing_field::operator()(const Point &p, const int, const Index &) const
 
 {
-  // Mesh the electrodes
-  FT out;
-  Points::const_iterator it;
-  for (it = centres.begin(); it < centres.end(); it++)
-  {
-    Vector pp = (p - *it);
-    if (pp.squared_length() <= e_R * e_R)
-    {
-
-      out = elem_size_electrodes;
-      return out;
-    }
-  }
 
   double distance, distance_x, distance_y, distance_z;
-  // Do some additional refinements if turned on in parameter file
+
+  FT out = coarse_size; //default value, can be changed by the below sizing fields
+
+  // Do some  refinements if turned on in parameter file
   // Need to use MAP.at("x") rather than MAP["x"] to be const safe
 
-  if (options.at("sphere_refinement"))
-  {
-    // Refine a sphere around a specificed point.
-
-    Point sphere_centre(options.at("sphere_centre_x"),
-                        options.at("sphere_centre_y"),
-                        options.at("sphere_centre_z"));
-
-    distance = CGAL::sqrt(CGAL::squared_distance(p, sphere_centre));
-
-    if (distance < FT(options.at("sphere_radius")))
-    {
-
-      out = options.at("sphere_cell_size");
-    }
-
-    else
-    {
-      out = coarse_size;
-    }
-  }
-
-  if (options.at("cuboid_refinement"))
-  {
-    // Refine a cuboid around a specificed point.
-
-    Point cuboid_centre(options.at("cuboid_centre_x"),
-                        options.at("cuboid_centre_y"),
-                        options.at("cuboid_centre_z"));
-
-    distance_x = CGAL::abs(p.x() - cuboid_centre.x());
-    distance_y = CGAL::abs(p.y() - cuboid_centre.y());
-    distance_z = CGAL::abs(p.z() - cuboid_centre.z());
-
-    if (distance_x < FT(options.at("cuboid_x_extent")) && distance_y < FT(options.at("cuboid_y_extent")) && distance_z < FT(options.at("cuboid_z_extent")))
-    {
-
-      out = options.at("cuboid_cell_size");
-    }
-
-    else
-    {
-      out = coarse_size;
-    }
-  }
-
-  else if (options.at("planar_refinement"))
+  if (options.at("planar_refinement"))
   {
 
     if (options.at("planar_direction_xyz") == 1)
@@ -191,7 +133,7 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
     }
   }
 
-  else
+  if (options.at("depth_refinement"))
   { //refine centre of mesh more than outside
 
     // Cartersian distance from centre of the mesh
@@ -210,5 +152,58 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
       out = fine_size;
     }
   }
+
+  if (options.at("sphere_refinement"))
+  {
+    // Refine a sphere around a specificed point.
+
+    Point sphere_centre(options.at("sphere_centre_x"),
+                        options.at("sphere_centre_y"),
+                        options.at("sphere_centre_z"));
+
+    distance = CGAL::sqrt(CGAL::squared_distance(p, sphere_centre));
+
+    if (distance < FT(options.at("sphere_radius")))
+    {
+
+      out = options.at("sphere_cell_size");
+    }
+  }
+
+  if (options.at("cuboid_refinement"))
+  {
+    // Refine a cuboid around a specificed point.
+
+    Point cuboid_centre(options.at("cuboid_centre_x"),
+                        options.at("cuboid_centre_y"),
+                        options.at("cuboid_centre_z"));
+
+    distance_x = CGAL::abs(p.x() - cuboid_centre.x());
+    distance_y = CGAL::abs(p.y() - cuboid_centre.y());
+    distance_z = CGAL::abs(p.z() - cuboid_centre.z());
+
+    if (distance_x < FT(options.at("cuboid_x_extent")) && distance_y < FT(options.at("cuboid_y_extent")) && distance_z < FT(options.at("cuboid_z_extent")))
+    {
+
+      out = options.at("cuboid_cell_size");
+    }
+  }
+
+  if (options.at("electrode_refinement"))
+  {
+
+    Points::const_iterator it;
+    for (it = centres.begin(); it < centres.end(); it++)
+    {
+      Vector pp = (p - *it);
+      if (pp.squared_length() <= e_R * e_R)
+      {
+
+        out = elem_size_electrodes;
+        return out;
+      }
+    }
+  }
+
   return out;
 }

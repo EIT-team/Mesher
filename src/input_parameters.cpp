@@ -42,20 +42,18 @@ map<string, FT> read_params_from_file(char *file_name_input)
   //The voxel size in the input mesh can vary,
   //Scale everything so that it is in mm
 
-  FT unit = options["pixel_scale_mm"]; //Scaling units - voxels per mm
-
-  options["sphere_radius"] /= unit;
-  options["sphere_centre_x"] /= unit;
-  options["sphere_centre_y"] /= unit;
-  options["sphere_centre_z"] /= unit;
-  options["sphere_cell_size"] /= unit;
-  options["cuboid_x_extent"] /= unit;
-  options["cuboid_y_extent"] /= unit;
-  options["cuboid_z_extent"] /= unit;
-  options["cuboid_centre_x"] /= unit;
-  options["cuboid_centre_y"] /= unit;
-  options["cuboid_centre_z"] /= unit;
-  options["cuboid_cell_size"] /= unit;
+  options["sphere_radius"];
+  options["sphere_centre_x"];
+  options["sphere_centre_y"];
+  options["sphere_centre_z"];
+  options["sphere_cell_size"];
+  options["cuboid_x_extent"];
+  options["cuboid_y_extent"];
+  options["cuboid_z_extent"];
+  options["cuboid_centre_x"];
+  options["cuboid_centre_y"];
+  options["cuboid_centre_z"];
+  options["cuboid_cell_size"];
 
   return options;
 }

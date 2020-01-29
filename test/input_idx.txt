@@ -1,5 +1,8 @@
-#Planar refinment (1 - yes, 0 -no)
+#Refinment(s) on/off (1 - yes, 0 -no)
 planar_refinement = 0
+depth_refinement = 1
+electrode_refinement = 1
+
 height = 0
 planar_direction_xyz = 2
 elements_with_fine_sizing_field_percentage = 50
