@@ -5,8 +5,8 @@ function [Mesh] = loadmesh(fname)
 disp(['Loading mesh : ' fname]);
 
 electrode_positions=csvread([fname '.electrodes']);
-disp('Removing extra reference electrode as this is not used in simulation')
-electrode_positions(end,:)=[];
+% disp('Removing extra reference electrode as this is not used in simulation')
+% electrode_positions(end,:)=[];
 
 verticies=csvread([fname '_vertices.csv']);
 tetra=csvread([fname '_tetra.csv']);
