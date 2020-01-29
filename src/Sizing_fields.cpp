@@ -24,8 +24,6 @@ Sizing_field::Sizing_field(Point &origin_in, string path_electrode, std::map<std
   ub_y = origin.y();
   ub_z = origin.z();
 
-  FT scale_xyz = 1 / options["pixel_scale_mm"];
-
   // Reallocate some parameters to have less verbose names
   coarse_size = options["cell_coarse_size_mm"];
   fine_size = options["cell_fine_size_mm"];
@@ -69,7 +67,7 @@ Sizing_field::Sizing_field(Point &origin_in, string path_electrode, std::map<std
     {
       float x, y, z;
       int count = fscanf(F, "%f,%f,%f\n", &x, &y, &z);
-      Point pt(x * scale_xyz, y * scale_xyz, z * scale_xyz);
+      Point pt(x * options["vx"], y * options["vy"], z * options["vz"]);
       centres.push_back(pt);
     }
   }
