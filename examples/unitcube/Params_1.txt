@@ -1,7 +1,5 @@
 #Refinment(s) on/off (1 - yes, 0 -no)
 planar_refinement = 0
-depth_refinement = 1
-electrode_refinement = 1
 height = 0
 planar_direction_xyz = 2
 elements_with_fine_sizing_field_percentage = 50
@@ -15,8 +13,14 @@ sphere_centre_y = 20
 sphere_centre_z = 20
 sphere_cell_size = 0.4
 
-#cuboid refinment
 cuboid_refinement = 0
+cuboid_x_extent = 4
+cuboid_y_extent = 6
+cuboid_z_extent = 4
+cuboid_centre_x = 13.9
+cuboid_centre_y = 13.2
+cuboid_centre_z = 17.9
+cuboid_cell_size = 0.09
 
 # Standard refinement parameters
 refine_electrodes = 0
@@ -26,15 +30,15 @@ facet_angle_deg = 30
 facet_distance_mm = 0.05
 cell_radius_edge_ratio = 3
 cell_fine_size_mm = 0.05
-cell_coarse_size_mm = 0.1
+cell_coarse_size_mm = 0.05
 electrode_radius_mm = 0.15
 cell_size_electrodes_mm = 0.05
 
 # Optimisation (1 - yes, 0 - no)
-lloyd_opt = 0
-odt_opt = 0
-exude_opt = 0
-perturb_opt = 0
+lloyd_opt = 1
+odt_opt = 1
+exude_opt = 1
+perturb_opt = 1
 time_limit_sec = 300
 #Save a vtu file of the mesh?
 save_vtk = 1
@@ -43,7 +47,7 @@ save_vtk = 1
 save_cell_centres = 0
 
 #Save nodes and tetra as csv?
-save_nodes_tetra = 0
+save_nodes_tetra = 1
 
 #Deform the mesh?
 do_deformation = 0

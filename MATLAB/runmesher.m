@@ -1,6 +1,6 @@
 function [status,cmdout] = runmesher(inrfile,electrodesfile,parameterfile,outdir,outname,MesherRoot)
-%RUNMESHER Calls Mesher from command line from windows, having installed it
-%on WSL
+%RUNMESHER Calls Mesher from Command line from MATLAB, uses WSL if using
+%Windows
 %   Detailed explanation goes here
 
 %% Mesher location
@@ -9,17 +9,24 @@ function [status,cmdout] = runmesher(inrfile,electrodesfile,parameterfile,outdir
 % current function.
 if exist('MesherRoot','var') == 0 || isempty(MesherRoot)
     
-    % get the current mesher root and change to linux path
     meshrt=mfilename('fullpath');
-    meshrt=strrep(meshrt,'\','/');
-    meshrt=strrep(meshrt,':','');
-    meshrt(1)=lower(meshrt(1));
-    meshrt=['/mnt/' meshrt];
+    % get the current mesher root
     
+    %If we are using WSL then we want to change to linux path,
+    % e.g. 'C:\Users\James\Mesher\MATLAB' to '/mnt/c/Users/James/Mesher/'
+   
+    if ispc
+        meshrt=strrep(meshrt,'\','/');
+        meshrt=strrep(meshrt,':','');
+        meshrt(1)=lower(meshrt(1));
+        meshrt=['/mnt/' meshrt];
+    end
+    
+    %go up one level
     slashidx=strfind(meshrt,'/');
     meshrt=meshrt(1:slashidx(end-1));
     
-    % e.g. %'/mnt/c/Users/djave/Mesher/';
+    % e.g. %'/mnt/c/Users/djave/Mesher/' if you are using WSL;
     MesherRoot = meshrt;
 end
 
@@ -36,7 +43,6 @@ ELECSTR = electrodesfile;
 PARAMSTR = parameterfile;
 % [MesherRoot 'inputs/input_idx.txt'];
 
-
 CMDSTR = [MesherRoot MesherDir ' -i ' INRSTR ' -e ' ELECSTR ' -p ', PARAMSTR];
 
 %% Optional inputs
@@ -44,10 +50,7 @@ CMDSTR = [MesherRoot MesherDir ' -i ' INRSTR ' -e ' ELECSTR ' -p ', PARAMSTR];
 % output directory
 
 if exist('outdir','var') == 1 && ~isempty(outdir)
-    
-    
     DIRSTR=outdir;
-    
     CMDSTR=[CMDSTR ' -d ' DIRSTR];
 else
     outdir='./output/';
@@ -60,15 +63,16 @@ end
 
 %Mesh name
 if exist('outname','var') == 1 && ~isempty(outname)
-    
     NAMESTR=outname;
     CMDSTR=[CMDSTR ' -o ' NAMESTR];
 end
 
 %% Finally call mesher
 
-CMDSTR = ['wsl ' CMDSTR];
-
+% use WSL if we are on PC
+if ispc
+    CMDSTR = ['wsl ' CMDSTR];
+end
 
 disp('Calling Mesher with command string:');
 disp(CMDSTR);

@@ -1,7 +1,6 @@
-#Refinment(s) on/off (1 - yes, 0 -no)
+# Mesher parameter file 23-Jan-2020 15:42:29
+#Planar refinment (1 - yes, 0 -no)
 planar_refinement = 0
-depth_refinement = 1
-electrode_refinement = 1
 height = 1.000
 planar_direction_xyz = 3.000
 elements_with_fine_sizing_field_percentage = 50.000
@@ -18,34 +17,34 @@ sphere_cell_size = 0.500
 
 
 #Square refinement
-cuboid_refinement = 0
-cuboid_x_extent = 4.000
-cuboid_y_extent = 6.000
-cuboid_z_extent = 4.000
-cuboid_centre_x = 13.900
-cuboid_centre_y = 13.200
-cuboid_centre_z = 17.900
-cuboid_cell_size = 0.090
+square_refinement = 0
+square_x_extent = 4.000
+square_y_extent = 6.000
+square_z_extent = 4.000
+square_centre_x = 13.900
+square_centre_y = 13.200
+square_centre_z = 17.900
+square_cell_size = 0.090
 
 
 #Standard refinement parameters
 refine_electrodes = 0
-pixel_scale_mm = 1.000
+pixel_scale_mm = 4.000
 facet_angle_deg = 30.000
 facet_distance_mm = 2.000
 cell_radius_edge_ratio = 3.000
-cell_fine_size_mm = 3.000
-cell_coarse_size_mm = 8.000
-electrode_radius_mm = 3.000
-cell_size_electrodes_mm = 2.000
+cell_fine_size_mm = 1.000
+cell_coarse_size_mm = 1.500
+electrode_radius_mm = 4.000
+cell_size_electrodes_mm = 0.500
 
 
 #Optimisation (1 - yes, 0 - no)
-lloyd_opt = 0
-odt_opt = 0
-exude_opt = 0
-perturb_opt = 0
-time_limit_sec = 300
+lloyd_opt = 1
+odt_opt = 1
+exude_opt = 1
+perturb_opt = 1
+time_limit_sec = 86400
 
 
 #Save a vtu file of the mesh?

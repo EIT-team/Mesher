@@ -1,5 +1,5 @@
 # Mesher parameters
-cell_coarse_size_mm: 0.1
+cell_coarse_size_mm: 0.05
 cell_fine_size_mm: 0.05
 cell_radius_edge_ratio: 3
 cell_size_electrodes_mm: 0.05
@@ -13,9 +13,9 @@ exude_opt: 0
 facet_angle_deg: 30
 facet_distance_mm: 0.05
 ground.hsquared: 1.5e-5
-groundposition.x: 0.00065551
-groundposition.y: 0.00149152
-groundposition.z: 0.00103554
+groundposition.x: 0.000812429
+groundposition.y: 0.00149154
+groundposition.z: 0.0011146
 height: 0
 lloyd_opt: 0
 max_stretch_distance: 50
@@ -26,8 +26,8 @@ odt_opt: 0
 outermost_tissue: 7
 perturb_opt: 0
 pixel_scale_mm: 20
-planar_refinement: 0
 planar_direction_xyz: 2
+planar_refinement: 0
 refine_electrodes: 0
 save_cell_centres: 0
 save_nodes_tetra: 0
