@@ -26,6 +26,7 @@ P.pixel_scale_mm=pixel_scale_HR;
 P.facet_distance_mm=2;
 P.cell_fine_size_mm=3;
 P.cell_coarse_size_mm=8;
+P.refine_electrodes = 1;
 P.electrode_radius_mm=3;
 P.cell_size_electrodes_mm=2;
 

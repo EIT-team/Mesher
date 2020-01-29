@@ -47,7 +47,7 @@ if ~isempty(which('plotmesh'))
     % the holes in the top of the grey matter layer are an artefact of the
     % binsurface output, they are not present in the inr (see fig below)
     
-    saveas(gcf,'figures/brain_seg.png');
+%     saveas(gcf,'figures/brain_seg.png');
     
 end
 
@@ -56,7 +56,7 @@ figure
 imagesc(squeeze(V(:,:,100))');
 daspect([1,1,1]);
 title('Slice through rat brain segmentation');
-saveas(gcf,'figures/brain_seg_slice.png');
+% saveas(gcf,'figures/brain_seg_slice.png');
 
 
 % save the segmentation to inr for the mesher
@@ -70,6 +70,7 @@ P.pixel_scale_mm=pixel_scale;
 P.facet_distance_mm=.4;
 P.cell_fine_size_mm=.5;
 P.cell_coarse_size_mm=.6;
+P.refine_electrodes = 1;
 P.electrode_radius_mm=.3;
 P.cell_size_electrodes_mm=.1;
 
@@ -113,7 +114,7 @@ hold off
 view(3)
 title('Rat Brain Mesh Low Res')
 
-saveas(gcf,'figures/BrainMesh_LowRes.png')
+% saveas(gcf,'figures/BrainMesh_LowRes.png')
 
 %% Run at higher resolution
 
@@ -124,6 +125,7 @@ P.pixel_scale_mm=pixel_scale;
 P.facet_distance_mm=.4;
 P.cell_fine_size_mm=.15; % Overall smaller elements
 P.cell_coarse_size_mm=.2;  % Much higher lower bound of element size
+P.refine_electrodes = 1;
 P.electrode_radius_mm=.3;
 P.cell_size_electrodes_mm=.05; % v high res around the electrodes
 
