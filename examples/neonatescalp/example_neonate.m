@@ -22,11 +22,11 @@ elec_pos=dlmread('NNelecposorig.txt');
 
 % Get the parameter structure
 P=getmesherparam;
-P.pixel_scale_mm=pixel_scale_HR;
+
 P.facet_distance_mm=2;
-P.cell_fine_size_mm=3;
-P.cell_coarse_size_mm=8;
-P.refine_electrodes = 1;
+P.cell_coarse_size_mm=4;
+
+P.refine.electrodes = 1;
 P.electrode_radius_mm=3;
 P.cell_size_electrodes_mm=2;
 
@@ -44,7 +44,6 @@ P.save.save_vtk=1;
 % Move the electrode positions to ensure they are placed on the surface
 P.move.move_electrodes=1;
 P.move.outermost_tissue=1;
-
 
 % write parameter file
 writemesherparam('NNscalp_param.txt',P);
@@ -83,10 +82,11 @@ elec_pos=dlmread('NNelecposorig.txt');
 
 % Change the meshing parameters to make ~4mln element mesh taking ~30mins
 P=getmesherparam;
-P.pixel_scale_mm=pixel_scale_HR;
 P.facet_distance_mm=2;
 P.cell_fine_size_mm=1; % Overall smaller elements
 P.cell_coarse_size_mm=1.5; % Much higher lower bound of element size
+
+P.refine.electrodes=1;
 P.electrode_radius_mm=4; % make the high res area bigger (8mm diam elecs used in the tank)
 P.cell_size_electrodes_mm=0.5; % v high res around the electrodes
 
