@@ -97,57 +97,6 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
 
   // Do some  refinements if turned on in parameter file
   // Need to use MAP.at("x") rather than MAP["x"] to be const safe
-  if (options.at("electrode_refinement"))
-  {
-
-    Points::const_iterator it;
-    for (it = centres.begin(); it < centres.end(); it++)
-    {
-      Vector pp = (p - *it);
-      if (pp.squared_length() <= e_R * e_R)
-      {
-
-        out = elem_size_electrodes;
-        return out;
-      }
-    }
-  }
-
-  if (options.at("sphere_refinement"))
-  {
-    // Refine a sphere around a specificed point.
-
-    Point sphere_centre(options.at("sphere_centre_x"),
-                        options.at("sphere_centre_y"),
-                        options.at("sphere_centre_z"));
-
-    distance = CGAL::sqrt(CGAL::squared_distance(p, sphere_centre));
-
-    if (distance < FT(options.at("sphere_radius")))
-    {
-
-      out = options.at("sphere_cell_size");
-    }
-  }
-
-  if (options.at("cuboid_refinement"))
-  {
-    // Refine a cuboid around a specificed point.
-
-    Point cuboid_centre(options.at("cuboid_centre_x"),
-                        options.at("cuboid_centre_y"),
-                        options.at("cuboid_centre_z"));
-
-    distance_x = CGAL::abs(p.x() - cuboid_centre.x());
-    distance_y = CGAL::abs(p.y() - cuboid_centre.y());
-    distance_z = CGAL::abs(p.z() - cuboid_centre.z());
-
-    if (distance_x < FT(options.at("cuboid_x_extent")) && distance_y < FT(options.at("cuboid_y_extent")) && distance_z < FT(options.at("cuboid_z_extent")))
-    {
-
-      out = options.at("cuboid_cell_size");
-    }
-  }
 
   if (options.at("planar_refinement"))
   {
@@ -205,5 +154,58 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
       out = fine_size;
     }
   }
+
+  if (options.at("sphere_refinement"))
+  {
+    // Refine a sphere around a specificed point.
+
+    Point sphere_centre(options.at("sphere_centre_x"),
+                        options.at("sphere_centre_y"),
+                        options.at("sphere_centre_z"));
+
+    distance = CGAL::sqrt(CGAL::squared_distance(p, sphere_centre));
+
+    if (distance < FT(options.at("sphere_radius")))
+    {
+
+      out = options.at("sphere_cell_size");
+    }
+  }
+
+  if (options.at("cuboid_refinement"))
+  {
+    // Refine a cuboid around a specificed point.
+
+    Point cuboid_centre(options.at("cuboid_centre_x"),
+                        options.at("cuboid_centre_y"),
+                        options.at("cuboid_centre_z"));
+
+    distance_x = CGAL::abs(p.x() - cuboid_centre.x());
+    distance_y = CGAL::abs(p.y() - cuboid_centre.y());
+    distance_z = CGAL::abs(p.z() - cuboid_centre.z());
+
+    if (distance_x < FT(options.at("cuboid_x_extent")) && distance_y < FT(options.at("cuboid_y_extent")) && distance_z < FT(options.at("cuboid_z_extent")))
+    {
+
+      out = options.at("cuboid_cell_size");
+    }
+  }
+
+  if (options.at("electrode_refinement"))
+  {
+
+    Points::const_iterator it;
+    for (it = centres.begin(); it < centres.end(); it++)
+    {
+      Vector pp = (p - *it);
+      if (pp.squared_length() <= e_R * e_R)
+      {
+
+        out = elem_size_electrodes;
+        return out;
+      }
+    }
+  }
+
   return out;
 }
