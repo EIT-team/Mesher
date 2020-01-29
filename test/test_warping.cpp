@@ -313,7 +313,7 @@ TEST_CASE("Random deformation on brain mesh")
   /* Do some random deformations on a brain .inr file, which has
   different x/y/z dimensions. */
 
-  const char *inr_path = "../examples/brain/input.inr";
+  const char *inr_path = "../examples/brain/Brain.inr";
 
   char *path_parameter = (char *)"./input_idx.txt";
   std::map<std::string, FT> options = read_params_from_file(path_parameter);
