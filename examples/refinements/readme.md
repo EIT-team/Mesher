@@ -50,28 +50,31 @@ The MESHER can then be called, and the and the denser regions are clearly visibl
 
 ![Mesh with electrode refinement](figures/1_Slice.png)
 
+### Electrode coordinates
+
+Prior to refinement, the electrode coordinates specified in `Elecs.txt` are scaled by the `VX VY VZ` parameters specified in the `.inr` file to obtain the final positions in **mm**. Therefore, either the electrode positions must be determined either in the `.inr` coordinate space, like the unit cube or brain examples, or they should be scaled prior to saving to the text file, as in the neonatal head mesh example. **NOTE** The output Mesh is in m, so electrode positions determined from this mesh should be converted to mm *and* scaled by `1/VX` etc.
+
 ## 2. Depth refinement
 
-As the sensitivity decreases with distance from the electrodes, less elements are required towards the centre of the volume. Therefore, as outlined [a methods paper](https://doi.org/10.1088/0967-3334/35/6/1095) it is possible to specify a linear decrease from the surface to the centre. This is particularly useful in applications like the brain or thorax where the electrodes are limited to the outside surface, and are a significant distance from the centre of the mesh. 
+As the sensitivity decreases with distance from the electrodes, less elements are required towards the centre of the volume. Therefore, as outlined [a methods paper](https://doi.org/10.1088/0967-3334/35/6/1095) it is possible to specify a linear decrease from the surface to the centre. This is particularly useful in applications like the brain or thorax where the electrodes are limited to the outside surface, and are a significant distance from the centre of the mesh.
 
-
-adasdsdasd
+The following parameters create a linear gradient from 5mm element size in the centre of the mesh to 2mm at the boundary.
 
 ```c++
-elements_with_fine_sizing_field_percentage = 50.000
-cell_fine_size_mm = 5.000
+depth_refinement = 1
+elements_with_fine_sizing_field_percentage = 100.000
+cell_fine_size_mm = 2.000
 cell_coarse_size_mm = 5.000
 ```
-
-The mesher can then be called:
 
 ```bash
 ../../bin/mesher -i input.inr -e Elecs.txt -p Params_2.txt -o 2_Depth
 ```
 
-The gradient 
+![Mesh with depth refinement](figures/2_SF1_Slice.png) ![Mesh with depth refinement](figures/2_SF1.png)
+The gradient is clearly visible inside the mesh and the resulting sizing field can also be plotted using `figures\Sizing_fields.m`, to better visualise the effects the different parameters. The gradient can also be overwritten at the centre to a fixed value of `cell_coarse_size_mm` if a less gradual gradient is required. Setting `elements_with_fine_sizing_field_percentage = 50.000` creates a sphere of fixed element size at the centre.
 
-![Mesh with depth refinement](figures/2_Slice.png)
+![Mesh with depth refinement](figures/2_SF2_Slice.png) ![Mesh with depth refinement](figures/2_SF2.png)
 
 ## 3. Sphere refinement
 

@@ -2,6 +2,10 @@
 
 % needs iso2mesh
 V=readinr('../Input.inr');
+%scale points to mm, these values are given in .inr header
+vx=1;
+vy=1;
+vz=1;
 
 X=zeros(size(V,1),1);
 Y=zeros(size(V,2),1);
@@ -13,20 +17,15 @@ iSlice=54;
 [x,z]=find(squeeze(V(:,iSlice,:)));
 y=ones(size(x))*iSlice;
 
+x=x/vx;
+y=y/vy;
+z=z/vz;
+
 figure
 plot(x,z,'.');
 daspect([1,1,1])
 title('Slice through inr');
 %% Plot sizing field of planar refinement
-
-%scale points to mm, these values are given in .inr header
-vx=1;
-vy=1;
-vz=1;
-
-x=x/vx;
-y=y/vy;
-z=z/vz;
 
 upper_bound=max(z)*vx;
 
@@ -69,6 +68,45 @@ ylabel('z');
 
 % saveas(gcf,'5_SF1.png');
 
+%% Depth Refinement 
 
+fine_size=2;
+coarse_size=5;
+elem_fine_per=100;
+
+out=zeros(size(x));
+
+origin=[max(x)/2 max(z)/2];
+
+for iPoint = 1:size(x,1)
+    d_el=[x(iPoint),z(iPoint)]-origin;
+    d_per=sqrt((d_el(1)/origin(1))*(d_el(1)/origin(1)) + (d_el(2)/origin(2))*(d_el(2)/origin(2)));
+    
+    if (d_per >= 1 - elem_fine_per/100 )
+        
+        op=fine_size + (coarse_size - fine_size) * (1-d_per);
+        
+        if op < fine_size
+            op=fine_size;
+        end
+            out(iPoint)=op;
+    else
+        out(iPoint) = coarse_size;
+    end
+    
+    
+end
+
+scatter(x,z,20,out,'filled')
+colormap('summer')
+colorbar
+daspect([1,1,1]);
+caxis([fine_size coarse_size]);
+title(sprintf('Depth Sizing field %0.5g%% fine elements',elem_fine_per));
+xlabel('x')
+ylabel('z');
+
+
+% saveas(gcf,'2_SF1.png');
 
 

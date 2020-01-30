@@ -4,3 +4,5 @@ test/run_tests
 test/Testing
 build/
 *.vscode
+**.dgf
+**.vtu
