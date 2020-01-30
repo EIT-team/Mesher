@@ -116,7 +116,7 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
 
     else
     {
-      return fine_size;
+      //return fine_size; //If specified wrong it should leave out untouched
     }
 
     double dist_percentage = distance / double(options.at("upper_bound"));
