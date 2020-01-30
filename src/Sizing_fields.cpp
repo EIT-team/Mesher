@@ -128,8 +128,16 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
 
     else
     {
-      out = fine_size +
+      double out_tmp = fine_size +
             CGAL::abs((coarse_size - fine_size) * (dist_percentage - (fine_size_percentage) / 100.0));
+
+      // clamp sizes within range specified       
+      if (out_tmp > coarse_size)
+      {
+        out_tmp = coarse_size;
+      }
+      out = out_tmp;
+
     }
   }
 
