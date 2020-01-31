@@ -15,6 +15,7 @@ Deform_Volume::Deform_Volume(CGAL::Image_3 *image, map<string, FT> options)
 
   stretch_probability = options["stretch_probability"];
   dilate_probability = options["dilate_probability"];
+  disable_xyz_stretch_probability = options["disable_xyz_stretch_probability"]; // Higher value means more likely to disable
 
   image_data = (unsigned char *)image->data();
   xdim = image->xdim();
@@ -144,60 +145,6 @@ vector<long> Deform_Volume::neighbouring_elements(long voxel_index)
   return neighbours;
 }
 
-/* Deform the mesh by a particular amount (disance_mm) in a particular x/y/z direction
-    If distance_mm[x/y/z] is 0, no stretch is performed in that direction.
-    A positive/negative value stretches to the right/left respectively.
-    */
-void Deform_Volume::defined_stretch(vector<double> distance_mm)
-{
-
-  int n_dims = distance_mm.size();
-  // Check inputs, should be 3 elements, one for each dimension
-  if (n_dims != 3)
-  {
-    cout << "Invalid number of values passed, should be 3, one for each dimension" << endl;
-  }
-
-  vector<int> stretch;
-  int point, anchor, voxel_distance;
-
-  //Group some values together to allow us to loop over them.
-  double voxel_distances[n_dims] = {vx, vy, vz};
-  int maxes[n_dims] = {xmax, ymax, zmax};
-  int mins[n_dims] = {xmin, ymin, zmin};
-  int mids[n_dims] = {xmid, ymid, zmid};
-
-  // Calculate the stretch parameter for each dimension (X,Y,Z)
-  for (int i = 0; i < n_dims; i++)
-  {
-
-    double dist = distance_mm[i];
-    double voxel_distance = voxel_distances[i];
-    int max = maxes[i];
-    int min = mins[i];
-    int mid = mids[i];
-
-    if (dist > 0)
-      point = max; //stretch right
-    else if (dist < 0)
-      point = xmin; //stretch left
-    else
-      point = -1; //do nothing
-
-    anchor = mid;
-
-    // Covert distance in mm to number of voxels, based on the distance for each voxel.
-    voxel_distance = round(abs(dist / voxel_distance));
-
-    stretch.push_back(point);
-    stretch.push_back(voxel_distance);
-    stretch.push_back(anchor);
-  }
-
-  // Do the stretch
-  stretch_array(stretch);
-}
-
 /* Stretch the image
   vector<int> stretch: 9 element vector (3 for x, 3 for y, 3 for z) that gives the parameters
   of the stretch to be performed. For each dimension:
@@ -291,13 +238,13 @@ void Deform_Volume::modify_image()
   // Do more streches?
   while ((rand() / double(RAND_MAX)) < stretch_probability)
   {
-    //random_stretch();
+    random_stretch();
   }
 
   // Do some dilation?
   while ((rand() / double(RAND_MAX)) < dilate_probability)
   {
-    //random_dilate();
+    random_dilate();
   }
 
   find_mesh_bounds(); //Update edges of object
@@ -313,7 +260,7 @@ void Deform_Volume::random_stretch()
 
   point_to_move = random_stretch_point(xmin, xmax, xdim);
   anchor = random_anchor_point(xmin, xmax);
-  max_distance = 1 + (min(max_stretch, min(point_to_move, xdim - point_to_move)));
+  max_distance = min(max_stretch, min(point_to_move, xdim - point_to_move));
   distance_to_move = min_stretch + rand() % max_distance;
 
   stretch.push_back(point_to_move);
@@ -323,7 +270,7 @@ void Deform_Volume::random_stretch()
   //y data
   point_to_move = random_stretch_point(ymin, ymax, ydim);
   anchor = random_anchor_point(ymin, ymax);
-  max_distance = 1 + (min(max_stretch, min(point_to_move, ydim - point_to_move)));
+  max_distance = min(max_stretch, min(point_to_move, ydim - point_to_move));
   distance_to_move = min_stretch + rand() % max_distance;
 
   stretch.push_back(point_to_move);
@@ -333,31 +280,30 @@ void Deform_Volume::random_stretch()
   //z data
   point_to_move = random_stretch_point(zmin, zmax, zdim);
   anchor = random_anchor_point(zmin, zmax);
-  max_distance = 1 + (min(max_stretch, min(point_to_move, ydim - point_to_move)));
+  max_distance = min(max_stretch, min(point_to_move, ydim - point_to_move));
   distance_to_move = min_stretch + rand() % max_distance;
 
   stretch.push_back(point_to_move);
   stretch.push_back(distance_to_move);
   stretch.push_back(anchor);
 
-  // Randomly turn on or off stretchig in each dimension
-  //TODO: this can be better!
-  if (!(rand() % 4))
-  {
+  //Randomly turn on or off stretching in each dimension.
+  // Stretch is off is set to -1
+  int divisor = round(1.0 / disable_xyz_stretch_probability);
+  
+  if (!(rand() % divisor))  {
     stretch[0] = -1; //x
   }
 
-  if (!(rand() % 4))
-  {
+  if (!(rand() % divisor))  {
     stretch[3] = -1; //y
   }
 
-  if (!(rand() % 4))
-  {
+  if (!(rand() % divisor))  {
     stretch[6] = -1; //z
   }
 
-  //stretch_array(stretch);
+  stretch_array(stretch);
 }
 
 /** Return a stretch point that is < idx_min or > idx_max

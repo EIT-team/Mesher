@@ -34,6 +34,7 @@ public:
   int point_to_move, distance_to_move, anchor;
 
   double stretch_probability, dilate_probability;
+  int disable_xyz_stretch_probability;
 
   // Store the parameters of the deformation
   string deformation_info;
@@ -49,8 +50,6 @@ public:
 
   void random_stretch();
   void random_dilate();
-
-  void defined_stretch(std::vector<double>);
 
   int random_stretch_point(int idx_min, int idx_max, int dim);
   int random_anchor_point(int idx_min, int idx_max);

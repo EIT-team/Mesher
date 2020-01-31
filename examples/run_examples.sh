@@ -9,3 +9,7 @@
   echo "Running Brain Example"
   mkdir brain/output
   ../bin/mesher -i brain/Brain.inr -e brain/Brain_elec.txt -p brain/Brain_params.txt -o brainexample -d brain/output/
+
+  echo "Running Deformation Example"
+  mkdir deformation/output
+  ../bin/mesher -i unitcube/unit_cube.inr -e unitcube/electrodes.txt -p deformation/deformation_params.txt -o unitcube_deformation -d deformation/output/

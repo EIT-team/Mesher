@@ -23,7 +23,6 @@ void printusage(void)
   printf("        -p parameter file\n");
   printf("        -o output mesh name (default = new_mesh)\n");
   printf("        -d output directory (default = output/)\n");
-  printf("        -w deformation file (optional)\n");
   exit(EXIT_FAILURE);
 }
 
@@ -32,8 +31,8 @@ int main(int argc, char *argv[])
 
   int opt;
   // Input file locations (required as arguments)
-  char *path_image, *path_electrode, *path_parameter, *deformation_file;
-  bool image_path_set = false, elec_path_set = false, param_path_set = false, deform_path_set = false;
+  char *path_image, *path_electrode, *path_parameter;
+  bool image_path_set = false, elec_path_set = false, param_path_set = false;
   // Default values, can be changed with command line arguments
   string output_dir = "./output/";
   string input_mesh_name = "new_mesh";
@@ -67,9 +66,6 @@ int main(int argc, char *argv[])
     case 'o':
       input_mesh_name = optarg;
       break;
-    case 'w':
-      deformation_file = optarg;
-      deform_path_set - true;
     }
   }
 
@@ -84,8 +80,6 @@ int main(int argc, char *argv[])
   cout << "Parameter file: " << path_parameter << "\n";
   cout << "Output directory: " << output_dir << "\n";
   cout << "Output mesh name: " << input_mesh_name << "\n\n";
-  if (deform_path_set)
-    cout << "Deformation file: " << deformation_file << "\n\n";
 
   // Read input file with parameters
   map<string, FT> options = read_params_from_file(path_parameter);
@@ -114,7 +108,6 @@ int main(int argc, char *argv[])
     cout << "Deforming mesh." << endl;
 
     Deform_Volume warper(&image, options);
-
     warper.modify_image();
 
     // Append mesh_name with details of deformation

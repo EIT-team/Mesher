@@ -246,68 +246,6 @@ TEST_CASE("Identify unique layers in unit cube")
   REQUIRE(warper.layers == expected);
 }
 
-TEST_CASE("Defined deformations of unit cube")
-{
-  /* Do some defined (as opposed to random) deformations on a unit cube
-   and check the resulting mesh is as expected */
-
-  // Unit cube (dimensions 1 x 1 x 1) centred around 0.5,0.5,0.5
-
-  cout << "Saving some stretches performed on the unit cube" << endl;
-
-  const char *inr_path = "../test/unit_cube.inr";
-
-  vector<vector<double>> deformations;
-
-  char *path_parameter = (char *)"./input_idx.txt";
-  std::map<std::string, FT> options = read_params_from_file(path_parameter);
-
-  ifstream deform_file("../test/list_of_deformations.txt", std::ifstream::in);
-  if (!deform_file)
-    perror("\n Error opening deformations file");
-  cout << "Reading deformations from file." << endl;
-
-  double dist_x, dist_y, dist_z;
-
-  while (deform_file >> dist_x >> dist_y >> dist_z)
-  {
-    cout << dist_x << " " << dist_y << " " << dist_z << endl;
-
-    vector<double> this_deform;
-    this_deform.push_back(dist_x);
-    this_deform.push_back(dist_y);
-    this_deform.push_back(dist_z);
-
-    deformations.push_back(this_deform);
-  }
-
-  int i;
-  for (i = 0; i < deformations.size(); i++)
-  {
-
-    CGAL::Image_3 image;
-    image.read(inr_path);
-
-    Deform_Volume warper(&image, options);
-
-    warper.defined_stretch(deformations[i]);
-
-    cout << "Creating mesh" << endl;
-
-    Mesh_domain domain(image);
-    Mesh_criteria criteria(facet_angle = 30, facet_size = 0.03, facet_distance = 1, cell_radius_edge_ratio = 3, cell_size = 0.03);
-
-    C3t3_EIT c3t3;
-    c3t3 = CGAL::make_mesh_3<C3t3_EIT>(domain, criteria, CGAL::parameters::features(domain),
-                                       CGAL::parameters::no_lloyd(), CGAL::parameters::no_odt(),
-                                       CGAL::parameters::no_perturb(), CGAL::parameters::no_exude());
-
-    int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, "cube_stretch" + to_string(deformations[i][0]) + to_string(deformations[i][1]) + to_string(deformations[i][2]) + ".vtu");
-
-    CHECK(vtk_success == 1);
-  }
-}
-
 TEST_CASE("Random deformation on brain mesh")
 {
   /* Do some random deformations on a brain .inr file, which has
