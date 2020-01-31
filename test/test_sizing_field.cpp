@@ -130,3 +130,21 @@ TEST_CASE("Sizing Fields on Unit Cube")
         int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, "cube_planar_sizing_field.vtu");
     }
 }
+
+TEST_CASE("Validate input parameters")
+{
+    // Read input file with parameters
+    char *path_parameter = (char *)"./input_idx.txt";
+    std::map<std::string, FT> options = read_params_from_file(path_parameter);
+    vector<string> expected_params = {"height", "planar_direction_xyz", "elements_with_fine_sizing_field_percentage"};
+
+    SECTION("Parameters are OK") {
+        validate_params(options, expected_params);
+    }
+
+    SECTION("Parameters missing") {
+        options.erase("height");
+        REQUIRE_THROWS(validate_params(options, expected_params));
+    }
+
+}

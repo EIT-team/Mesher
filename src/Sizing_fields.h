@@ -26,4 +26,6 @@ struct Sizing_field
   FT operator()(const Point &, const int, const Index &) const;
 };
 
+void validate_params(std::map<std::string, FT>, std::vector<std::string>);
+
 #endif

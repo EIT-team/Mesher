@@ -57,3 +57,7 @@ map<string, FT> read_params_from_file(char *file_name_input)
 
   return options;
 }
+
+void validate_params(std::map<std::string, FT> options) {
+  ;
+}

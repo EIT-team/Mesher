@@ -98,6 +98,8 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
 
   if (options.at("planar_refinement"))
   {
+    vector<string> expected_params = {"height", "planar_direction_xyz", "elements_with_fine_sizing_field_percentage"};
+    validate_params(options, expected_params);
 
     if (options.at("planar_direction_xyz") == 1)
     {
@@ -206,4 +208,17 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
   }
 
   return out;
+}
+
+void validate_params(map<string, FT> options, vector<string> expected_params) {
+  
+  for (auto param : expected_params)
+  {
+    if (!options.count(param)) {
+      cout << param << " parameter not found!" << endl;
+      throw runtime_error("Exiting");
+    }
+  }
+
+  
 }
