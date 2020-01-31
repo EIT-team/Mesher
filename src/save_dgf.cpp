@@ -109,24 +109,47 @@ void save_electrodes(Points electrodes, string output_file)
 /** Write parameters to file.
  *  Inputs: map of parameters, output file name.
  **/
-void save_parameters(map<string, string> parameters, string output_file)
+void save_parameters(map<string, string> parameters, string output_file, string Mesh_name)
 {
-	output_file += ".parameters";
+	string output_file_name = output_file + ".parameters";
 	cout << "Writing parameter file: " << output_file << '\n';
 
 	// Use stream for writing output file, easier to use with map data structure that fprintf
 	ofstream parameter_file;
-	parameter_file.open(output_file.c_str());
+	parameter_file.open(output_file_name.c_str());
 
 	if (parameter_file.is_open())
 	{
 		parameter_file << "# Mesher parameters" << endl;
-
+		parameter_file << "#";
 		for (auto param_elem : parameters)
 		{
 			//cout << elem.first << ": " << elem.second << endl; // print the parameters and the values
-			parameter_file << param_elem.first << ": " << param_elem.second << endl; // print the parameters and the values
+			parameter_file << param_elem.first << ": " << param_elem.second << ","; // print the parameters and the values
 		}
+
+		parameter_file << endl << endl << "# PEITS Parameters for " << output_file << endl << endl;
+
+		parameter_file << "fem.io.macroGrid: " << Mesh_name << ".dgf" << endl << endl;
+		
+		parameter_file << "# Electrode locations given, PEITS will assign nodes" << endl;
+		parameter_file << "electrode.use_node_assignment: false" << endl << endl;
+		// PEITS needs all inputs to be stored in PEITS/data folder, but this file is accessed in /src 
+		parameter_file << "electrode.positions: ../data/" << Mesh_name << ".electrodes" << endl << endl;
+
+		// PEITS is upset if these arent in file
+		parameter_file << "# These must be present even when not used" << endl;
+		parameter_file << "electrode.nodes: unUsed" << endl;
+		parameter_file << "surface.coordinates: unUsed" << endl << endl;
+
+		parameter_file << "# Ground node location " << endl;
+		parameter_file << "ground.hsquared: " << parameters["ground.hsquared"] << endl;
+		parameter_file << "groundposition.x: " << parameters["groundposition.x"] << endl;
+		parameter_file << "groundposition.y: " << parameters["groundposition.y"] << endl;
+		parameter_file << "groundposition.z: " << parameters["groundposition.z"] << endl << endl;
+
+		parameter_file << "# Integers written to mesh, use conductivities file" << endl;
+		parameter_file << endl << "fem.assign_conductivities: false" << endl;
 
 		parameter_file.close();
 	}
@@ -136,7 +159,7 @@ void save_parameters(map<string, string> parameters, string output_file)
 	}
 }
 
-/** Calcualte the centres of each cell and write to a file.
+/** Calculate the centres of each cell and write to a file.
  * Inputs: Mesh, output file name.
  **/
 void write_centres(C3t3 &c3t3, string output_file)

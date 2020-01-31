@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
   // Output dgf file and electrode_positions
   save_as_dgf(c3t3, options, output_base_file);
   save_electrodes(sizing_field.centres, output_base_file);
-  save_parameters(parameters, output_base_file);
+  save_parameters(parameters, output_base_file, input_mesh_name);
 
   if (options["save_cell_centres"])
   {
