@@ -17,10 +17,10 @@ cell_size_electrodes_mm = 2.000
 
 # Depth refinement
 cell_fine_size_mm = 2.000
-elements_with_fine_sizing_field_percentage = 50.000
+elements_with_fine_sizing_field_percentage = 10.000
 
 # Planar refinement - also uses parameters from depth
-height = 10.000
+height = 0.000
 # Dimension x = 1, y = 2, z = 3 
 planar_direction_xyz = 3.000
 
