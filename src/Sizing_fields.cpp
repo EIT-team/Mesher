@@ -24,8 +24,6 @@ Sizing_field::Sizing_field(Point &origin_in, string path_electrode, std::map<std
   ub_y = origin.y();
   ub_z = origin.z();
 
-  //TODO: Move these clsoer to where the are used?
-  //or validate params at this point
   // Reallocate some parameters to have less verbose names
   coarse_size = options["cell_coarse_size_mm"];
   fine_size = options["cell_fine_size_mm"];
@@ -231,8 +229,22 @@ void validate_sphere_params(map<string, FT> options) {
 }
 
 //TODO List cube values. Check that examples/refinment has cuboid_ rather than square_
+
 void validate_cuboid_params(map<string, FT> options) {
-    vector<string> expected_params = {"height", "planar_direction_xyz", "elements_with_fine_sizing_field_percentage"};
+    vector<string> expected_params = {"cuboid_x_extent",
+                                     "cuboid_y_extent",
+                                     "cuboid_z_extent",
+                                     "cuboid_centre_x",
+                                     "cuboid_centre_z",
+                                     "cuboid_centre_y",
+                                     "cuboid_cell_size"};
+    validate_params(options, expected_params);
+}
+
+void validate_planar_params(map<string, FT> options) {
+    vector<string> expected_params = {"height",
+                                     "planar_direction_xyz",
+                                     "elements_with_fine_sizing_field_percentage"};
     validate_params(options, expected_params);
 }
 
