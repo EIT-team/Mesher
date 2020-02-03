@@ -15,12 +15,19 @@ sphere_centre_y = 20
 sphere_centre_z = 20
 sphere_cell_size = 0.4
 
-#cuboid refinment
+
+#Square refinement
 cuboid_refinement = 0
+cuboid_x_extent = 4.000
+cuboid_y_extent = 6.000
+cuboid_z_extent = 4.000
+cuboid_centre_x = 13.900
+cuboid_centre_y = 13.200
+cuboid_centre_z = 17.900
+cuboid_cell_size = 0.090
 
 # Standard refinement parameters
 refine_electrodes = 0
-pixel_scale_mm = 20
 
 facet_angle_deg = 30
 facet_distance_mm = 0.05

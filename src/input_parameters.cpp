@@ -39,7 +39,7 @@ map<string, FT> read_params_from_file(char *file_name_input)
     options[id] = val;
   }
 
-  validate_mandatory_params();
+  validate_mandatory_params(options);
 
   return options;
 }

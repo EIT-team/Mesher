@@ -28,7 +28,6 @@ void validate_depth_params(std::map<std::string, FT>);
 void validate_planar_params(std::map<std::string, FT>);
 void validate_sphere_params(std::map<std::string, FT>);
 void validate_cuboid_params(std::map<std::string, FT>);
-void validate_elctrode_params(std::map<std::string, FT>);
-
+void validate_electrode_params(std::map<std::string, FT>);
 
 #endif
