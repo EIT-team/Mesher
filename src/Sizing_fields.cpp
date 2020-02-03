@@ -27,10 +27,10 @@ Sizing_field::Sizing_field(Point &origin_in, string path_electrode, std::map<std
   // Reallocate some parameters to have less verbose names
   coarse_size = options["cell_coarse_size_mm"];
   fine_size = options["cell_fine_size_mm"];
-  fine_size_percentage = int(options["elements_with_fine_sizing_field_percentage"]);
 
   if (options["planar_refinement"])
   {
+    validate_planar_params();
     if (options["planar_direction_xyz"] == 1)
     {
       options["height"] *= options["vx"];
@@ -96,7 +96,7 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
 
   if (options.at("planar_refinement"))
   {
-    validate_planra_params();
+    validate_planar_params();
 
     if (options.at("planar_direction_xyz") == 1)
     {
@@ -119,6 +119,7 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
     }
 
     double dist_percentage = distance / double(options.at("upper_bound"));
+    int fine_size_percentage = int(options["elements_with_fine_sizing_field_percentage"]);
 
     if (dist_percentage <= (fine_size_percentage) / 100.0)
     {
@@ -132,14 +133,18 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
     }
   }
 
-  if (options.at("depth_refinement"))
   { //refine centre of mesh more than outside
+  if (options.at("depth_refinement"))
 
-    // Cartersian distance from centre of the mesh
+    validate_depth_params();
+
+    // Calculate cartersian distance from centre of the mesh
     Vector distance_elliptic = p - origin;
     FT distance_percent = CGAL::sqrt((distance_elliptic.x() / origin.x()) * (distance_elliptic.x() / origin.x()) +
                                      (distance_elliptic.y() / origin.y()) * (distance_elliptic.y() / origin.y()) +
                                      (distance_elliptic.z() / origin.z()) * (distance_elliptic.z() / origin.z()));
+
+    int fine_size_percentage = int(options["elements_with_fine_sizing_field_percentage"]);
 
     if (distance_percent >= 1 - FT(fine_size_percentage) / 100)
     {
@@ -154,8 +159,7 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
 
   if (options.at("sphere_refinement"))
   {
-    // Refine a sphere around a specificed point.
-
+    validate_sphere_params();
     Point sphere_centre(options.at("sphere_centre_x"),
                         options.at("sphere_centre_y"),
                         options.at("sphere_centre_z"));
@@ -170,6 +174,7 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
   }
 
   if (options.at("cuboid_refinement"))
+  validate_cuboid_params();
   {
     // Refine a cuboid around a specificed point.
 
@@ -190,9 +195,8 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
 
   if (options.at("electrode_refinement"))
   {
-
-    e_R = 2 * options["electrode_radius_mm"]; // 2 * to secure fit of the electrode
-    elem_size_electrodes = options["cell_size_electrodes_mm"];
+    validate_elctrode_params()
+    FT e_R = 2 * options.at("electrode_radius_mm"); // 2 * to secure fit of the electrode
 
     Points::const_iterator it;
     for (it = centres.begin(); it < centres.end(); it++)
@@ -201,21 +205,13 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
       if (pp.squared_length() <= e_R * e_R)
       {
 
-        out = elem_size_electrodes;
+        out = options.at("cell_size_electrodes_mm");;
         return out;
       }
     }
   }
 
   return out;
-}
-
-void validate_planar_params(map<string, FT> options) {
-    vector<string> expected_params = {"height",
-                                      "planar_direction_xyz",
-                                      "elements_with_fine_sizing_field_percentage"};
-
-    validate_params(options, expected_params);
 }
 
 void validate_sphere_params(map<string, FT> options) {
@@ -246,6 +242,11 @@ void validate_planar_params(map<string, FT> options) {
                                      "planar_direction_xyz",
                                      "elements_with_fine_sizing_field_percentage"};
     validate_params(options, expected_params);
+}
+
+void validate_depth_params(map<string, FT> options) {
+  vector<string> expecteD_params = {"elements_with_fine_sizing_field_percentage"};
+  validate_params(options, expected_params);
 }
 
 void validate_electrode_params(map<string, FT> options) {

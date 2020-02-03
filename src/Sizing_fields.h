@@ -16,16 +16,15 @@ struct Sizing_field
 
   // Less verbose names for some of the input paremters
   FT elem_size_electrodes;   //element size near electrodes
-  FT e_R;                    //electrode radius
   Points centres;            //electrode centres
   FT fine_size, coarse_size; // size of fine/coarse elements
-  int fine_size_percentage;  // percentage of elements with fine size
 
   Sizing_field(Point &, std::string, std::map<std::string, FT>);
 
   FT operator()(const Point &, const int, const Index &) const;
 };
 
+void validate_depth_params(std::map<std::string, FT>);
 void validate_planar_params(std::map<std::string, FT>);
 void validate_sphere_params(std::map<std::string, FT>);
 void validate_cuboid_params(std::map<std::string, FT>);
