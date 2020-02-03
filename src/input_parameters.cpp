@@ -39,25 +39,44 @@ map<string, FT> read_params_from_file(char *file_name_input)
     options[id] = val;
   }
 
-  //The voxel size in the input mesh can vary,
-  //Scale everything so that it is in mm
-
-  options["sphere_radius"];
-  options["sphere_centre_x"];
-  options["sphere_centre_y"];
-  options["sphere_centre_z"];
-  options["sphere_cell_size"];
-  options["cuboid_x_extent"];
-  options["cuboid_y_extent"];
-  options["cuboid_z_extent"];
-  options["cuboid_centre_x"];
-  options["cuboid_centre_y"];
-  options["cuboid_centre_z"];
-  options["cuboid_cell_size"];
+  validate_mandatory_params();
 
   return options;
 }
 
-void validate_params(std::map<std::string, FT> options) {
-  ;
+/* Check that each string is 'expected_parms' is a key in the options map.
+Throw an error if not found */
+void validate_params(map<string, FT> options, vector<string> expected_params) {
+  
+  for (auto param : expected_params)
+  {
+    if (!options.count(param)) {
+      cout << param << " parameter not found!" << endl;
+      throw runtime_error("Exiting");
+    }
+  }
+}
+
+void validate_mandatory_params(std::map<std::string, FT> options) {
+      vector<string> expected_params = {"planar_refinement",
+                                        "depth_refinement",
+                                        "electrode_refinement",
+                                        "sphere_refinement",
+                                        "cuboid_refinement",
+                                        "facet_angle_deg",
+                                        "facet_distance_mm",
+                                        "cell_radius_edge_ratio",
+                                        "cell_fine_size_mm",
+                                        "cell_coarse_size_mm",
+                                        "lloyd_opt",
+                                        "odt_opt",
+                                        "exude_opt",
+                                        "perturb_opt",
+                                        "time_limit_sec",
+                                        "save_vtk",
+                                        "save_cell_centres",
+                                        "save_nodes_tetra",
+                                        "do_deformation"};
+  
+  validate_params(options, expected_params);
 }

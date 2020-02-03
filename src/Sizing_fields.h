@@ -26,6 +26,10 @@ struct Sizing_field
   FT operator()(const Point &, const int, const Index &) const;
 };
 
-void validate_params(std::map<std::string, FT>, std::vector<std::string>);
+void validate_planar_params(std::map<std::string, FT>);
+void validate_sphere_params(std::map<std::string, FT>);
+void validate_cuboid_params(std::map<std::string, FT>);
+void validate_elctrode_params(std::map<std::string, FT>);
+
 
 #endif

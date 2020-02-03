@@ -24,12 +24,12 @@ Sizing_field::Sizing_field(Point &origin_in, string path_electrode, std::map<std
   ub_y = origin.y();
   ub_z = origin.z();
 
+  //TODO: Move these clsoer to where the are used?
+  //or validate params at this point
   // Reallocate some parameters to have less verbose names
   coarse_size = options["cell_coarse_size_mm"];
   fine_size = options["cell_fine_size_mm"];
   fine_size_percentage = int(options["elements_with_fine_sizing_field_percentage"]);
-  e_R = 2 * options["electrode_radius_mm"]; //2* to secure fit of the electrode
-  elem_size_electrodes = options["cell_size_electrodes_mm"];
 
   if (options["planar_refinement"])
   {
@@ -98,8 +98,7 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
 
   if (options.at("planar_refinement"))
   {
-    vector<string> expected_params = {"height", "planar_direction_xyz", "elements_with_fine_sizing_field_percentage"};
-    validate_params(options, expected_params);
+    validate_planra_params();
 
     if (options.at("planar_direction_xyz") == 1)
     {
@@ -194,6 +193,9 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
   if (options.at("electrode_refinement"))
   {
 
+    e_R = 2 * options["electrode_radius_mm"]; // 2 * to secure fit of the electrode
+    elem_size_electrodes = options["cell_size_electrodes_mm"];
+
     Points::const_iterator it;
     for (it = centres.begin(); it < centres.end(); it++)
     {
@@ -210,15 +212,33 @@ FT Sizing_field::operator()(const Point &p, const int, const Index &) const
   return out;
 }
 
-void validate_params(map<string, FT> options, vector<string> expected_params) {
-  
-  for (auto param : expected_params)
-  {
-    if (!options.count(param)) {
-      cout << param << " parameter not found!" << endl;
-      throw runtime_error("Exiting");
-    }
-  }
+void validate_planar_params(map<string, FT> options) {
+    vector<string> expected_params = {"height",
+                                      "planar_direction_xyz",
+                                      "elements_with_fine_sizing_field_percentage"};
 
-  
+    validate_params(options, expected_params);
+}
+
+void validate_sphere_params(map<string, FT> options) {
+    vector<string> expected_params = {"sphere_radius",
+                                     "sphere_centre_x",
+                                     "sphere_centre_y",
+                                     "sphere_centre_z",
+                                     "sphere_cell_size"};
+
+    validate_params(options, expected_params);
+}
+
+//TODO List cube values. Check that examples/refinment has cuboid_ rather than square_
+void validate_cuboid_params(map<string, FT> options) {
+    vector<string> expected_params = {"height", "planar_direction_xyz", "elements_with_fine_sizing_field_percentage"};
+    validate_params(options, expected_params);
+}
+
+void validate_electrode_params(map<string, FT> options) {
+    vector<string> expected_params = {"cell_size_electrodes_mm",
+                                      "electrode_radius_mm"};
+                                      
+    validate_params(options, expected_params);
 }
