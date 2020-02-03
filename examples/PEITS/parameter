@@ -1,0 +1,58 @@
+### has to be set to 1 / true
+fem.resolvevariables: 1
+
+########## Include Standard Settings ##############
+paramfile: ../data/standardparamsNN
+
+######### Parameters for input/output #############
+fem.io.loadPartitions: false
+fem.io.meshPath: ../data/
+fem.io.partitionPath: ../partitions/
+fem.io.do_elec_volts: true
+fem.io.do_jacobian: true
+fem.io.do_electrode_jacobian: false
+fem.io.outputpath: ../output/
+
+# Meshes
+mesh: NNPEITSmesh
+
+# Separate conductivity file: this file assigns a conductivity value to each finite element
+fem.io.load_sigma_separately: false
+fem.io.separate_sigma_file: ../data/sigmavector_unused
+
+# Conductivities: this file encodes the conductivity values for different tissues
+conductivities: ../data/$(mesh).conductivities
+
+### include special parameter file for the mesh ###
+paramfile: ../data/$(mesh).parameters
+
+########## how to make solution unique ############
+ground.node: true
+ground.epsmass: false
+
+############### PETSc settings  ###################
+# Preconditioners are:   "none", "asm", "sor", "jacobi", "hypre", "ml"; SERIAL: "ilu-n", "lu", "icc"; DIRECT SOLVERS: "mumps", "superlu"
+petsc.preconditioning.method: hypre
+
+# Solvers are:     "cg" , "bicg", "bicgstab", "gmres"
+petsc.kspsolver.method: cg
+
+# tolerance for linear solver 
+poisson.solvereps: 1e-12
+
+# maximum iterations for linear solver
+poisson.solveriter: 10000
+
+############### Current Protocol #################
+current.protocol: ../data/NN2016_Prt_full.txt
+
+
+################# Perturbation ##################
+mesh.perturbation: false
+mesh.perturbation.multORabs: true  # true for multiplication with value, false for setting absolte value
+mesh.perturbation.value: 1.7
+mesh.perturbation.radius: 10 # radius of sphere in mm
+mesh.perturbation.pos_x: 0
+mesh.perturbation.pos_y: 0
+mesh.perturbation.pos_z: 0
+

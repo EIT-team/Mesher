@@ -1,0 +1,53 @@
+################# Verbosity ######################
+# number of process that prints output (-1 no output) 
+fem.verboserank: 0
+# true for iteration output, false means no output
+fem.solver.verbose: false
+# write vtk file with solution to first current input
+write.vtk: false
+# write petsc matrix to matlab readable file - this only works in serial
+output.write_matrix: false
+# print electrode voltages during execution
+output.print_electrode_voltages: false
+# write all electrode potentials or only measured voltage?
+fem.io.write_only_measured_voltage: true
+# shift average voltage
+fem.solver.shift_average: false
+
+##### conductivity settings #######
+# uniform conductivity?
+fem.uniform_conductivity: false
+fem.uniform_conductivity_value: 0.3  # in S/m
+# WHETHER CONDUCTIVITY OF MESH FILE IS USED OR CONDUCTIVITIES 
+# ARE ASSIGNED ACCORDING TO LAYER NUMBERING IS SPECIFIED IN THE MESH PARAMETER FILES
+
+##### electrode settings #####
+contact.impedance: 100 # needs to be integer
+input.current: 240.0e-6 # in A
+electrode.diameter: 8.0 # float in mm
+electrode.diameter_file: none
+
+##### Parameters for preconditioned linear solver
+# preconditioning method: none, ssor, sor, ilu-0, ilu-n, gauss-seidel, jacobi, amg-ilu-0
+istl.preconditioning.method: ilu-0
+istl.preconditioning.iterations: 1
+istl.preconditioning.relaxation: 1.2
+# enable simple Jacobi preconditioning (for non istl inverse operators)
+fem.preconditioning: true
+
+##### Parameters for output ######
+# path for output  
+fem.prefix: ../output
+# time interval for data output
+fem.io.savestep: 0.1
+# number of calls to write() after which a file is produced
+fem.io.savecount: 1
+# output format (vtk-cell, vtk-vertex, sub-vtk-cell, sub-vtk-vertex, gnuplot)
+fem.io.outputformat: vtk-cell
+# also print partitioning for parallel runs
+fem.io.partitioning: rank #true
+
+##### Problem setup parameter #####
+poisson.problem: EIT
+
+
