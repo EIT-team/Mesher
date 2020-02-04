@@ -5,8 +5,6 @@ function [Mesh] = loadmesh(fname)
 disp(['Loading mesh : ' fname]);
 
 electrode_positions=csvread([fname '.electrodes']);
-% disp('Removing extra reference electrode as this is not used in simulation')
-% electrode_positions(end,:)=[];
 
 verticies=csvread([fname '_vertices.csv']);
 tetra=csvread([fname '_tetra.csv']);
@@ -22,6 +20,10 @@ fclose(pfid);
 t=t{1};
 t=cellstr(t);
 
+%remove comments
+t=t(~startsWith(t,'#'));
+
+%find ground node position
 x_idx=contains(t,'groundposition.x:');
 y_idx=contains(t,'groundposition.y:');
 z_idx=contains(t,'groundposition.z:');
@@ -34,7 +36,7 @@ gnd_pos = [gndx, gndy, gndz];
 
 Mesh.Tetra=tetra(:,1:4);
 Mesh.Nodes=verticies(:,1:3);
-Mesh.mat_ref=tetra(:,5);
+Mesh.mat_ref=int8(tetra(:,5));
 Mesh.elec_pos=electrode_positions;
 Mesh.gnd_pos=gnd_pos;
 
