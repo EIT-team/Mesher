@@ -39,3 +39,7 @@ Point - 1/8
 Line - 3/8  
 Surface - 3/8  
 All directions turned off (no stretch) - 1/8  
+
+## Output files
+When deformation is enabled, a random integer is appended to the output mesh name.  
+The list of deformations performed is written to a `.deformations` file in the output directory.
