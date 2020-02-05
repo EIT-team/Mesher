@@ -74,6 +74,7 @@ void Deform_Volume::dilate_layer(int layer_index, int n_pixels)
   vector<long> neighbours;
   unordered_set<long> elements_to_change;
 
+  // Append dilation info to deformation description
   deformation_info += "_d." + to_string(layer_index) + "." + to_string(n_pixels);
 
   // Loop for each level of pixel dilation
