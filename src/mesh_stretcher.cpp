@@ -133,8 +133,10 @@ string Mesh_Stretcher::stretch_description()
 
   if (!active)
   {
-    return "0.0.0";
+    return "No stretch\n";
   }
 
-  return to_string(point_to_move) + "." + to_string(distance) + "." + to_string(anchor);
+  return "Point to move: " + to_string(point_to_move)
+         + " Distance to move: " + to_string(distance)
+         + " Anchor point: " + to_string(anchor) + "\n";
 }

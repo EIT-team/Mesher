@@ -75,7 +75,8 @@ void Deform_Volume::dilate_layer(int layer_index, int n_pixels)
   unordered_set<long> elements_to_change;
 
   // Append dilation info to deformation description
-  deformation_info += "_d." + to_string(layer_index) + "." + to_string(n_pixels);
+  deformation_info += 
+    "Dilating layer: " + to_string(layer_index) + " by " + to_string(n_pixels) + " pixels.\n";
 
   // Loop for each level of pixel dilation
   while (n_pixels--)
@@ -217,10 +218,10 @@ void Deform_Volume::stretch_array(vector<int> stretch)
     }
   }
 
-  deformation_info += "_s";
-  deformation_info += x.stretch_description() + ".";
-  deformation_info += y.stretch_description() + ".";
-  deformation_info += z.stretch_description();
+  deformation_info += "Stretch: \n";
+  deformation_info += "x: " + x.stretch_description();
+  deformation_info += "y: " + y.stretch_description();
+  deformation_info += "z: " + z.stretch_description();
 }
 
 /* Randomly stretch/dilate the data */

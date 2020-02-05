@@ -110,9 +110,14 @@ int main(int argc, char *argv[])
     Deform_Volume warper(&image, options);
     warper.modify_image();
 
-    // Append mesh_name with details of deformation
-    output_mesh_name = input_mesh_name + warper.deformation_info;
+    // Append mesh_name with random integer. 
+    long long random_int = rand() * rand();
+    output_mesh_name = input_mesh_name + to_string(random_int);
     cout << "New mesh name: " << output_mesh_name << endl;
+
+    string deformation_file = output_dir + output_mesh_name + ".deformations";
+    save_deformation_info(warper.deformation_info, deformation_file);
+
   }
 
   Mesh_domain domain(image);
@@ -169,7 +174,7 @@ int main(int argc, char *argv[])
       sizing_field.centres[i] = c3t3.find_closest_element(sizing_field.centres[i], outer_tissue_index);
     }
   }
-
+  //TODO: refine_electrodes or electrode_refinment in params?
   // Put together parameters
   map<string, string> parameters;
 
