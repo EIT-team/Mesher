@@ -75,19 +75,17 @@ MDL.elems = Mesh.Tetra;
 MDL.boundary = srf;
 
 %find ground node
-
 gnd_dist=sqrt(sum((Mesh.Nodes - Mesh.gnd_pos).^2,2));
 [~, gnd_node] = min(gnd_dist);
 MDL.gnd_node = gnd_node;
 
-%% do electrodes 
+% Electrodes 
 
 % find nodes on the suface within electrode radius 
 z_contact = 200;
 elec_radius = .006; %in meters
 
 srf_idx=unique(srf(:));
-
 srf_nodes=Mesh.Nodes(srf_idx,:);
 
 for iElec = 1:size(Mesh.elec_pos,1)
@@ -103,14 +101,20 @@ MDL.jacobian=       'eidors_default';
 MDL.system_mat=     'eidors_default';
 MDL.normalize_measurements = 0;
 
-%% Stimulation pattern
+figure
+show_fem(MDL)
+title('Mesher output in EIDORS');
+saveas(gcf,'figures/EIDORS_FEM.png');
+%% Forward model settings
+
+% Convert text file to EIDORS stim patterns
 
 [stim, meas_sel] = mk_stim_patterns( 32,1,'{op}','{op}');
 
 MDL.stimulation=stim;
 
 %%
-show_fem(MDL)
+
 valid_fwd_model(MDL)
 
 
