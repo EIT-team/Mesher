@@ -40,6 +40,8 @@ runmesher('../neonatescalp/NNscalp.inr','../neonatescalp/NNscalp_elecINRpos.txt'
 % running computationally expensive output
 
 Mesh=loadmesh('output/NNEIDORS');
+% Mesh=loadmesh('../PEITS/output/NNPEITSmesh');
+
 figure
 hold on;
 trep = triangulation(Mesh.Tetra, Mesh.Nodes);
@@ -58,11 +60,7 @@ title('Neonate Mesh Low Res')
 
 %% Load into EIDORS
 
-inv_mdl= mk_common_model('n3r2',[16,2]);
-show_fem(inv_mdl.fwd_model)
- 
-valid_fwd_model(inv_mdl.fwd_model)
-%% 
+%remember to run eidors startup
 
 %based on mk_fmdl_from_nodes
 MDL=eidors_obj('fwd_model','test');
@@ -79,11 +77,11 @@ gnd_dist=sqrt(sum((Mesh.Nodes - Mesh.gnd_pos).^2,2));
 [~, gnd_node] = min(gnd_dist);
 MDL.gnd_node = gnd_node;
 
-% Electrodes 
+% Electrodes
 
-% find nodes on the suface within electrode radius 
-z_contact = 200;
-elec_radius = .006; %in meters
+% find nodes on the suface within electrode radius
+z_contact = 100;
+elec_radius = .008; %in meters
 
 srf_idx=unique(srf(:));
 srf_nodes=Mesh.Nodes(srf_idx,:);
@@ -92,13 +90,30 @@ for iElec = 1:size(Mesh.elec_pos,1)
     electrodes(iElec).z_contact= z_contact;
     edist = sqrt(sum((srf_nodes - Mesh.elec_pos(iElec,:)).^2,2));
     enodes = srf_idx(edist <= elec_radius);
-    electrodes(iElec).nodes = enodes';
+    
+    curNodes=enodes';
+    curNodes = unique(curNodes);
+    
+    % only use nodes which can be used in triangulation as this confuses
+    % find_electrode_bdy.m, as it thinks any unused node is a point electrode.
+    % This is adapted from find_electrode_bdy
+    
+    % count how many times each node is used in the surface
+    bdy_els = zeros(size(srf,1),1);
+    for nd= curNodes(:)'
+        bdy_els = bdy_els + any(srf==nd,2);
+    end
+    % Nodes used three times are part of a triangulation
+    ffb = find(bdy_els == size(srf,2));
+    % only use nodes which appear 3 times 
+    curNodes=intersect(curNodes,unique(srf(ffb,:)));
+    electrodes(iElec).nodes = curNodes;
 end
 
 MDL.electrode =     electrodes;
-MDL.solve=          'eidors_default';
-MDL.jacobian=       'eidors_default';
-MDL.system_mat=     'eidors_default';
+MDL.solve=          @fwd_solve_1st_order;
+MDL.jacobian=       @jacobian_adjoint;
+MDL.system_mat=     @system_mat_1st_order;
 MDL.normalize_measurements = 0;
 
 figure
@@ -107,17 +122,46 @@ title('Mesher output in EIDORS');
 saveas(gcf,'figures/EIDORS_FEM.png');
 %% Forward model settings
 
-% Convert text file to EIDORS stim patterns
+% Convert protocol file to EIDORS stim patterns
 
-[stim, meas_sel] = mk_stim_patterns( 32,1,'{op}','{op}');
+Amp=240e-6;
+
+prt=dlmread('NN2016_Prt_full.txt');
+[stim]= stim_meas_list( prt,33,Amp);
+% [stim_op, meas_sel] = mk_stim_patterns( 33,1,'{op}','{op}',{},Amp);
 
 MDL.stimulation=stim;
 
-%%
-
+%% Check FWD is ok
 valid_fwd_model(MDL)
 
+%% Add conductivity and solve
 
+cond_scalp=0.2;
+cond_skull=0.03;
 
+% create conductivity vector
+cond= zeros( size(MDL.elems,1) ,1);
 
+cond(Mesh.mat_ref == 1) = cond_scalp;
+cond(Mesh.mat_ref == 2) = cond_skull;
 
+img = mk_image(MDL,cond);
+
+% solve fwd for this conductivity 
+data=fwd_solve( img);
+
+figure
+plot(data.meas)
+title('Simulated voltaged from EIDORS')
+xlabel('Measurement');
+ylabel('Voltage (V)');
+ylim([-0.05 0.05])
+saveas(gcf,'figures/EIDORS_Volts.png')
+
+%%
+figure
+hold on
+plot(V)
+plot(data.meas*0.25)
+ylim([-0.05 0.05])
