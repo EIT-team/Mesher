@@ -1,3 +1,4 @@
+# Mesh Deformation
 EIT-MESHER allows for some random deformations to be applied to the input data, before the output mesh is generated. It is not guaranteed to give 'sensible' meshes in every case, but can be ran repeatedly on the same input mesh to quickly generate a set of unique outputs.
 
 Examples of deformation on unit cube:
