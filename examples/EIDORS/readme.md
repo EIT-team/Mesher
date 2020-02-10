@@ -23,6 +23,6 @@ Once these have been defined we can use the EIDORS function `show_fem(MDL)` to p
 
 ## Running forward solution
 
-The procotol can be converted to an EIDORS stim pattern through `stim_meas_list` and the forward model setup through `img = mk_image(MDL,cond);`. Finally the voltages can be calcuated using `fwd_solve`.
+The protocol can be converted to an EIDORS stim pattern through `stim_meas_list` and the forward model setup through `img = mk_image(MDL,cond);`. Finally the voltages can be calculated using `fwd_solve`.
 
 ![Voltages in EIDORS](figures/EIDORS_Volts.png)
