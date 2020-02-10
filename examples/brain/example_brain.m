@@ -10,9 +10,9 @@
 %
 % Requires iso2mesh for plotting with binsurface only.
 
-% This segmentation was resampled to give a uniform 
+% This segmentation was resampled to give a uniform spacing 
 load('Brain_seg.mat');
-pixel_scale=8;
+pixel_scale=8; %this value is set by the project in Seg3D
 vol_res=1/pixel_scale;
 xyz_res=[vol_res,vol_res,vol_res];
 
@@ -66,11 +66,12 @@ saveinr_EIT(uint8(V),'Brain.inr',xyz_res);
 %% Run the mesher
 
 P=getmesherparam;
-P.pixel_scale_mm=pixel_scale;
+
 P.facet_distance_mm=.4;
 P.cell_fine_size_mm=.5;
 P.cell_coarse_size_mm=.6;
-P.refine_electrodes = 1;
+
+P.refine.electrodes=1;
 P.electrode_radius_mm=.3;
 P.cell_size_electrodes_mm=.1;
 
@@ -121,11 +122,11 @@ title('Rat Brain Mesh Low Res')
 % create settings for a more realistic mesh 
 
 P=getmesherparam;
-P.pixel_scale_mm=pixel_scale;
 P.facet_distance_mm=.4;
 P.cell_fine_size_mm=.15; % Overall smaller elements
 P.cell_coarse_size_mm=.2;  % Much higher lower bound of element size
-P.refine_electrodes = 1;
+
+P.refine.electrodes=1;
 P.electrode_radius_mm=.3;
 P.cell_size_electrodes_mm=.05; % v high res around the electrodes
 

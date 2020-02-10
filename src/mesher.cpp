@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
       sizing_field.centres[i] = c3t3.find_closest_element(sizing_field.centres[i], outer_tissue_index);
     }
   }
-  //TODO: refine_electrodes or electrode_refinment in params?
+
   // Put together parameters
   map<string, string> parameters;
 
@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
   // Output dgf file and electrode_positions
   save_as_dgf(c3t3, options, output_base_file);
   save_electrodes(sizing_field.centres, output_base_file);
-  save_parameters(parameters, output_base_file);
+  save_parameters(parameters, output_base_file, input_mesh_name);
 
   if (options["save_cell_centres"])
   {
@@ -220,15 +220,11 @@ int main(int argc, char *argv[])
   }
 
   // Output the mesh for Paraview
-  // TODO: Since outputting everything in metres, rather than mm
-  // The vtk file is still being written in mm, as the mesh data is only changed
-  // at the point it is written. Fix this
-
   string vtk_file_path = output_base_file + ".vtu";
 
   if (int(options["save_vtk"]) == 1)
   {
-    cout << "Writing vtu file" << vtk_file_path << endl;
+    cout << "Writing vtu file: " << vtk_file_path << endl;
     int vtk_success = write_c3t3_to_vtk_xml_file(c3t3, vtk_file_path);
   }
 

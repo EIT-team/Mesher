@@ -1,24 +1,55 @@
 # Example meshes
 
-See `runexamples.m` for usage of the MATLAB wrappers. 
+The given examples have been tested on Ubuntu, either natively or running through Windows Subsystem for Linux. The parameters used for each example are set to run quickly/produce small meshes. More realistic parameters, which will generate higher resolution meshes are also provided (e.g. `Brain_params_HR.txt`)
 
-Add `wsl` before each of these commands to call it from windows subsystem for linux
+See `runexamples.m` for usage of the MATLAB wrappers.
 
-The parameters have been changed to produce small meshes, in reality the elements should be finer
+## [Unit Cube](unitcube/readme.md)
 
-### Unit Cube
- ```
+The simplest "Hello world" example.
+
+ ```bash
  ../bin/mesher -i unitcube/unit_cube.inr -e unitcube/electrodes.txt  -p unitcube/input_idx.txt -o unitcubeexample -d unitcube/output/
  ```
 
-### Neonate scalp
-```
+![Unit Cube](unitcube/figures/CubeOpt.png)
+
+## [Neonate scalp](neonatescalp/readme.md)
+
+Two layer mesh from STL.
+
+```bash
 ../bin/mesher -i  neonatescalp/NNscalp.inr -e neonatescalp/NNscalp_elecINRpos.txt  -p neonatescalp/NNscalp_param.txt -o NNexample -d neonatescalp/output/
 ```
-### Brain
 
-```
+![Neonate Scalp](neonatescalp/figures/NN_HR_PV.png)
+
+## [Brain](brain/readme.md)
+
+Mesh from MRI segmentation
+
+```bash
 ../bin/mesher -i brain/input.inr -e brain/Electrodes.txt -p brain/input_idx.txt -o brainexample -d brain/output/
 ```
 
+![Brain](brain/figures/brain_PV_HR.png)
 
+## [Refinements](refinements/readme.md)
+
+Overview of the different refinement options
+
+![Refinements](refinements/figures/3_Slice.png)
+
+## Deformation
+
+## Using the Mesher output
+
+The folder [Solvers](./Solvers) contains of examples of how to use the MESHER output with EIT and DOT software
+
+### EIT - PEITS, EIDORS, SUPERSOLVER
+
+![PEITS_Volts](solvers/PEITS/figures/PEITS_Volts.png)
+
+### DOT - Toast++
+
+![PEITS_Volts](solvers/toast/figures/Toast_Phi.png)

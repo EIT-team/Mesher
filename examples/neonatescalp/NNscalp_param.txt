@@ -1,24 +1,39 @@
-#Refinment(s) on/off (1 - yes, 0 -no)
-planar_refinement = 0
-depth_refinement = 1
+# Mesher parameter file 29-Jan-2020 21:07:37
+# Refinement(s) on/off (1 - yes, 0 -no)
 electrode_refinement = 1
-height = 1.000
-planar_direction_xyz = 3.000
+depth_refinement = 0
+planar_refinement = 0
+cuboid_refinement = 0
+sphere_refinement = 0
+
+# Standard refinement parameters
+facet_angle_deg = 30.000
+facet_distance_mm = 2.000
+cell_radius_edge_ratio = 3.000
+cell_coarse_size_mm = 4.000
+
+# Electrode refinement
+electrode_radius_mm = 3.000
+cell_size_electrodes_mm = 2.000
+
+# Depth refinement
+cell_fine_size_mm = 5.000
 elements_with_fine_sizing_field_percentage = 50.000
 
+# Planar refinement - also uses parameters from depth
+height = 1.000
+# Dimension x = 1, y = 2, z = 3 
+planar_direction_xyz = 3.000
 
-#Spherical refinment (1 - yes, 0 - no)
-#Distances in mm
-sphere_refinement = 0
+# Spherical refinement
+# Distances in mm
 sphere_radius = 2.000
 sphere_centre_x = 13.500
 sphere_centre_y = 13.200
 sphere_centre_z = 17.900
 sphere_cell_size = 0.500
 
-
-#Square refinement
-cuboid_refinement = 0
+# cuboid refinement
 cuboid_x_extent = 4.000
 cuboid_y_extent = 6.000
 cuboid_z_extent = 4.000
@@ -27,36 +42,21 @@ cuboid_centre_y = 13.200
 cuboid_centre_z = 17.900
 cuboid_cell_size = 0.090
 
-
-#Standard refinement parameters
-refine_electrodes = 0
-pixel_scale_mm = 1.000
-facet_angle_deg = 30.000
-facet_distance_mm = 2.000
-cell_radius_edge_ratio = 3.000
-cell_fine_size_mm = 3.000
-cell_coarse_size_mm = 8.000
-electrode_radius_mm = 3.000
-cell_size_electrodes_mm = 2.000
-
-
-#Optimisation (1 - yes, 0 - no)
+# Optimisation (1 - yes, 0 - no)
 lloyd_opt = 0
 odt_opt = 0
 exude_opt = 0
 perturb_opt = 0
 time_limit_sec = 300
 
-
-#Save a vtu file of the mesh?
+# Save a vtu file of the mesh?
 save_vtk = 1
-#Save cell centres as csv?
+# Save cell centres as csv?
 save_cell_centres = 0
-#Save nodes and tetra as csv?
+# Save nodes and tetra as csv?
 save_nodes_tetra = 1
 
-
-#Deform the mesh?
+# Deform the mesh?
 do_deformation = 0
 deform_x = 0.000
 deform_y = 0.000
@@ -65,8 +65,7 @@ num_deformations = 5
 min_stretch_distance = 5.000
 max_stretch_distance = 50.000
 
-
-#Move electrodes to the closest facet in the mesh? Useful is electrodes not exactly on the mesh
-#Will move electrode to the nearest facet with tissue type equal to outermost_tissue
+# Move electrodes to the closest facet in the mesh? Useful is electrodes not exactly on the mesh
+# Will move electrode to the nearest facet with tissue type equal to outermost_tissue
 move_electrodes = 1
 outermost_tissue = 1
