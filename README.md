@@ -1,4 +1,11 @@
-# Mesher
+# EIT-Mesher
+
+[Example Usage](./examples/readme.md)  
+[Unit Cube - 'Hello World'](./examples/unitcube/readme.md)  
+[Meshing from STL file](./examples/neonatescalp/readme.md)  
+[Meshing segmented brain data](./examples/brain/readme.md)  
+[Mesh refinment examples](./examples/refinements/readme.md)  
+[Mesh deformation](./examples/deformation/readme.md)  
 ## Build instructions (tested on Ubuntu 16 & 17)
 
 * Install dependencies
@@ -42,5 +49,5 @@ Usage:
         
 Example:
 
-./bin/mesher -i inputs/input.inr -e inputs/Electrodes.txt -p inputs/input_idx.txt
+./bin/mesher -i inputs/input.inr -e inputs/Electrodes.txt -p inputs/params.txt
 ```
