@@ -4,7 +4,7 @@ The given examples have been tested on Ubuntu, either natively or running throug
 
 See `runexamples.m` for usage of the MATLAB wrappers.
 
-## [Unit Cube](unitcube/readme.md)
+## [Unit Cube](unitcube/)
 
 The simplest "Hello world" example.
 
@@ -14,7 +14,7 @@ The simplest "Hello world" example.
 
 ![Unit Cube](unitcube/figures/CubeOpt.png)
 
-## [Neonate scalp](neonatescalp/readme.md)
+## [Neonate scalp](neonatescalp/)
 
 Two layer mesh from STL.
 
@@ -24,7 +24,7 @@ Two layer mesh from STL.
 
 ![Neonate Scalp](neonatescalp/figures/NN_HR_PV.png)
 
-## [Brain](brain/readme.md)
+## [Brain](brain/)
 
 Mesh from MRI segmentation
 
@@ -34,7 +34,7 @@ Mesh from MRI segmentation
 
 ![Brain](brain/figures/brain_PV_HR.png)
 
-## [Refinements](refinements/readme.md)
+## [Refinements](refinements/)
 
 Overview of the different refinement options
 
@@ -44,7 +44,7 @@ Overview of the different refinement options
 
 ## Using the Mesher output
 
-The folder [Solvers](./Solvers) contains of examples of how to use the MESHER output with EIT and DOT software
+The folder [solvers](./solvers) contains of examples of how to use the MESHER output with EIT and DOT software
 
 ### EIT - PEITS, EIDORS, SUPERSOLVER
 

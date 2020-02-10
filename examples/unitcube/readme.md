@@ -8,7 +8,7 @@ A simple unit cube serves a `Hello World` example mesh. This is useful to check 
 ../../bin/mesher -i unit_cube.inr -e electrodes.txt -p Params_0.txt -o 0_Cube
 ```
 
-THe parameters within `Params_0.txt` create a low element mesh with no optimisations. Turning on the optimisations by setting `lloyd_opt = 1` `odt_opt = 1` `exude_opt = 1` `perturb_opt = 1` creates a more regular mesh which also captures the boundaries better.
+The parameters within `Params_0.txt` create a low element mesh with no optimisations. Turning on the optimisations by setting `lloyd_opt = 1` `odt_opt = 1` `exude_opt = 1` `perturb_opt = 1` creates a more regular mesh which also captures the boundaries better.
 
 ```bash
 ../../bin/mesher -i unit_cube.inr -e electrodes.txt -p Params_1.txt -o 1_CubeOpt
