@@ -148,8 +148,8 @@ void save_parameters(map<string, string> parameters, string output_file, string 
 		parameter_file << "groundposition.y: " << parameters["groundposition.y"] << endl;
 		parameter_file << "groundposition.z: " << parameters["groundposition.z"] << endl << endl;
 
-		parameter_file << "# Integers written to mesh, use conductivities file" << endl;
-		parameter_file << endl << "fem.assign_conductivities: false" << endl;
+		parameter_file << "# True: Values written to dgf are matrefs for conductivities file. False: Will use values in DGF as conductivities " << endl;
+		parameter_file << endl << "fem.assign_conductivities: true" << endl;
 
 		parameter_file.close();
 	}
