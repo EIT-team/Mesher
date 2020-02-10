@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/EIT-team/Mesher.svg?branch=master)](https://travis-ci.org/EIT-team/Mesher)
 # EIT-Mesher
 
 EIT-MESHER is C++ software, based on the CGAL library, which generates high quality Finite Element Model tetrahedral meshes from binary masks of 3D volume segmentations. Originally developed for biomedical applications in Electrical Impedance Tomography (EIT) to address the need for custom, non-linear refinement in certain areas (e.g. around electrodes), EIT-MESHER can also be used in other fields where custom FEM refinement is required, such as Diffuse Optical Tomography (DOT).
