@@ -9,7 +9,12 @@ EIT-MESHER is C++ software, based on the CGAL library, which generates high qual
 [Meshing segmented brain data](./examples/brain/readme.md)  
 [Meshing from STL file](./examples/neonatescalp/readme.md)  
 [Mesh refinement examples](./examples/refinements/readme.md)  
-[Mesh deformation](./examples/deformation/readme.md)  
+[Mesh deformation](./examples/deformation/readme.md)
+
+## Using the Meshes
+
+Examples for using the EIT-MESHER outputs with common EIT and DOT solvers are given in [solvers examples](examples/solvers)
+
 
 ## Build instructions (tested on Ubuntu 16, 17, 18)
 
@@ -65,3 +70,6 @@ Example:
 ```bash
 ./bin/mesher -i inputs/input.inr -e inputs/Electrodes.txt -p inputs/params.txt
 ```
+Produces the following mesh as viewed in paraview
+
+![Brain Example](examples/brain/figures/brain_PV.png)
