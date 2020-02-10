@@ -16,10 +16,10 @@ Here we are using the neonate skull as an example, with electrode and depth refi
 
 PEITS has numerous parameters, but MESHER assumes the simplest use case:
 
-- Electrode nodes are chosen by PEITS and *not* specified directly
-- Conductivities are specified by a separate `conductivities` file, and the *indices* written to the `.dgf` file
+- Electrode nodes are chosen by PEITS and *not* specified directly `electrode.use_node_assignment: false`
+- Conductivities are specified by a separate `conductivities` file, and the *indices* written to the `.dgf` file `fem.assign_conductivities: true`
 
-Most of these settings are specified in the `MESHNAME.parameters`file written by the MESHER. However we will need to create the conductivities file.
+Most of these settings are specified in the `MESHNAME.parameters` file written by the MESHER. However we will need to create the conductivities file.
 
 The neonate mesh contains two layers, the scalp and skull so we need to write one per line:
 

@@ -1,4 +1,4 @@
-# Mesher parameter file 06-Feb-2020 11:45:55
+# Mesher parameter file 10-Feb-2020 10:16:23
 # Refinement(s) on/off (1 - yes, 0 -no)
 electrode_refinement = 1
 depth_refinement = 0

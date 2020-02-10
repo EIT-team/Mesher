@@ -1,5 +1,9 @@
 %% EIDORS example
 
+% Make sure you have added Mesher/MATLAB to the path, and ran EIDORS
+% startup.m
+
+
 %% Run mesher
 % Settings for a lower resolution (~100k elem) output mesh for demonstration
 
@@ -40,7 +44,6 @@ runmesher('../neonatescalp/NNscalp.inr','../neonatescalp/NNscalp_elecINRpos.txt'
 % running computationally expensive output
 
 Mesh=loadmesh('output/NNEIDORS');
-% Mesh=loadmesh('../PEITS/output/NNPEITSmesh');
 
 figure
 hold on;
@@ -125,15 +128,18 @@ saveas(gcf,'figures/EIDORS_FEM.png');
 % Convert protocol file to EIDORS stim patterns
 
 Amp=240e-6;
+N_elec=size(Mesh.elec_pos,1); 
 
 prt=dlmread('NN2016_Prt_full.txt');
-[stim]= stim_meas_list( prt,33,Amp);
-% [stim_op, meas_sel] = mk_stim_patterns( 33,1,'{op}','{op}',{},Amp);
+
+[stim]= stim_meas_list( prt,N_elec,Amp);
 
 MDL.stimulation=stim;
 
 %% Check FWD is ok
-valid_fwd_model(MDL)
+if valid_fwd_model(MDL)
+    disp('Forward model is ok!');
+end
 
 %% Add conductivity and solve
 
@@ -157,11 +163,4 @@ title('Simulated voltaged from EIDORS')
 xlabel('Measurement');
 ylabel('Voltage (V)');
 ylim([-0.05 0.05])
-saveas(gcf,'figures/EIDORS_Volts.png')
-
-%%
-figure
-hold on
-plot(V)
-plot(data.meas*0.25)
-ylim([-0.05 0.05])
+% saveas(gcf,'figures/EIDORS_Volts.png')
