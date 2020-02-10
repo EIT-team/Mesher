@@ -1,9 +1,9 @@
 # Using the MESHER output
 
-- [PEITS](PEITS/readme.md) a fast parallel EIT solver
-- [EIDORS](EIDORS/readme.md) the most common EIT MATLAB software suite
-- [SuperSolver](SuperSolver/readme.md) simplified EIDORS with only core functions
-- [Toast++](toast/readme.md) Software suite for DOT
+- [PEITS](PEITS/readme) a fast parallel EIT solver
+- [EIDORS](EIDORS/readme) the most common EIT MATLAB software suite
+- [SuperSolver](SuperSolver/readme) simplified EIDORS with only core functions
+- [Toast++](toast/readme) Software suite for DOT
 
 Example EIT voltages from the three different forward model calculations
 ![PEITS Volts](PEITS/figures/PEITS_Volts.png)
