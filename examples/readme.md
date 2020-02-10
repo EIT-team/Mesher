@@ -1,10 +1,11 @@
 # Example meshes
 
+
+The given examples have been tested on Ubuntu, either natively or running through Windows Subsystem for Linux.
+
+The parameter used for each example are set to run quickly/produce small meshes, more realistic parameters, which will generate higher resolution meshes are also provided (e.g. Brain_params_HR.txt)
+
 See `runexamples.m` for usage of the MATLAB wrappers.
-
-Add `wsl` before each of these commands to call it from windows subsystem for linux
-
-The parameters have been changed to produce small meshes, but realistic meshing parameters are also given.
 
 ## Unit Cube
 
