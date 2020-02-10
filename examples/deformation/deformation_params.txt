@@ -50,7 +50,7 @@ save_nodes_tetra = 0
 do_deformation = 1
 min_stretch_distance = 5
 max_stretch_distance = 25
-stretch_probability = 0.7
+stretch_probability = 0.5
 disable_xyz_stretch_probability = 0.5
 dilate_probability = 0.33
 

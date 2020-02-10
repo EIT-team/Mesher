@@ -47,7 +47,7 @@ save_cell_centres = 0
 save_nodes_tetra = 0
 
 #Deform the mesh?
-do_deformation = 0
+do_deformation = 1
 min_stretch_distance = 5
 max_stretch_distance = 50
 stretch_probability = 0.5

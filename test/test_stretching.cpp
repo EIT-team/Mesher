@@ -24,13 +24,13 @@ TEST_CASE("Stretchingtest_stretching")
     REQUIRE(stretch_left.active == true);
     REQUIRE(stretch_left.start_iterate == left_point - distance);
     REQUIRE(stretch_left.end_iterate == anchor - 1);
-    REQUIRE(stretch_left.stretch_description() == "50.25.256");
+    REQUIRE(stretch_left.stretch_description() == "Point to move: 50 Distance to move: 25 Anchor point: 256\n");
 
     REQUIRE(stretch_right.step == -1);
     REQUIRE(stretch_right.active == true);
     REQUIRE(stretch_right.start_iterate == right_point + distance);
     REQUIRE(stretch_right.end_iterate == anchor + 1);
-    REQUIRE(stretch_right.stretch_description() == "300.25.256");
+    REQUIRE(stretch_right.stretch_description() == "Point to move: 300 Distance to move: 25 Anchor point: 256\n");
   }
 
   SECTION("Check valid stretch points")
@@ -75,7 +75,7 @@ TEST_CASE("Stretchingtest_stretching")
     REQUIRE(dont_stretch.active == false);
     REQUIRE(dont_stretch.start_iterate == 0);
     REQUIRE(dont_stretch.end_iterate == dims);
-    REQUIRE(dont_stretch.stretch_description() == "0.0.0");
+    REQUIRE(dont_stretch.stretch_description() == "No stretch\n");
 
     //New point just outside bounds on right
     Mesh_Stretcher stretch_too_big_pos(0, 1, anchor, dims);
