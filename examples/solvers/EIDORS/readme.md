@@ -4,7 +4,7 @@
 
 ## Loading mesh
 
-First call MESHER to create a low resolution neonatal head mesh. If you are using >1 mln elements then [PEITS](https://github.com/EIT-team/PEITS) probably better suited.
+First call MESHER to create a low resolution neonatal head mesh (from [this paper](https://doi.org/10.1088/1361-6579/aa6586)). If you are using >1 mln elements then [PEITS](https://github.com/EIT-team/PEITS) probably better suited.
 
 ```bash
 ../../../bin/mesher -i ../../neonatescalp/NNscalp.inr -e ../../neonatescalp/NNscalp_elecINRpos.txt -p NNEIDORS_param.txt -d output/ -o NNEIDORS

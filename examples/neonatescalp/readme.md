@@ -1,6 +1,6 @@
 # Neonate scalp from CAD to Mesh
 
-This example shows how to use the MESHER using a surface model `.stl` from a CAD application. This method was used to mesh the tanks in [this paper](https://doi.org/10.1088/1361-6579/aa6586). This requires MATLAB and `iso2mesh` to be installed. The script `example_neonate.m` walks through the process of converting to inr and calling the mesher all through MATLAB.
+This example shows how to use the MESHER using a surface model `.stl` from a CAD application. This method was used to mesh the tanks in [this paper](https://doi.org/10.1088/1361-6579/aa6586), see [Head Tanks](https://github.com/EIT-team/Tanks) for 3D printable versions. This requires MATLAB and `iso2mesh` to be installed. The script `example_neonate.m` walks through the process of converting to inr and calling the mesher all through MATLAB.
 
 ## STL to INR
 

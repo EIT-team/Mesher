@@ -1,4 +1,4 @@
-
+% Example usage of the MATLAB wrapper
 %% Neonate brain
 
 runmesher('neonatescalp/NNscalp.inr','neonatescalp/NNscalp_elecINRpos.txt',...
