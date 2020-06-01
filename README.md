@@ -81,7 +81,7 @@ EIT-MESHER can be built in a container to install on newer linux installations. 
 
 ### Install container
 
-The docker container can be obtained using three different methods:
+The docker container can be obtained using two different methods:
 
 * Build container from source (`mesher` is a name of your choice):
 
@@ -89,16 +89,10 @@ The docker container can be obtained using three different methods:
 docker build -t mesher .
 ```
 
-* Build from dockerhub
+* Pull image directly from dockerhub without having to build
 
 ```bash
-docker built -t DOCKERHUBNAME
-```
-
-* Pull from dockerhub
-
-```bash
-docker built -t DOCKERHUBNAME
+docker pull doctorjimbles/eit-mesher
 ```
 
 ### Running Mesher from container

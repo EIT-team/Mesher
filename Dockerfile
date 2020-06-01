@@ -41,5 +41,5 @@ ENTRYPOINT [ "./bin/mesher" ]
 CMD ["-i", "inputs/input.inr", "-e", "inputs/Electrodes.txt", "-p", "inputs/params.txt"]
 
 # To run the Mesher, you need to mount the volumes and then direct the mesher to look into the correct directories e.g.:
-# docker run --rm -it -v ~/Mesher/inputs2:/input -v ~/Mesher/output2:/output  mesher -i /input/input.inr -e /input/Electrodes.txt -p /input/params.txt -d /output/ -o testing
+# docker run --rm -v ~/Mesher/inputs2:/input -v ~/Mesher/output2:/output  mesher -i /input/input.inr -e /input/Electrodes.txt -p /input/params.txt -d /output/ -o testing
 
