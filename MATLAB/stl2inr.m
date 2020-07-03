@@ -66,7 +66,8 @@ else % if only one input specified
     if isstruct(STLin)
         stlsurf.vertices = STLin.vtx;
         stlsurf.faces = STLin.tri;
-        STLin = STLin.name;
+        savepath = STLin.path;
+        savename = STLin.name;
     else
         disp('Loading Stl meshes');
         [stlsurf.vertices,stlsurf.faces,stlsurf.normals,stlsurf.name] = stlRead(STLin);
