@@ -89,15 +89,16 @@ The docker container can be obtained using two different methods:
 docker build -t mesher .
 ```
 
-* Pull image directly from dockerhub without having to build
+* Pull image directly from dockerhub without having to build, renaming the container to `mesher` (or name of your choice) :
 
 ```bash
 docker pull doctorjimbles/eit-mesher
+docker image tag doctorjimbles/eit-mesher:latest mesher:latest
 ```
 
 ### Running Mesher from container
 
-To test it is working run the container with no inputs, this will call the mesher with defaults which runs the single example included in the container:
+To test if it is working run the container with no inputs, this will call the mesher with defaults which runs the single example included in the container:
 
 ```bash
 docker run --rm mesher
@@ -113,14 +114,36 @@ docker run --rm mesher -i inputs/input.inr -e inputs/Electrodes.txt -p inputs/pa
 
 * Using your own data - mounting volumes
 
-The container has two volumes `/input` and `/output` which can be mounted to a directory on the host using the `-v` flag. So for example with the `MESHER` repository on the home dir:
+The container has two **root** directories `/in` and `/out` which can be mounted as volumes to map to directories on the host using the `-v` flag. So for example, if we had the `MESHER` repository in our home dir we would add the flags:
 
 ```bash
-docker run --rm -v ~/Mesher/inputs:/input -v ~/Mesher/output:/output  mesher
+ -v ~/Mesher/inputs:/in -v ~/Mesher/output:/out
 ```
 
-The mesher can then finally be called by combining the volume definitions and the parameters. **Note** The directories must be with respect to the container file structure
+The mesher can then finally be called by combining the volume definitions and then directing the mesher at the new input location `/in/`. **Note** Parameters given must be with respect to the container file structure. So for example, to make the default mesh but using the inputs files in the repository on the host machine (assuming it is stored in /home/user/Mesher):
 
 ```bash
-docker run --rm  -v ~/Mesher/inputs:/input -v ~/Mesher/output:/output  mesher -i /input/input.inr -e /input/Electrodes.txt -p /input/params.txt -d /output/ -o dockertest
+docker run --rm  -v ~/Mesher/inputs:/in -v ~/Mesher/output:/out  mesher -i /in/input.inr -e /in/Electrodes.txt -p /in/params.txt -d /out/ -o dockertest
+```
+
+This will result in an output mesh `dockertest` in `/home/user/Mesher/output`.
+
+To run the NN scalp example (still assuming this repository is stored in /home/user/Mesher)
+
+```bash
+docker run --rm  -v ~/Mesher/examples/neonatescalp/:/in -v ~/Mesher/examples/neonatescalp/output:/out  mesher -i /in/NNscalp.inr -e /in/NNscalp_elecINRpos.txt -p /in/NNscalp_param.txt -d /out/ -o dockertestNN
+```
+
+* Improving slow file write on some systems
+
+In some systems (reported on macOS 10.15.6, Docker Desktop 2.3.0.4, Docker Engine 19.03.12) it is much slower writing files into the mapped volume. Therefore to improve performance, it is possible to call the mesher and copy the files out afterwards. To do this we remove the `--rm` flag as we want to keep it, and add the `--name` flag to give it a name that makes more sense to us. We also drop the `-v` flag for the `\out` folder.
+
+```bash
+docker run --name NNmesher  -v ~/Mesher/examples/neonatescalp/:/in mesher -i /in/NNscalp.inr -e /in/NNscalp_elecINRpos.txt -p /in/NNscalp_param.txt -d /out/ -o dockertestNN
+```
+
+The mesher files can then be copied outside of the container
+
+```bash
+docker cp NNmesher:/out ./newoutputdir
 ```
