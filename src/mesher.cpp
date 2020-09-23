@@ -17,7 +17,7 @@ using namespace std;
  **/
 void printusage(void)
 {
-  printf("Usage:  ./mesher -i INPUT_INR -e INPUT_ELECTRODES -p INPUT_PARAMETERS");
+  printf("Usage:  ./mesher -i INPUT_INR -e INPUT_ELECTRODES -p INPUT_PARAMETERS\n");
   printf("        -i input image file\n");
   printf("        -e electrode position file\n");
   printf("        -p parameter file\n");

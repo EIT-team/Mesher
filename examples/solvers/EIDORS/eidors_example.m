@@ -97,7 +97,7 @@ MDL.gnd_node = gnd_node;
 % and contact impedance to be given within a structure. So here we find 
 % nodes on the suface within electrode radius
 
-z_contact = 100; % ohms 
+z_contact = 20e-3; % ohms/m2 
 elec_radius = .008; %in meters
 
 % unique surface node references
@@ -204,4 +204,4 @@ title('Simulated voltaged from EIDORS')
 xlabel('Measurement');
 ylabel('Voltage (V)');
 ylim([-0.15 0.15])
-% saveas(gcf,'figures/EIDORS_Volts.png')
+saveas(gcf,'figures/EIDORS_Volts.png')
