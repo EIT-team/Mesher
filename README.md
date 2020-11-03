@@ -12,6 +12,14 @@ EIT-MESHER is C++ software, based on the CGAL library, which generates high qual
 [Mesh refinement examples](./examples/refinements/readme.md)  
 [Mesh deformation](./examples/deformation/readme.md)
 
+## Citing this work
+
+If you use this repository please cite the accompanying [JORS article](http://doi.org/10.5334/jors.321)
+
+```
+Dowrick, T., Avery, J., Faulkner, M., Holder, D. and Aristovich, K., 2020. EIT-MESHER – Segmented FEM Mesh Generation and Refinement. Journal of Open Research Software, 8(1), p.27. DOI: http://doi.org/10.5334/jors.321
+```
+
 ## Using the Meshes
 
 Examples for using the EIT-MESHER outputs with common EIT and DOT solvers are given in [solvers examples](examples/solvers)

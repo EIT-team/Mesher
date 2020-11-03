@@ -24,12 +24,11 @@ function [ varargout ] = stl2inr( STLin,pixel_scale,elec_pos,plotflag )
 
 %% check dependencies
 
-%stl reader
-if isempty(which('stlRead'))
+%stl reader - removed check in path as stlread from polyfun confusing
+%things
     p=mfilename('fullpath');
     p=fileparts(p);
     addpath([p filesep 'stlTools']);
-end
 
 % iso2mesh is needed
 if (isempty(which('plotmesh')) || isempty(which('surf2vol')) || isempty(which('binsurface')))
